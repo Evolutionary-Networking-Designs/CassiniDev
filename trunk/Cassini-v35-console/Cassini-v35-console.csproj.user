@@ -1,0 +1,14 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartArguments>/path:"D:\Kali2\Salient.WebTest.Tests\WebContent\Salient.WebTest.TestSite\" /port:7089 /vroot:"/"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ProjectView>ShowAllFiles</ProjectView>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <StartArguments>/path:"D:\Kali2\Salient.WebTest.Tests\WebContent\Salient.WebTest.TestSite\" /port:7089 /vroot:"/"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <StartArguments>/path:"D:\Kali2\Salient.WebTest.Tests\WebContent\Salient.WebTest.TestSite\" /port:7089 /vroot:"/"</StartArguments>
+  </PropertyGroup>
+</Project>
