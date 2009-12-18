@@ -3,7 +3,7 @@
     <StartArguments>/path:"D:\Kali2\Salient.WebTest.Tests\WebContent\Salient.WebTest.TestSite\" /port:7089 /vroot:"/"</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <StartArguments>/path:"D:\Kali2\Salient.WebTest.Tests\WebContent\Salient.WebTest.TestSite\" /port:7089 /vroot:"/"</StartArguments>

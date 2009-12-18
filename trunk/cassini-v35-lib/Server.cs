@@ -24,7 +24,7 @@ using System.Web;
 using System.Web.Hosting;
 
 namespace Cassini {
-    public class Server : MarshalByRefObject {
+    class Server : MarshalByRefObject {
         int _port;
         string _virtualPath;
         string _physicalPath;
@@ -95,7 +95,7 @@ namespace Cassini {
                 while (!_shutdownInProgress) {
                     try {
                         Socket acceptedSocket = _socket.Accept();
-                        
+
                         ThreadPool.QueueUserWorkItem(delegate {
                             if (!_shutdownInProgress) {
                                 var conn = new Connection(this, acceptedSocket);

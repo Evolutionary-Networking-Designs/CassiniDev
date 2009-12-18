@@ -110,7 +110,6 @@ namespace Cassini {
             WaitForPendingCallsToFinish();
 
             HostingEnvironment.UnregisterObject(this);
-
         }
 
         public string InstallPath { get { return _installPath; } }
