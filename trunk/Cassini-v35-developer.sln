@@ -19,7 +19,37 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Salient.WebTest", "Tools\Ca
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{6292F038-FDAC-4A2F-9053-B534D08D7766}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebApp", "Tools\Cassini Bootstrap\TestWebApp\TestWebApp.csproj", "{8937731F-EA06-4531-A6F8-D91A2527AD3D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cassini", "Cassini", "{2DAD52C9-BB3A-4F2A-8830-883153330182}"
+EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs02.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = cassini-v35\\Cassini-v35.csproj
+		SccProjectTopLevelParentUniqueName1 = Cassini-v35-developer.sln
+		SccProjectName1 = cassini-v35
+		SccLocalPath1 = cassini-v35
+		SccProjectUniqueName2 = Cassini-v35-lib\\Cassini-v35-lib.csproj
+		SccProjectTopLevelParentUniqueName2 = Cassini-v35-developer.sln
+		SccProjectName2 = Cassini-v35-lib
+		SccLocalPath2 = Cassini-v35-lib
+		SccProjectUniqueName3 = Cassini-v35-console\\Cassini-v35-console.csproj
+		SccProjectTopLevelParentUniqueName3 = Cassini-v35-developer.sln
+		SccProjectName3 = Cassini-v35-console
+		SccLocalPath3 = Cassini-v35-console
+		SccProjectUniqueName4 = Tools\\Cassini\u0020Bootstrap\\Salient.WebTest\\Salient.WebTest.csproj
+		SccProjectTopLevelParentUniqueName4 = Cassini-v35-developer.sln
+		SccProjectName4 = Tools/Cassini\u0020Bootstrap/Salient.WebTest
+		SccLocalPath4 = Tools\\Cassini\u0020Bootstrap\\Salient.WebTest
+		SccProjectUniqueName5 = Tools\\Cassini\u0020Bootstrap\\TestWebApp\\TestWebApp.csproj
+		SccProjectTopLevelParentUniqueName5 = Cassini-v35-developer.sln
+		SccProjectName5 = Tools/Cassini\u0020Bootstrap/TestWebApp
+		SccLocalPath5 = Tools\\Cassini\u0020Bootstrap\\TestWebApp
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AutomatedDebug|Any CPU = AutomatedDebug|Any CPU
 		AutomatedDebug|x86 = AutomatedDebug|x86
@@ -133,11 +163,36 @@ Global
 		{1D291E17-BC42-4AF6-AEA8-D3B61CDDC876}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D291E17-BC42-4AF6-AEA8-D3B61CDDC876}.Release|x86.ActiveCfg = Release|x86
 		{1D291E17-BC42-4AF6-AEA8-D3B61CDDC876}.Release|x86.Build.0 = Release|x86
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.AutomatedDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.AutomatedDebug|Any CPU.Build.0 = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.AutomatedDebug|x86.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug (.Net 2.0)|Any CPU.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug (.Net 2.0)|Any CPU.Build.0 = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug (.Net 2.0)|x86.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug (.Net 3.5)|Any CPU.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug (.Net 3.5)|Any CPU.Build.0 = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug (.Net 3.5)|x86.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release (.Net 2.0)|Any CPU.ActiveCfg = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release (.Net 2.0)|Any CPU.Build.0 = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release (.Net 2.0)|x86.ActiveCfg = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release (.Net 3.5)|Any CPU.ActiveCfg = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release (.Net 3.5)|Any CPU.Build.0 = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release (.Net 3.5)|x86.ActiveCfg = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1D291E17-BC42-4AF6-AEA8-D3B61CDDC876} = {6292F038-FDAC-4A2F-9053-B534D08D7766}
+		{8937731F-EA06-4531-A6F8-D91A2527AD3D} = {6292F038-FDAC-4A2F-9053-B534D08D7766}
+		{0D9F0FEA-45F7-4CE4-9868-6FB9BBE3DD4C} = {2DAD52C9-BB3A-4F2A-8830-883153330182}
+		{BB25F64A-CEBD-4D38-B73A-9DFD311B3D72} = {2DAD52C9-BB3A-4F2A-8830-883153330182}
+		{539F0304-F14A-413F-A56A-AFB7724EA1A7} = {2DAD52C9-BB3A-4F2A-8830-883153330182}
 	EndGlobalSection
 EndGlobal
