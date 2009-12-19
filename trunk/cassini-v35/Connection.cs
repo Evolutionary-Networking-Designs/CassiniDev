@@ -23,7 +23,7 @@ using System.Web;
 using System.Web.Hosting;
 
 namespace Cassini {
-    class Connection : MarshalByRefObject {
+    public class Connection : MarshalByRefObject {
         Server _server;
         Socket _socket;
         string _localServerIP;

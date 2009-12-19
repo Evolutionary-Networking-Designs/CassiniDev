@@ -16,7 +16,7 @@ namespace Cassini
 
         private static void Main(string[] args)
         {
-            Console.WriteLine("{0}\n", Assembly.GetAssembly(typeof (Server)).FullName);
+            
 
             CassiniArgs parsedArgs = new CassiniArgs();
             if (Parser.ParseArgumentsWithUsage(args, parsedArgs))
@@ -29,6 +29,11 @@ namespace Cassini
 
                 try
                 {
+                    if(!string.IsNullOrEmpty(parsedArgs.path))
+                    {
+                        parsedArgs.path = parsedArgs.path.TrimEnd('\\');
+                    }
+
                     if (string.IsNullOrEmpty(parsedArgs.path) || !Directory.Exists(parsedArgs.path))
                     {
                         throw new Exception("Invalid path.");
@@ -56,7 +61,7 @@ namespace Cassini
                                             + "Possible conflict with another Web Server on the same port.");
                     }
 
-                    Console.WriteLine("started  {0}", _server.RootUrl);
+                    Console.WriteLine("started:{0}", _server.RootUrl);
                     Console.WriteLine("\nPress enter to shutdown.\n");
                     Console.ReadLine();
 
@@ -77,12 +82,13 @@ namespace Cassini
                 catch (Exception ex)
                 {
                     // log it
-                    Console.WriteLine(ex.Message + "\n");
+                    Console.WriteLine("error:"+ex.Message + "\n");
                     Console.WriteLine(Parser.ArgumentsUsage(typeof (CassiniArgs)));
                     _server = null;
                 }
 
-                Console.ReadLine();
+                Console.WriteLine("{0}\n", Assembly.GetAssembly(typeof(Server)).FullName);
+                
             }
         }
     }
