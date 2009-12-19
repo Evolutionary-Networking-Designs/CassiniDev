@@ -59,14 +59,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteParser.cs" />
     <Compile Include="ByteString.cs" />
     <Compile Include="Connection.cs" />
+    <Compile Include="Exceptions\CassiniExceptionEventArgs.cs" />
+    <Compile Include="Exceptions\CassiniExceptionHandler.cs" />
+    <Compile Include="Exceptions\CassiniException.cs" />
     <Compile Include="Host.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
