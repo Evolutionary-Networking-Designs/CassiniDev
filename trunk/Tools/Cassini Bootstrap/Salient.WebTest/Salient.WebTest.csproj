@@ -72,10 +72,6 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestWebApp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\TestWebApp\bin\TestWebApp.dll</HintPath>
-    </Reference>
     <Reference Include="WatiN.Core, Version=2.0.20.0, Culture=neutral, PublicKeyToken=db7cfd3acb5ad44e, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\watin-trunk\trunk\src\Core\bin\x86\Debug (.Net 3.5)\WatiN.Core.dll</HintPath>
@@ -90,6 +86,15 @@
     </Compile>
     <Compile Include="..\..\..\cassini-v35\Connection.cs">
       <Link>Cassini\Connection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cassini-v35\Exceptions\CassiniException.cs">
+      <Link>Cassini\Exceptions\CassiniException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cassini-v35\Exceptions\CassiniExceptionEventArgs.cs">
+      <Link>Cassini\Exceptions\CassiniExceptionEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cassini-v35\Exceptions\CassiniExceptionHandler.cs">
+      <Link>Cassini\Exceptions\CassiniExceptionHandler.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cassini-v35\Host.cs">
       <Link>Cassini\Host.cs</Link>
@@ -110,6 +115,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>ASPXCodeBehind</SubType>
     </Content>
+    <Compile Include="DeepTesting.cs" />
     <Compile Include="MyCassiniBootStrap.cs" />
     <Compile Include="NUnitAndWatiN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -118,6 +124,9 @@
     <Content Include="errorPageButton.aspx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="ping.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

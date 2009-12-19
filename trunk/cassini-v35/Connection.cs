@@ -1,51 +1,47 @@
-// /* **********************************************************************************
-//  *
-//  * Copyright (c) Sky Sanders. All rights reserved.
-//  * 
-//  * This source code is subject to terms and conditions of the Microsoft Public
-//  * License (Ms-PL). A copy of the license can be found in the license.htm file
-//  * included in this distribution.
-//  *
-//  * You must not remove this notice, or any other, from this software.
-//  *
-//  * **********************************************************************************/
-
-#region
+/* **********************************************************************************
+ *
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ *
+ * This source code is subject to terms and conditions of the Microsoft Public
+ * License (Ms-PL). A copy of the license can be found in the license.htm file
+ * included in this distribution.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ * **********************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Web;
+using System.Web.Hosting;
 
-#endregion
+namespace Cassini {
+    class Connection : MarshalByRefObject {
+        Server _server;
+        Socket _socket;
+        string _localServerIP;
 
-namespace Cassini
-{
-    public class Connection : MarshalByRefObject
-    {
-        private readonly Server _server;
-        private string _localServerIP;
-        private Socket _socket;
-
-        internal Connection(Server server, Socket socket)
-        {
+        internal Connection(Server server, Socket socket) {
             _server = server;
             _socket = socket;
         }
 
-        public bool Connected
-        {
-            get { return _socket.Connected; }
+        public override object InitializeLifetimeService() {
+            // never expire the license
+            return null;
         }
 
-        public bool IsLocal
-        {
-            get
-            {
+        public bool Connected { get { return _socket.Connected; } }
+
+        public bool IsLocal {
+            get {
                 string remoteIP = RemoteIP;
                 if (remoteIP == "127.0.0.1" || remoteIP == "::1")
                     return true;
@@ -53,14 +49,11 @@ namespace Cassini
             }
         }
 
-        private string LocalServerIP
-        {
-            get
-            {
-                if (_localServerIP == null)
-                {
-                    IPHostEntry hostEntry = Dns.GetHostEntry(Environment.MachineName);
-                    IPAddress localAddress = hostEntry.AddressList[0];
+        string LocalServerIP {
+            get {
+                if (_localServerIP == null) {
+                    var hostEntry = Dns.GetHostEntry(Environment.MachineName);
+                    var localAddress = hostEntry.AddressList[0];
                     _localServerIP = localAddress.ToString();
                 }
 
@@ -68,49 +61,34 @@ namespace Cassini
             }
         }
 
-        public string LocalIP
-        {
-            get
-            {
-                IPEndPoint ep = (IPEndPoint) _socket.LocalEndPoint;
+        public string LocalIP {
+            get {
+                IPEndPoint ep = (IPEndPoint)_socket.LocalEndPoint;
+                return (ep != null && ep.Address != null)? ep.Address.ToString() : "127.0.0.1";
+            }
+        }
+
+        public string RemoteIP {
+            get {
+                IPEndPoint ep = (IPEndPoint)_socket.RemoteEndPoint;
                 return (ep != null && ep.Address != null) ? ep.Address.ToString() : "127.0.0.1";
             }
         }
 
-        public string RemoteIP
-        {
-            get
-            {
-                IPEndPoint ep = (IPEndPoint) _socket.RemoteEndPoint;
-                return (ep != null && ep.Address != null) ? ep.Address.ToString() : "127.0.0.1";
-            }
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            // never expire the license
-            return null;
-        }
-
-        public void Close()
-        {
-            try
-            {
+        public void Close() {
+            try {
                 _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
             }
-            catch
-            {
+            catch {
             }
-            finally
-            {
+            finally {
                 _socket = null;
             }
         }
 
-        private static string MakeResponseHeaders(int statusCode, string moreHeaders, int contentLength, bool keepAlive)
-        {
-            StringBuilder sb = new StringBuilder();
+        static string MakeResponseHeaders(int statusCode, string moreHeaders, int contentLength, bool keepAlive) {
+            var sb = new StringBuilder();
 
             sb.Append("HTTP/1.1 " + statusCode + " " + HttpWorkerRequest.GetStatusDescription(statusCode) + "\r\n");
             sb.Append("Server: Cassini/" + Messages.VersionString + "\r\n");
@@ -126,44 +104,42 @@ namespace Cassini
             return sb.ToString();
         }
 
-        private static String MakeContentTypeHeader(string fileName)
-        {
+        static String MakeContentTypeHeader(string fileName) {
             Debug.Assert(File.Exists(fileName));
             string contentType = null;
 
-            FileInfo info = new FileInfo(fileName);
+            var info = new FileInfo(fileName);
             string extension = info.Extension.ToLowerInvariant();
 
-            switch (extension)
-            {
-                case ".bmp":
+            switch (extension) {
+                case ".bmp": 
                     contentType = "image/bmp";
                     break;
 
-                case ".css":
+                case ".css": 
                     contentType = "text/css";
                     break;
 
-                case ".gif":
+                case ".gif": 
                     contentType = "image/gif";
                     break;
 
-                case ".ico":
+                case ".ico": 
                     contentType = "image/x-icon";
                     break;
 
-                case ".htm":
+                case ".htm" :
                 case ".html":
                     contentType = "text/html";
                     break;
 
                 case ".jpe":
                 case ".jpeg":
-                case ".jpg":
+                case ".jpg": 
                     contentType = "image/jpeg";
                     break;
 
-                case ".js":
+                case ".js": 
                     contentType = "application/x-javascript";
                     break;
 
@@ -171,30 +147,24 @@ namespace Cassini
                     break;
             }
 
-            if (contentType == null)
-            {
+            if (contentType == null) {
                 return null;
             }
 
             return "Content-Type: " + contentType + "\r\n";
         }
 
-        private string GetErrorResponseBody(int statusCode, string message)
-        {
+        string GetErrorResponseBody(int statusCode, string message) {
             string body = Messages.FormatErrorMessageBody(statusCode, _server.VirtualPath);
-            if (message != null && message.Length > 0)
-            {
+            if (message != null && message.Length > 0) {
                 body += "\r\n<!--\r\n" + message + "\r\n-->";
             }
             return body;
         }
 
-        public byte[] ReadRequestBytes(int maxBytes)
-        {
-            try
-            {
-                if (WaitForRequestBytes() == 0)
-                {
+        public byte[] ReadRequestBytes(int maxBytes) {
+            try {
+                if (WaitForRequestBytes() == 0) {
                     return null;
                 }
 
@@ -205,17 +175,14 @@ namespace Cassini
                 int numReceived = 0;
                 byte[] buffer = new byte[numBytes];
 
-                if (numBytes > 0)
-                {
+                if (numBytes > 0) {
                     numReceived = _socket.Receive(buffer, 0, numBytes, SocketFlags.None);
                 }
 
-                if (numReceived < numBytes)
-                {
+                if (numReceived < numBytes) {
                     byte[] tempBuffer = new byte[numReceived];
 
-                    if (numReceived > 0)
-                    {
+                    if (numReceived > 0) {
                         Buffer.BlockCopy(buffer, 0, tempBuffer, 0, numReceived);
                     }
 
@@ -224,63 +191,48 @@ namespace Cassini
 
                 return buffer;
             }
-            catch
-            {
+            catch {
                 return null;
             }
         }
 
-        public void Write100Continue()
-        {
+        public void Write100Continue() {
             WriteEntireResponseFromString(100, null, null, true);
         }
 
-        public void WriteBody(byte[] data, int offset, int length)
-        {
-            try
-            {
+        public void WriteBody(byte[] data, int offset, int length) {
+            try {
                 _socket.Send(data, offset, length, SocketFlags.None);
             }
-            catch (SocketException)
-            {
+            catch (SocketException) {
             }
         }
 
-        public void WriteEntireResponseFromString(int statusCode, String extraHeaders, String body, bool keepAlive)
-        {
-            try
-            {
+        public void WriteEntireResponseFromString(int statusCode, String extraHeaders, String body, bool keepAlive) {
+            try {
                 int bodyLength = (body != null) ? Encoding.UTF8.GetByteCount(body) : 0;
                 string headers = MakeResponseHeaders(statusCode, extraHeaders, bodyLength, keepAlive);
 
                 _socket.Send(Encoding.UTF8.GetBytes(headers + body));
             }
-            catch (SocketException)
-            {
+            catch (SocketException) {
             }
-            finally
-            {
-                if (!keepAlive)
-                {
+            finally {
+                if (!keepAlive) {
                     Close();
                 }
             }
         }
 
-        public void WriteEntireResponseFromFile(String fileName, bool keepAlive)
-        {
-            if (!File.Exists(fileName))
-            {
-                _server.OnServerException(new CassiniExceptionEventArgs(new CassiniException(404, fileName)));
+        public void WriteEntireResponseFromFile(String fileName, bool keepAlive) {
+            if (!File.Exists(fileName)) {
                 WriteErrorAndClose(404);
                 return;
             }
 
             // Deny the request if the contentType cannot be recognized.
             string contentTypeHeader = MakeContentTypeHeader(fileName);
-            if (contentTypeHeader == null)
-            {
-                _server.OnServerException(new CassiniExceptionEventArgs(new CassiniException(403, fileName)));
+            if (contentTypeHeader == null) {
                 WriteErrorAndClose(403);
                 return;
             }
@@ -288,10 +240,9 @@ namespace Cassini
             bool completed = false;
             FileStream fs = null;
 
-            try
-            {
+            try {
                 fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-                int len = (int) fs.Length;
+                int len = (int)fs.Length;
                 byte[] fileBytes = new byte[len];
                 int bytesRead = fs.Read(fileBytes, 0, len);
 
@@ -302,11 +253,9 @@ namespace Cassini
 
                 completed = true;
             }
-            catch (SocketException)
-            {
+            catch (SocketException) {
             }
-            finally
-            {
+            finally {
                 if (!keepAlive || !completed)
                     Close();
 
@@ -315,56 +264,45 @@ namespace Cassini
             }
         }
 
-        public void WriteErrorAndClose(int statusCode, string message)
-        {
+        public void WriteErrorAndClose(int statusCode, string message) {
             WriteEntireResponseFromString(statusCode, null, GetErrorResponseBody(statusCode, message), false);
         }
 
-        public void WriteErrorAndClose(int statusCode)
-        {
+        public void WriteErrorAndClose(int statusCode) {
             WriteErrorAndClose(statusCode, null);
         }
 
-        public void WriteErrorWithExtraHeadersAndKeepAlive(int statusCode, string extraHeaders)
-        {
+        public void WriteErrorWithExtraHeadersAndKeepAlive(int statusCode, string extraHeaders) {
             WriteEntireResponseFromString(statusCode, extraHeaders, GetErrorResponseBody(statusCode, null), true);
         }
 
-        public int WaitForRequestBytes()
-        {
+        public int WaitForRequestBytes() {
             int availBytes = 0;
 
-            try
-            {
-                if (_socket.Available == 0)
-                {
+            try {
+                if (_socket.Available == 0) {
                     // poll until there is data
                     _socket.Poll(100000 /* 100ms */, SelectMode.SelectRead);
-                    if (_socket.Available == 0 && _socket.Connected)
-                    {
+                    if (_socket.Available == 0 && _socket.Connected) {
                         _socket.Poll(30000000 /* 30sec */, SelectMode.SelectRead);
                     }
                 }
 
                 availBytes = _socket.Available;
             }
-            catch
-            {
+            catch {
             }
 
             return availBytes;
         }
 
-        public void WriteHeaders(int statusCode, String extraHeaders)
-        {
+        public void WriteHeaders(int statusCode, String extraHeaders) {
             string headers = MakeResponseHeaders(statusCode, extraHeaders, -1, false);
 
-            try
-            {
+            try {
                 _socket.Send(Encoding.UTF8.GetBytes(headers));
             }
-            catch (SocketException)
-            {
+            catch (SocketException) {
             }
         }
     }

@@ -78,8 +78,7 @@ namespace Salient.WebTest
         }
 
         [Test]
-        [ExpectedException(typeof (WebException),
-            ExpectedMessage = "The remote server returned an error: (500) Internal Server Error.")]
+        [ExpectedException(typeof (WebException), ExpectedMessage = "The remote server returned an error: (500) Internal Server Error.")]
         public void GenerateException_PageOnLoad()
         {
             GetHttpContent(NormalizeUrl("errorPage.aspx"));

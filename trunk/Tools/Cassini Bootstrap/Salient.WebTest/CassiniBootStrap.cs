@@ -46,7 +46,12 @@ namespace Salient.WebTest
         public virtual string NormalizeUrl(string relativeUrl)
         {
             //quick and dirty
-            return _server.RootUrl + relativeUrl;
+            string serverRootUrl = _server.RootUrl;
+            if(!serverRootUrl.EndsWith("/"))
+            {
+                serverRootUrl  += "/";
+            }
+            return serverRootUrl + relativeUrl;
         }
 
         /// <summary>
@@ -150,9 +155,9 @@ namespace Salient.WebTest
         ///  virtualPath:'/', useOwnAppDomain:true</para>
         /// </summary>
         /// <returns>A running instance of Cassini.Server</returns>
-        public Server StartServer()
+        internal Server StartServer()
         {
-            return StartServer(Environment.CurrentDirectory, 1968, "/", true);
+            return StartServer(Environment.CurrentDirectory);
         }
 
         /// <summary>
@@ -162,22 +167,9 @@ namespace Salient.WebTest
         /// </summary>
         /// <param name="physicalPath">The physical path of the content to be served. Default: the current directory.</param>
         /// <returns>A running instance of Cassini.Server</returns>
-        public Server StartServer(string physicalPath)
+        internal Server StartServer(string physicalPath)
         {
-            return StartServer(physicalPath, 1968, "/", true);
-        }
-
-        /// <summary>
-        /// <para>Starts an instance of Cassini Web Server 3.5 with the specified parameters.</para>
-        /// <para>Default values:  physicalPath:Environment.CurrentDirectory, portNumber:1968,
-        ///  virtualPath:'/', useOwnAppDomain:true</para>
-        /// </summary>
-        /// <param name="physicalPath">The physical path of the content to be served. Default: the current directory.</param>
-        /// <param name="portNumber">The local port assigned to this server. Default: 1968</param>
-        /// <returns>A running instance of Cassini.Server</returns>
-        public Server StartServer(string physicalPath, int portNumber)
-        {
-            return StartServer(physicalPath, portNumber, "/", true);
+            return StartServer(physicalPath, 1968);
         }
 
         /// <summary>
@@ -187,11 +179,10 @@ namespace Salient.WebTest
         /// </summary>
         /// <param name="physicalPath">The physical path of the content to be served. Default: the current directory.</param>
         /// <param name="portNumber">The local port assigned to this server. Default: 1968</param>
-        /// <param name="virtualPath"><para>The virtual root of the server. Default: '/'</para></param>
         /// <returns>A running instance of Cassini.Server</returns>
-        public Server StartServer(string physicalPath, int portNumber, string virtualPath)
+        internal Server StartServer(string physicalPath, int portNumber)
         {
-            return StartServer(physicalPath, portNumber, virtualPath, true);
+            return StartServer(physicalPath, portNumber, "/");
         }
 
 
@@ -203,47 +194,40 @@ namespace Salient.WebTest
         /// <param name="physicalPath">The physical path of the content to be served. Default: the current directory.</param>
         /// <param name="portNumber">The local port assigned to this server. Default: 1968</param>
         /// <param name="virtualPath"><para>The virtual root of the server. Default: '/'</para></param>
-        /// <param name="useOwnAppDomain">
-        /// <para>If true, Cassini is started in a new AppDomain and the OnUnhandledCassiniException handler
-        /// will receive notification of unhandled exceptions.</para>
-        /// <para>
-        /// If false, the server is instantiated in the current AppDomain, OnUnhandledCassiniException will not recieve events.
-        /// </para>
-        /// <para>Default: true</para>
-        /// </param>
         /// <returns>A running instance of Cassini.Server</returns>
-        protected Server StartServer(string physicalPath, int portNumber, string virtualPath, bool useOwnAppDomain)
+        internal Server StartServer(string physicalPath, int portNumber, string virtualPath)//, bool useOwnAppDomain)
         {
             StopServer();
 
 
-            if (useOwnAppDomain)
-            {
-                AppDomainSetup domaininfo = new AppDomainSetup();
-                domaininfo.ApplicationBase = Environment.CurrentDirectory;
-                // @"D:\Cassini-v35-Developer-3502\trunk\Cassini-v35-lib\bin\Debug\";
-                _serverAppDomain = AppDomain.CreateDomain("HostDomain", null, domaininfo);
+            //if (useOwnAppDomain)
+            //{
+            //    AppDomainSetup domaininfo = new AppDomainSetup();
+            //    domaininfo.ApplicationBase = Environment.CurrentDirectory;
+            //    // @"D:\Cassini-v35-Developer-3502\trunk\Cassini-v35-lib\bin\Debug\";
+            //    _serverAppDomain = AppDomain.CreateDomain("HostDomain", null, domaininfo);
 
-                //TODO: actually take the time to understand the details of this and why it isn't working.
-                //_serverAppDomain.UnhandledException += new UnhandledExceptionEventHandler(_serverAppDomain_UnhandledException);
+            //    //TODO: actually take the time to understand the details of this and why it isn't working.
+            //    _serverAppDomain.UnhandledException += new UnhandledExceptionEventHandler(_serverAppDomain_UnhandledException);
 
 
-                string serverAssemblyName = typeof (Server).Assembly.FullName;
-                string serverTypeName = typeof (Server).FullName;
-                object[] serverConstructorArgs = new object[] {portNumber, virtualPath, physicalPath};
+            //    string serverAssemblyName = typeof (Server).Assembly.FullName;
+            //    string serverTypeName = typeof (Server).FullName;
+            //    object[] serverConstructorArgs = new object[] {portNumber, virtualPath, physicalPath};
 
-                _server = (Server)
-                          _serverAppDomain.CreateInstanceAndUnwrap(serverAssemblyName, serverTypeName, false,
-                                                                   BindingFlags.Instance |
-                                                                   BindingFlags.Public, null, serverConstructorArgs,
-                                                                   null,
-                                                                   null, null);
-            }
-            else
-            {
-                _server = new Server(portNumber, virtualPath, physicalPath);
-            }
-
+            //    _server = (Server)
+            //              _serverAppDomain.CreateInstanceAndUnwrap(serverAssemblyName, serverTypeName, false,
+            //                                                       BindingFlags.Instance |
+            //                                                       BindingFlags.Public, null, serverConstructorArgs,
+            //                                                       null,
+            //                                                       null, null);
+                
+            //}
+            //else
+            //{
+            //    _server = new Server(portNumber, virtualPath, physicalPath);
+            //}
+            _server = new Server(portNumber, virtualPath, physicalPath);
             _server.Start();
 
             return _server;

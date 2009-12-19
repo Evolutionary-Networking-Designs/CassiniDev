@@ -79,6 +79,15 @@
     <Compile Include="..\cassini-v35\Connection.cs">
       <Link>Connection.cs</Link>
     </Compile>
+    <Compile Include="..\cassini-v35\Exceptions\CassiniException.cs">
+      <Link>Exceptions\CassiniException.cs</Link>
+    </Compile>
+    <Compile Include="..\cassini-v35\Exceptions\CassiniExceptionEventArgs.cs">
+      <Link>Exceptions\CassiniExceptionEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\cassini-v35\Exceptions\CassiniExceptionHandler.cs">
+      <Link>Exceptions\CassiniExceptionHandler.cs</Link>
+    </Compile>
     <Compile Include="..\cassini-v35\Host.cs">
       <Link>Host.cs</Link>
     </Compile>
