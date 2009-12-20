@@ -1,9 +1,19 @@
-﻿#region
+﻿// /* **********************************************************************************
+//  *
+//  * Copyright (c) Sky Sanders. All rights reserved.
+//  * 
+//  * This source code is subject to terms and conditions of the Microsoft Public
+//  * License (Ms-PL). A copy of the license can be found in the license.htm file
+//  * included in this distribution.
+//  *
+//  * You must not remove this notice, or any other, from this software.
+//  *
+//  * **********************************************************************************/
+
+#region
 
 using System;
-using System.IO;
 using System.Reflection;
-using Cassini.CommandLine;
 
 #endregion
 
@@ -13,83 +23,57 @@ namespace Cassini
     {
         private static Server _server;
 
-
         private static void Main(string[] args)
         {
-            
+            string _portString = "80";
+            string _virtRoot = "/";
+            string _appPath = string.Empty;
 
-            CassiniArgs parsedArgs = new CassiniArgs();
-            if (Parser.ParseArgumentsWithUsage(args, parsedArgs))
+            try
             {
-                if (string.Compare("Current path", parsedArgs.path, true) == 0)
+                if (args.Length >= 1) _appPath = args[0];
+                if (args.Length >= 2) _portString = args[1];
+                if (args.Length >= 3) _virtRoot = args[2];
+            }
+            catch
+            {
+            }
+
+
+            if (args != null)
+            {
+                try
                 {
-                    parsedArgs.path = Environment.CurrentDirectory;
+                    _server = new Server(Convert.ToInt32(_portString), _virtRoot, _appPath);
+                    _server.Start();
+                }
+                catch
+                {
+                    throw new Exception("Cassini Managed Web Server failed to start listening on port " +
+                                        _portString + ".\r\n"
+                                        + "Possible conflict with another Web Server on the same port.");
                 }
 
+                Console.WriteLine("\nstarted:{0}", _server.RootUrl);      
+                Console.WriteLine("{0}\n", Assembly.GetAssembly(typeof (Server)).FullName);
+                Console.WriteLine("\nPress enter to shutdown.\n");
+                Console.ReadLine();
 
                 try
                 {
-                    if(!string.IsNullOrEmpty(parsedArgs.path))
-                    {
-                        parsedArgs.path = parsedArgs.path.TrimEnd('\\');
-                    }
-
-                    if (string.IsNullOrEmpty(parsedArgs.path) || !Directory.Exists(parsedArgs.path))
-                    {
-                        throw new Exception("Invalid path.");
-                    }
-
-                    if (parsedArgs.port <= 0)
-                    {
-                        throw new Exception("Invalid port.");
-                    }
-
-                    if (string.IsNullOrEmpty(parsedArgs.vroot) || !parsedArgs.vroot.StartsWith("/"))
-                    {
-                        throw new Exception("Invalid vroot.");
-                    }
-
-                    try
-                    {
-                        _server = new Server(parsedArgs.port, parsedArgs.vroot, parsedArgs.path);
-                        _server.Start();
-                    }
-                    catch
-                    {
-                        throw new Exception("Cassini Managed Web Server failed to start listening on port " +
-                                            parsedArgs.port + ".\r\n"
-                                            + "Possible conflict with another Web Server on the same port.");
-                    }
-
-                    Console.WriteLine("started:{0}", _server.RootUrl);
-                    Console.WriteLine("\nPress enter to shutdown.\n");
-                    Console.ReadLine();
-
-                    try
-                    {
-                        _server.Stop();
-                    }
-// ReSharper disable EmptyGeneralCatchClause
-                    catch
-// ReSharper restore EmptyGeneralCatchClause
-                    {
-                    }
-                    finally
-                    {
-                        _server = null;
-                    }
+                    _server.Stop();
                 }
-                catch (Exception ex)
+                catch
                 {
-                    // log it
-                    Console.WriteLine("error:"+ex.Message + "\n");
-                    Console.WriteLine(Parser.ArgumentsUsage(typeof (CassiniArgs)));
+                }
+                finally
+                {
                     _server = null;
                 }
-
-                Console.WriteLine("{0}\n", Assembly.GetAssembly(typeof(Server)).FullName);
-                
             }
+
+
+     
         }
     }
 }

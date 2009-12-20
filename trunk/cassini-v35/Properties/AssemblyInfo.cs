@@ -2,13 +2,13 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Cassini")]
-[assembly: AssemblyDescription("Cassini Web Server Sample")]
+[assembly: AssemblyTitle("CassiniDev")]
+[assembly: AssemblyDescription("Cassini For Developers")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft Corporation")]
-[assembly: AssemblyProduct("Cassini")]
-[assembly: AssemblyCopyright("Copyright © Microsoft Corporation. All Rights Reserved.")]
+[assembly: AssemblyCompany("Salient Solutions")]
+[assembly: AssemblyProduct("CassiniDev")]
+[assembly: AssemblyCopyright("Copyright © Sky Sanders. All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("3.5.0.2")]
+[assembly: AssemblyVersion("3.5.0.3")]

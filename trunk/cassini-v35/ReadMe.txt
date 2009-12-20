@@ -1,11 +1,22 @@
-Cassini Web Server Sample v3.5 README.TXT
+Cassini Developers Edition v3.5 README.TXT
 ------------------------------------------
+http://cassinidev.codeplex.com/
 
 This Cassini version requires .NET Framework v3.5
 
 This sample illustrates using the ASP.NET hosting APIs (System.Web.Hosting)
 to create a simple managed Web Server with System.Net APIs.
 
+
+New in Cassini Developers Edition v3.5.0.3
+
+* Console and Library versions added.  
+	All versions standalone and require no GAC.
+  
+
+----------------------------------------------
+branched
+----------------------------------------------
 New in Cassini v3.5.0.2
 * Fix for the default documents
 

@@ -23,7 +23,13 @@ using System.Web;
 using System.Web.Hosting;
 
 namespace Cassini {
-    class Connection : MarshalByRefObject {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <changes>
+    /// 12/20/09 - changed visibility from internal to public
+    /// </changes>
+    public class Connection : MarshalByRefObject {
         Server _server;
         Socket _socket;
         string _localServerIP;

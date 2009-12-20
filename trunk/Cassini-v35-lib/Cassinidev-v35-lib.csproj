@@ -5,17 +5,21 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1D291E17-BC42-4AF6-AEA8-D3B61CDDC876}</ProjectGuid>
+    <ProjectGuid>{BB25F64A-CEBD-4D38-B73A-9DFD311B3D72}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Salient.WebTest</RootNamespace>
-    <AssemblyName>Salient.WebTest</AssemblyName>
+    <RootNamespace>Cassini</RootNamespace>
+    <AssemblyName>Cassinidev-v35-lib</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,15 +59,11 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -72,68 +72,45 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WatiN.Core, Version=2.0.20.0, Culture=neutral, PublicKeyToken=db7cfd3acb5ad44e, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\watin-trunk\trunk\src\Core\bin\x86\Debug (.Net 3.5)\WatiN.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\cassini-v35\ByteParser.cs">
-      <Link>Cassini\ByteParser.cs</Link>
+    <Compile Include="..\cassini-v35\ByteParser.cs">
+      <Link>ByteParser.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\ByteString.cs">
-      <Link>Cassini\ByteString.cs</Link>
+    <Compile Include="..\cassini-v35\ByteString.cs">
+      <Link>ByteString.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\Connection.cs">
-      <Link>Cassini\Connection.cs</Link>
+    <Compile Include="..\cassini-v35\Connection.cs">
+      <Link>Connection.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\Exceptions\CassiniException.cs">
-      <Link>Cassini\Exceptions\CassiniException.cs</Link>
+    <Compile Include="..\cassini-v35\Host.cs">
+      <Link>Host.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\Exceptions\CassiniExceptionEventArgs.cs">
-      <Link>Cassini\Exceptions\CassiniExceptionEventArgs.cs</Link>
+    <Compile Include="..\cassini-v35\Messages.cs">
+      <Link>Messages.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\Exceptions\CassiniExceptionHandler.cs">
-      <Link>Cassini\Exceptions\CassiniExceptionHandler.cs</Link>
+    <Compile Include="..\cassini-v35\Properties\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\Host.cs">
-      <Link>Cassini\Host.cs</Link>
+    <Compile Include="..\cassini-v35\Request.cs">
+      <Link>Request.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\Messages.cs">
-      <Link>Cassini\Messages.cs</Link>
+    <Compile Include="..\cassini-v35\Server.cs">
+      <Link>Server.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\cassini-v35\Request.cs">
-      <Link>Cassini\Request.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\cassini-v35\Server.cs">
-      <Link>Cassini\Server.cs</Link>
-    </Compile>
-    <Compile Include="CassiniBootStrap.cs" />
-    <Compile Include="CassiniBootstrapSameDomain.cs" />
-    <Compile Include="Class1.cs" />
-    <Content Include="errorPage.aspx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Compile Include="DeepTesting.cs" />
-    <Compile Include="MyCassiniBootStrap.cs" />
-    <Compile Include="NUnitAndWatiN.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="errorPageButton.aspx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="favicon.ico">
+    <Content Include="..\cassini-v35\Ms-PL.htm">
+      <Link>Ms-PL.htm</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ping.txt">
+    <Content Include="..\cassini-v35\ReadMe.txt">
+      <Link>ReadMe.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,34 @@
+﻿Issues with Cassini as a testing tool and what I would like to do about them...
+
+Arguments:
+	Allow app path to be relative. Implement more robust command line implementation
+	
+VPath limitations:
+	Typical usage involves starting cassini with the physical directory of the app under test which, in most cases, is not rooted in production environment. A vpath may
+	be supplied as an argument but the runtime rejects requests for resources above the vpath. This makes rooted assets such as shared images and scripts unavailable forcing the 
+	developer to implement workarounds in scripts, script tags and css files that contain hard coded paths. I have been much annoyed with this behavior. If there is an obvious
+	solution to this problem it has escaped me. 
+	
+			
+IP Restriction:
+	If security issues are fully understood, hosting cassini on port 80 of multiple IP's could expand the use cases of cassini as a development tool.
+
+Visual Studio Debugging:
+	While the built in dev sever is quite usabe, the vpath and ip restrictions limit the usability.
+	Currently you may attach to cassini exe or use a bootstrap console project to debug with cassini. A method of enabling simple F5 debugging needs to be investigated.
+	
+	
+Instrumentation:	
+	
+	A few instrumentation points sprinkled in Cassini would improve the testing/debugging story while using Cassini.
+	
+	e.g. bubble up http errors and optionally, through a plug in interface, parse results for asp.net and proprietary error screens to bubble them up.
+	I have made some effort to capture exceptions in the appdomain of the worker process with little success. Capturing the output stream as it is delivered to the
+	client and parsing upon completion seems a better strategy.
+	
+		
+	
+
+
+	
+Sky Sanders 12/22/09

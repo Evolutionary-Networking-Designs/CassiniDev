@@ -24,7 +24,13 @@ using System.Web;
 using System.Web.Hosting;
 
 namespace Cassini {
-    class Server : MarshalByRefObject {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <changes>
+    /// 12/20/09 - changed visibility from internal to public
+    /// </changes>
+    public class Server : MarshalByRefObject {
         int _port;
         string _virtualPath;
         string _physicalPath;
