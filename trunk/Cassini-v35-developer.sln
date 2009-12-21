@@ -7,7 +7,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassinidev-v35-lib", "Cassi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassinidev-v35-console", "Cassini-v35-console\Cassinidev-v35-console.csproj", "{539F0304-F14A-413F-A56A-AFB7724EA1A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniTests", "CassiniTests\CassiniTests.csproj", "{35FE474F-6045-455D-B322-4728D7531546}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FB913407-43A1-4E73-BA00-737D73E6998E}"
+	ProjectSection(SolutionItems) = preProject
+		Cassini-v35-developer.vsmdi = Cassini-v35-developer.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Cassini-v35-developer.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		AutomatedDebug|Any CPU = AutomatedDebug|Any CPU
 		AutomatedDebug|x86 = AutomatedDebug|x86
@@ -97,6 +108,27 @@ Global
 		{539F0304-F14A-413F-A56A-AFB7724EA1A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{539F0304-F14A-413F-A56A-AFB7724EA1A7}.Release|x86.ActiveCfg = Release|x86
 		{539F0304-F14A-413F-A56A-AFB7724EA1A7}.Release|x86.Build.0 = Release|x86
+		{35FE474F-6045-455D-B322-4728D7531546}.AutomatedDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.AutomatedDebug|Any CPU.Build.0 = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.AutomatedDebug|x86.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug (.Net 2.0)|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug (.Net 2.0)|Any CPU.Build.0 = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug (.Net 2.0)|x86.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug (.Net 3.5)|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug (.Net 3.5)|Any CPU.Build.0 = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug (.Net 3.5)|x86.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release (.Net 2.0)|Any CPU.ActiveCfg = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release (.Net 2.0)|Any CPU.Build.0 = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release (.Net 2.0)|x86.ActiveCfg = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release (.Net 3.5)|Any CPU.ActiveCfg = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release (.Net 3.5)|Any CPU.Build.0 = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release (.Net 3.5)|x86.ActiveCfg = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35FE474F-6045-455D-B322-4728D7531546}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
