@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Salient.Net", "..\..\salientnet\Salient.Net\Salient.Net.csproj", "{24A68CB2-D32F-450C-9D0A-19F8DA41B955}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Cassini-v35-developer.vsmdi
@@ -129,6 +131,27 @@ Global
 		{35FE474F-6045-455D-B322-4728D7531546}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35FE474F-6045-455D-B322-4728D7531546}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35FE474F-6045-455D-B322-4728D7531546}.Release|x86.ActiveCfg = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.AutomatedDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.AutomatedDebug|Any CPU.Build.0 = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.AutomatedDebug|x86.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug (.Net 2.0)|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug (.Net 2.0)|Any CPU.Build.0 = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug (.Net 2.0)|x86.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug (.Net 3.5)|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug (.Net 3.5)|Any CPU.Build.0 = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug (.Net 3.5)|x86.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release (.Net 2.0)|Any CPU.ActiveCfg = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release (.Net 2.0)|Any CPU.Build.0 = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release (.Net 2.0)|x86.ActiveCfg = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release (.Net 3.5)|Any CPU.ActiveCfg = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release (.Net 3.5)|Any CPU.Build.0 = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release (.Net 3.5)|x86.ActiveCfg = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24A68CB2-D32F-450C-9D0A-19F8DA41B955}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

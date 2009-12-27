@@ -297,7 +297,12 @@ namespace Cassini.CommandLine
         public string ShortName
         {
             get { return this.shortName; }
-            set { Debug.Assert(value == null || !(this is DefaultArgumentAttribute)); this.shortName = value; }
+            set
+            {
+
+                //SKY:TODO:REPLACE?: Debug.Assert(value == null || !(this is DefaultArgumentAttribute)); 
+                this.shortName = value;
+            }
         }
 
         /// <summary>
@@ -313,8 +318,16 @@ namespace Cassini.CommandLine
         /// </summary>
         public string LongName
         {
-            get { Debug.Assert(!this.DefaultLongName); return this.longName; }
-            set { Debug.Assert(value != ""); this.longName = value; }
+            get
+            {
+                //SKY:TODO:REPLACE?: Debug.Assert(!this.DefaultLongName); 
+                return this.longName;
+            }
+            set
+            {
+                //SKY:TODO:REPLACE?: Debug.Assert(value != ""); 
+                this.longName = value;
+            }
         }
 
         /// <summary>
@@ -614,7 +627,7 @@ namespace Cassini.CommandLine
                     ArgumentAttribute attribute = GetAttribute(field);
                     if (attribute is DefaultArgumentAttribute)
                     {
-                        Debug.Assert(this.defaultArgument == null);
+                        //SKY:TODO:REPLACE?: Debug.Assert(this.defaultArgument == null);
                         this.defaultArgument = new Argument(attribute, field, reporter);
                     }
                     else
@@ -627,13 +640,13 @@ namespace Cassini.CommandLine
             // add explicit names to map
             foreach (Argument argument in this.arguments)
             {
-                Debug.Assert(!argumentMap.ContainsKey(argument.LongName));
+                //SKY:TODO:REPLACE?: Debug.Assert(!argumentMap.ContainsKey(argument.LongName));
                 this.argumentMap[argument.LongName] = argument;
                 if (argument.ExplicitShortName)
                 {
                     if (argument.ShortName != null && argument.ShortName.Length > 0)
                     {
-                        Debug.Assert(!argumentMap.ContainsKey(argument.ShortName));
+                        //SKY:TODO:REPLACE?: Debug.Assert(!argumentMap.ContainsKey(argument.ShortName));
                         this.argumentMap[argument.ShortName] = argument;
                     }
                     else
@@ -662,7 +675,7 @@ namespace Cassini.CommandLine
             if (attributes.Length == 1)
                 return (ArgumentAttribute)attributes[0];
 
-            Debug.Assert(attributes.Length == 0);
+            //SKY:TODO:REPLACE?: Debug.Assert(attributes.Length == 0);
             return null;
         }
 
@@ -1079,9 +1092,11 @@ namespace Cassini.CommandLine
 
         private static bool IsValidElementType(Type type)
         {
+            //SKY:12/25/09 - added ushort
             return type != null && (
                                        type == typeof(int) ||
                                        type == typeof(uint) ||
+                                       type == typeof(ushort) ||
                                        type == typeof(string) ||
                                        type == typeof(bool) ||
                                        type.IsEnum);
@@ -1110,16 +1125,14 @@ namespace Cassini.CommandLine
                     this.collectionValues = new ArrayList();
                 }
 
-                Debug.Assert(this.longName != null && this.longName != "");
-                Debug.Assert(!this.isDefault || !this.ExplicitShortName);
-                Debug.Assert(!IsCollection || AllowMultiple, "Collection arguments must have allow multiple");
-                Debug.Assert(!Unique || IsCollection, "Unique only applicable to collection arguments");
-                Debug.Assert(IsValidElementType(Type) ||
-                             IsCollectionType(Type));
-                Debug.Assert((IsCollection && IsValidElementType(elementType)) ||
-                             (!IsCollection && elementType == null));
-                Debug.Assert(!(this.IsRequired && this.HasDefaultValue), "Required arguments cannot have default value");
-                Debug.Assert(!this.HasDefaultValue || (this.defaultValue.GetType() == field.FieldType), "Type of default value must match field type");
+                //SKY:TODO:REPLACE?: Debug.Assert(this.longName != null && this.longName != "");
+                //SKY:TODO:REPLACE?: Debug.Assert(!this.isDefault || !this.ExplicitShortName);
+                //SKY:TODO:REPLACE?: Debug.Assert(!IsCollection || AllowMultiple, "Collection arguments must have allow multiple");
+                //SKY:TODO:REPLACE?: Debug.Assert(!Unique || IsCollection, "Unique only applicable to collection arguments");
+                //SKY:TODO:REPLACE?: Debug.Assert(IsValidElementType(Type) ||IsCollectionType(Type));
+                //SKY:TODO:REPLACE?: Debug.Assert((IsCollection && IsValidElementType(elementType)) ||(!IsCollection && elementType == null));
+                //SKY:TODO:REPLACE?: Debug.Assert(!(this.IsRequired && this.HasDefaultValue), "Required arguments cannot have default value");
+                //SKY:TODO:REPLACE?: Debug.Assert(!this.HasDefaultValue || (this.defaultValue.GetType() == field.FieldType), "Type of default value must match field type");
             }
 
             public bool Finish(object destination)
@@ -1238,9 +1251,15 @@ namespace Cassini.CommandLine
                             value = int.Parse(stringData);
                             return true;
                         }
+                            //SKY:12/25/09 - added ushort
+                        else if (type == typeof(ushort))
+                        {
+                            value = ushort.Parse(stringData);
+                            return true;
+                        }
                         else
                         {
-                            Debug.Assert(type.IsEnum);
+                            //SKY:TODO:REPLACE?: Debug.Assert(type.IsEnum);
 
                             bool valid = false;
                             foreach (string name in Enum.GetNames(type))
@@ -1271,7 +1290,8 @@ namespace Cassini.CommandLine
 
             private void AppendValue(StringBuilder builder, object value)
             {
-                if (value is string || value is int || value is uint || value.GetType().IsEnum)
+                //SKY:12/25/09 - add ushort
+                if (value is string || value is int || value is uint || value is ushort || value.GetType().IsEnum)
                 {
                     builder.Append(value.ToString());
                 }
@@ -1403,7 +1423,7 @@ namespace Cassini.CommandLine
                         }
                         else
                         {
-                            Debug.Assert(valueType.IsEnum);
+                            //SKY:TODO:REPLACE?: Debug.Assert(valueType.IsEnum);
 
                             builder.Append(":{");
                             bool first = true;

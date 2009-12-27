@@ -15,7 +15,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -34,37 +36,52 @@ namespace Cassini
     /// 12/21/09 - sky: * added IDisposable implementation
     ///                 * set socketoptions to reuse time_wait sockets enabling if flag is set- 
     ///                 rapid buildup and teardown of server instances for testing purposes
-    ///                 * modified socket creation to throw if both v4 and v6 fail.
     ///                 * added constructors 
     ///                 * changed CreateSocketBindAndListen to instance method to allow using instance flag
     /// 
+    /// 12/23/09 - sky: * implemented more robust command line argument parser
+    ///                 * requires fx 3.5
+    /// 
+    /// 12/24/09 - sky: * Implemented arbitrary IP address
+    ///                 * removed v6 loopback support temporarily
+    ///                 *
+    ///                 *
+    /// 
     /// TODO: 
-    ///   * allow specifying specific IP or any IP.
+    ///   * implement programmatic addition of host entry for this ip:port and hostname for lifetime of server
+    ///     quickest hack is to write to host file but requires permissions.
     ///   
     /// 
     /// </changes>
     public class Server : MarshalByRefObject, IDisposable
     {
-        int _port;
-        string _virtualPath;
-        string _physicalPath;
-        private bool _reuseConnection;
+        readonly string _virtualPath = "/";
+        readonly string _physicalPath = Environment.CurrentDirectory;
+        readonly bool _reuseConnection = false;
+        readonly IPAddress _ipAddress = IPAddress.Loopback;
+        readonly int _port = 0;
+        private readonly string _hostname;
         bool _shutdownInProgress;
         Socket _socket;
         Host _host;
-        public Server()
-        {
-
-        }
-        public Server(int port, string virtualPath, string physicalPath, bool reuseConnection)
+ 
+        public Server(int port, string virtualPath, string physicalPath, bool reuseConnection, IPAddress ip, string hostName)
         {
             _port = port;
             _virtualPath = virtualPath;
             _physicalPath = physicalPath.EndsWith("\\", StringComparison.Ordinal) ? physicalPath : physicalPath + "\\";
             _reuseConnection = reuseConnection;
+            _ipAddress = ip;
+            _hostname = hostName;
+        }
+        public Server(int port, string virtualPath, string physicalPath, bool reuseConnection)
+            : this(port, virtualPath, physicalPath, reuseConnection, IPAddress.Loopback, null)
+        {
+
         }
 
-        public Server(int port, string virtualPath, string physicalPath) : this(port, virtualPath, physicalPath, false)
+        public Server(int port, string virtualPath, string physicalPath)
+            : this(port, virtualPath, physicalPath, false)
         {
 
         }
@@ -75,6 +92,21 @@ namespace Cassini
             return null;
         }
 
+        
+        public string HostName
+        {
+            get
+            {
+                return _hostname;
+            }
+        }
+        public IPAddress IPAddress
+        {
+            get
+            {
+                return _ipAddress;
+            }
+        }
         public string VirtualPath
         {
             get
@@ -102,26 +134,43 @@ namespace Cassini
         /// <summary>
         /// 12/21/09 sky: * changed localhost to 127.0.0.1 and added '.' to localhost to enable fiddler to pick up traffic
         ///               see http://www.west-wind.com/weblog/posts/596348.aspx
+        /// 12/24/09 sky: * added support for arbitrary IP
         /// </summary>
         public string RootUrl
         {
             get
             {
+                string hostname = _hostname ?? _ipAddress.ToString();
+
+                // allow fiddler to capture traffic.
+                // TODO: programmatically add host entry 
+
+                if (hostname == IPAddress.Loopback.ToString())
+                {
+                    hostname += ".";
+                }
+
                 if (_port != 80)
                 {
-                    return "http://127.0.0.1.:" + _port + _virtualPath;
+                    return "http://" + hostname + ":" + _port + _virtualPath;
                 }
                 else
                 {
-                    return "http://127.0.0.1." + _virtualPath;
+                    return "http://" + hostname + "." + _virtualPath;
                 }
             }
         }
 
-        //
-        // Socket listening
-        // 
 
+
+        /// <summary>
+        /// Socket listening
+        /// 12/24/09 sky: * added support for arbitrary IP
+        /// </summary>
+        /// <param name="family"></param>
+        /// <param name="address"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
         private Socket CreateSocketBindAndListen(AddressFamily family, IPAddress address, int port)
         {
             var socket = new Socket(family, SocketType.Stream, ProtocolType.Tcp);
@@ -129,41 +178,33 @@ namespace Cassini
             // succession. Default socket behaviour will send the closed socket into the TIME_WAIT
             // state, a sort of cooldown period, making it unavaible. By setting ReuseAddress we are telling winsock to accept the
             // binding event if the socket is in TIME_WAIT. 
-            if(_reuseConnection)
-            {
-                socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            }
             
-            socket.Bind(new IPEndPoint(address, port));
-            socket.Listen((int)SocketOptionName.MaxConnections);
-            return socket;
-        }
-
-        public void Start()
-        {
-
-
-
             try
             {
-                _socket = CreateSocketBindAndListen(AddressFamily.InterNetwork, IPAddress.Loopback, _port);
-                Trace.WriteLine(string.Format("OPENED:{0}:{1}", IPAddress.Loopback, _port));
+                if (_reuseConnection)
+                {
+                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                }
+
+                socket.Bind(new IPEndPoint(address, port));
+                socket.Listen((int)SocketOptionName.MaxConnections);
+                return socket;
+                
             }
             catch (Exception ex)
             {
-
-                try
-                {
-                    _socket = CreateSocketBindAndListen(AddressFamily.InterNetworkV6, IPAddress.IPv6Loopback, _port);
-                    Trace.WriteLine(string.Format("OPENED:{0}:{1}", IPAddress.Loopback, _port));
-                }
-                catch (Exception ex2)
-                {
-                    Trace.WriteLine(string.Format("ERROR:{0}:{1} - \nv4:{2}\nv6:{3}", IPAddress.Loopback, _port, ex.Message, ex2.Message));
-                    throw;
-                }
-
+                throw new ArgumentException(ex.Message, "port", ex);                
             }
+        }
+
+        /// <summary>
+        /// 12/24/09 sky: * added support for arbitrary IP
+        ///               * removed try/catch, implicit rollover is just a bad idea
+        /// </summary>
+        public void Start()
+        {
+
+            _socket = CreateSocketBindAndListen(AddressFamily.InterNetwork, _ipAddress, _port);
 
             ThreadPool.QueueUserWorkItem(delegate
             {
@@ -182,7 +223,7 @@ namespace Cassini
                                 // wait for at least some input
                                 if (conn.WaitForRequestBytes() == 0)
                                 {
-                                    conn.WriteErrorAndClose(400);
+                                    conn.WriteErrorAndClose(400, "missing request");
                                     return;
                                 }
 
@@ -190,7 +231,7 @@ namespace Cassini
                                 Host host = GetHost();
                                 if (host == null)
                                 {
-                                    conn.WriteErrorAndClose(500);
+                                    conn.WriteErrorAndClose(500, "could not find or create host");
                                     return;
                                 }
 
@@ -207,6 +248,9 @@ namespace Cassini
             });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Stop()
         {
             _shutdownInProgress = true;
@@ -224,7 +268,7 @@ namespace Cassini
             finally
             {
                 _socket = null;
-                Thread.Sleep(0);
+                Thread.Sleep(10);
             }
 
             try
@@ -248,9 +292,11 @@ namespace Cassini
             }
         }
 
-        // called at the end of request processing
-        // to disconnect the remoting proxy for Connection object
-        // and allow GC to pick it up
+        /// <summary>
+        /// called at the end of request processing to disconnect the remoting
+        /// proxy for Connection object and allow GC to pick it up
+        /// </summary>
+        /// <param name="conn"></param>
         public void OnRequestEnd(Connection conn)
         {
             RemotingServices.Disconnect(conn);

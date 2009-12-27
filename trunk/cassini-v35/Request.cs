@@ -920,6 +920,11 @@ namespace Cassini {
             }
         }
 
+        
+        /// <summary>
+        /// This is where we want to capture response
+        /// </summary>
+        /// <param name="finalFlush"></param>
         public override void FlushResponse(bool finalFlush) {
             if (_responseStatus == 404 && !_headersSent && finalFlush && _verb == "GET") {
                 // attempt directory listing
@@ -939,7 +944,7 @@ namespace Cassini {
                 byte[] bytes = _responseBodyBytes[i];
                 _connection.WriteBody(bytes, 0, bytes.Length);
             }
-
+        
             _responseBodyBytes = new List<byte[]>();
 
             if (finalFlush) {

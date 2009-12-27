@@ -41,10 +41,10 @@ namespace Cassini {
         Button startButton = new Button();
         Button stopButton = new Button();
 
-        [STAThread]
-        static void Main(string[] args) {
-            Application.Run(new MainForm(args));
-        }
+        //[STAThread]
+        //static void Main(string[] args) {
+        //    Application.Run(new MainForm(args));
+        //}
 
         public MainForm(String[] args) {
             _portString = "80";
