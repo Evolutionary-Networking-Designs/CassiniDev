@@ -1,4 +1,4 @@
-﻿namespace CassiniDev
+﻿namespace CassiniDev.Views
 {
     partial class FormsView 
     {
@@ -56,6 +56,10 @@
             this.ButtonStop = new System.Windows.Forms.Button();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.TextBoxWaitForPort = new System.Windows.Forms.TextBox();
+            this.LabelWaitForPort = new System.Windows.Forms.Label();
+            this.TextBoxIdleTimeOut = new System.Windows.Forms.TextBox();
+            this.LabelIdleTimeOut = new System.Windows.Forms.Label();
             this.GroupBoxPort.SuspendLayout();
             this.GroupBoxIPAddress.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -64,7 +68,7 @@
             // LinkLabelRootUrl
             // 
             this.LinkLabelRootUrl.AutoSize = true;
-            this.LinkLabelRootUrl.Location = new System.Drawing.Point(9, 230);
+            this.LinkLabelRootUrl.Location = new System.Drawing.Point(9, 293);
             this.LinkLabelRootUrl.Name = "LinkLabelRootUrl";
             this.LinkLabelRootUrl.Size = new System.Drawing.Size(189, 13);
             this.LinkLabelRootUrl.TabIndex = 24;
@@ -117,7 +121,6 @@
             this.toolTip1.SetToolTip(this.CheckBoxAddHostEntry, "Host Name will be added to the hosts file while this server \r\nis running and remo" +
                     "ved when it is stopped.\r\nRequires elevated process.");
             this.CheckBoxAddHostEntry.UseVisualStyleBackColor = true;
-            this.CheckBoxAddHostEntry.CheckedChanged += new System.EventHandler(this.CheckBoxAddHostEntry_CheckedChanged);
             // 
             // LabelVPath
             // 
@@ -150,15 +153,17 @@
             // 
             // GroupBoxPort
             // 
+            this.GroupBoxPort.Controls.Add(this.LabelWaitForPort);
+            this.GroupBoxPort.Controls.Add(this.TextBoxWaitForPort);
             this.GroupBoxPort.Controls.Add(this.TextBoxPortRangeEnd);
             this.GroupBoxPort.Controls.Add(this.TextBoxPortRangeStart);
             this.GroupBoxPort.Controls.Add(this.TextBoxPort);
             this.GroupBoxPort.Controls.Add(this.LabelPortRangeSeperator);
             this.GroupBoxPort.Controls.Add(this.RadioButtonPortFind);
             this.GroupBoxPort.Controls.Add(this.RadioButtonPortSpecific);
-            this.GroupBoxPort.Location = new System.Drawing.Point(12, 189);
+            this.GroupBoxPort.Location = new System.Drawing.Point(12, 216);
             this.GroupBoxPort.Name = "GroupBoxPort";
-            this.GroupBoxPort.Size = new System.Drawing.Size(291, 38);
+            this.GroupBoxPort.Size = new System.Drawing.Size(291, 65);
             this.GroupBoxPort.TabIndex = 9;
             this.GroupBoxPort.TabStop = false;
             this.GroupBoxPort.Text = "Port";
@@ -231,7 +236,7 @@
             this.GroupBoxIPAddress.Controls.Add(this.RadioButtonIPSpecific);
             this.GroupBoxIPAddress.Controls.Add(this.RadioButtonIPAny);
             this.GroupBoxIPAddress.Controls.Add(this.RadioButtonIPLoopBack);
-            this.GroupBoxIPAddress.Location = new System.Drawing.Point(12, 130);
+            this.GroupBoxIPAddress.Location = new System.Drawing.Point(12, 157);
             this.GroupBoxIPAddress.Name = "GroupBoxIPAddress";
             this.GroupBoxIPAddress.Size = new System.Drawing.Size(291, 58);
             this.GroupBoxIPAddress.TabIndex = 8;
@@ -298,7 +303,7 @@
             // ButtonStart
             // 
             this.ButtonStart.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.ButtonStart.Location = new System.Drawing.Point(148, 255);
+            this.ButtonStart.Location = new System.Drawing.Point(143, 326);
             this.ButtonStart.Name = "ButtonStart";
             this.ButtonStart.Size = new System.Drawing.Size(75, 23);
             this.ButtonStart.TabIndex = 22;
@@ -311,7 +316,7 @@
             this.ButtonStop.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonStop.Enabled = false;
             this.ButtonStop.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.ButtonStop.Location = new System.Drawing.Point(229, 255);
+            this.ButtonStop.Location = new System.Drawing.Point(229, 326);
             this.ButtonStop.Name = "ButtonStop";
             this.ButtonStop.Size = new System.Drawing.Size(75, 23);
             this.ButtonStop.TabIndex = 21;
@@ -323,13 +328,47 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
+            // TextBoxWaitForPort
+            // 
+            this.TextBoxWaitForPort.Location = new System.Drawing.Point(80, 39);
+            this.TextBoxWaitForPort.Name = "TextBoxWaitForPort";
+            this.TextBoxWaitForPort.Size = new System.Drawing.Size(71, 20);
+            this.TextBoxWaitForPort.TabIndex = 17;
+            // 
+            // LabelWaitForPort
+            // 
+            this.LabelWaitForPort.AutoSize = true;
+            this.LabelWaitForPort.Location = new System.Drawing.Point(6, 42);
+            this.LabelWaitForPort.Name = "LabelWaitForPort";
+            this.LabelWaitForPort.Size = new System.Drawing.Size(68, 13);
+            this.LabelWaitForPort.TabIndex = 18;
+            this.LabelWaitForPort.Text = "Wait for port:";
+            // 
+            // TextBoxIdleTimeOut
+            // 
+            this.TextBoxIdleTimeOut.Location = new System.Drawing.Point(92, 130);
+            this.TextBoxIdleTimeOut.Name = "TextBoxIdleTimeOut";
+            this.TextBoxIdleTimeOut.Size = new System.Drawing.Size(83, 20);
+            this.TextBoxIdleTimeOut.TabIndex = 25;
+            // 
+            // LabelIdleTimeOut
+            // 
+            this.LabelIdleTimeOut.AutoSize = true;
+            this.LabelIdleTimeOut.Location = new System.Drawing.Point(12, 133);
+            this.LabelIdleTimeOut.Name = "LabelIdleTimeOut";
+            this.LabelIdleTimeOut.Size = new System.Drawing.Size(73, 13);
+            this.LabelIdleTimeOut.TabIndex = 26;
+            this.LabelIdleTimeOut.Text = "Idle Time Out:";
+            // 
             // FormsView
             // 
             this.AcceptButton = this.ButtonStart;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.ButtonStop;
-            this.ClientSize = new System.Drawing.Size(312, 289);
+            this.ClientSize = new System.Drawing.Size(312, 364);
+            this.Controls.Add(this.LabelIdleTimeOut);
+            this.Controls.Add(this.TextBoxIdleTimeOut);
             this.Controls.Add(this.TextBoxAppPath);
             this.Controls.Add(this.LinkLabelRootUrl);
             this.Controls.Add(this.TextBoxVPath);
@@ -387,5 +426,9 @@
         private System.Windows.Forms.CheckBox CheckBoxIPV6;
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label LabelWaitForPort;
+        private System.Windows.Forms.TextBox TextBoxWaitForPort;
+        private System.Windows.Forms.Label LabelIdleTimeOut;
+        private System.Windows.Forms.TextBox TextBoxIdleTimeOut;
     }
 }

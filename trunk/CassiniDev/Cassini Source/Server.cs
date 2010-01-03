@@ -23,7 +23,8 @@ using System.Threading;
 using System.Web;
 using System.Web.Hosting;
 
-namespace Cassini {
+namespace Cassini
+{
     /// <summary>
     /// 12/29/09 sky: changed visibility to public
     /// 12/29/09 sky: modified CreateSocketBindAndListen: added socket option ReuseAddress to prevent
@@ -38,7 +39,8 @@ namespace Cassini {
     /// 01/01/10 sky: added support for relative paths to constructor
     /// 
     /// </summary>
-    public partial class Server : MarshalByRefObject {
+    public partial class Server : MarshalByRefObject
+    {
         int _port;
         string _virtualPath;
         string _physicalPath;
@@ -46,32 +48,40 @@ namespace Cassini {
         Socket _socket;
         Host _host;
 
-        public Server(int port, string virtualPath, string physicalPath) {
+        public Server(int port, string virtualPath, string physicalPath)
+        {
             _port = port;
             _virtualPath = virtualPath;
             _physicalPath = Path.GetFullPath(physicalPath);
             _physicalPath = _physicalPath.EndsWith("\\", StringComparison.Ordinal) ? _physicalPath : _physicalPath + "\\";
         }
 
-        public override object InitializeLifetimeService() {
+        public override object InitializeLifetimeService()
+        {
             // never expire the license
             return null;
         }
 
-        public string VirtualPath {
-            get {
+        public string VirtualPath
+        {
+            get
+            {
                 return _virtualPath;
             }
         }
 
-        public string PhysicalPath {
-            get {
+        public string PhysicalPath
+        {
+            get
+            {
                 return _physicalPath;
             }
         }
 
-        public int Port {
-            get {
+        public int Port
+        {
+            get
+            {
                 return _port;
             }
         }
@@ -94,10 +104,10 @@ namespace Cassini {
                     }
                 }
 
-                return _port != 80 ? 
-                    String.Format("http://{0}:{1}{2}", hostname, _port, _virtualPath) : 
+                return _port != 80 ?
+                    String.Format("http://{0}:{1}{2}", hostname, _port, _virtualPath) :
                     string.Format("http://{0}.{1}", hostname, _virtualPath);
-                
+
             }
         }
 
@@ -116,15 +126,9 @@ namespace Cassini {
 
         public void Start()
         {
-            //try
-            //{
-                _socket = CreateSocketBindAndListen(AddressFamily.InterNetwork, _ipAddress, _port);
-            //}
-            //catch
-            //{
-            //    _socket = CreateSocketBindAndListen(AddressFamily.InterNetworkV6, IPAddress.IPv6Loopback, _port);
-            //}
-
+            _socket = CreateSocketBindAndListen(AddressFamily.InterNetwork, _ipAddress, _port);
+            //start the timer
+            DecrementRequestCount();
             ThreadPool.QueueUserWorkItem(delegate
             {
                 while (!_shutdownInProgress)
@@ -133,6 +137,7 @@ namespace Cassini {
                     {
                         Socket acceptedSocket = _socket.Accept();
 
+                        
                         ThreadPool.QueueUserWorkItem(delegate
                         {
                             if (!_shutdownInProgress)
@@ -154,6 +159,8 @@ namespace Cassini {
                                     return;
                                 }
 
+                                IncrementRequestCount();
+                                
                                 // process request in worker app domain
                                 host.ProcessRequest(conn);
                             }
@@ -167,57 +174,75 @@ namespace Cassini {
             });
         }
 
-        public void Stop() {
+        public void Stop()
+        {
             _shutdownInProgress = true;
 
-            try {
-                if (_socket != null) {
+            try
+            {
+                if (_socket != null)
+                {
                     _socket.Close();
                 }
             }
-            catch {
+            catch
+            {
             }
-            finally {
+            finally
+            {
                 _socket = null;
             }
 
-            try {
-                if (_host != null) {
+            try
+            {
+                if (_host != null)
+                {
                     _host.Shutdown();
                 }
 
-                while (_host != null) {
+                while (_host != null)
+                {
                     Thread.Sleep(100);
                 }
             }
-            catch {
+            catch
+            {
             }
-            finally {
+            finally
+            {
                 _host = null;
             }
+            InvokeStopped();
         }
 
         // called at the end of request processing
         // to disconnect the remoting proxy for Connection object
         // and allow GC to pick it up
-        public void OnRequestEnd(Connection conn) {
+        public void OnRequestEnd(Connection conn)
+        {
             RemotingServices.Disconnect(conn);
+            DecrementRequestCount();
         }
 
-        public void HostStopped() {
+        public void HostStopped()
+        {
             _host = null;
         }
 
-        Host GetHost() {
+        Host GetHost()
+        {
             if (_shutdownInProgress)
                 return null;
 
             Host host = _host;
 
-            if (host == null) {
-                lock (this) {
+            if (host == null)
+            {
+                lock (this)
+                {
                     host = _host;
-                    if (host == null) {
+                    if (host == null)
+                    {
                         host = (Host)CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof(Host));
                         host.Configure(this, _port, _virtualPath, _physicalPath);
                         _host = host;
@@ -228,7 +253,8 @@ namespace Cassini {
             return host;
         }
 
-        static object CreateWorkerAppDomainWithHost(string virtualPath, string physicalPath, Type hostType) {
+        static object CreateWorkerAppDomainWithHost(string virtualPath, string physicalPath, Type hostType)
+        {
             // this creates worker app domain in a way that host doesn't need to be in GAC or bin
             // using BuildManagerHost via private reflection
             string uniqueAppString = string.Concat(virtualPath, physicalPath).ToLowerInvariant();

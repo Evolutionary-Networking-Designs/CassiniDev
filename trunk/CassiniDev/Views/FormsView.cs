@@ -1,4 +1,4 @@
-﻿// /* **********************************************************************************
+// /* **********************************************************************************
 //  *
 //  * Copyright (c) Sky Sanders. All rights reserved.
 //  * 
@@ -10,30 +10,20 @@
 //  *
 //  * **********************************************************************************/
 using System;
-using System.Collections;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
 using System.Windows.Forms;
 
-namespace CassiniDev
+namespace CassiniDev.Views
 {
     public partial class FormsView : Form, IView
     {
-        private IPresenter _presenter;
         private RunState _runState;
 
-        /// <summary>
-        /// DI Constructor
-        /// </summary>
-        /// <param name="presenter"></param>
-        public FormsView(IPresenter presenter)
+        public FormsView()
         {
             InitializeComponent();
-            _presenter = presenter;
         }
 
-  
         #region IView Members
 
         public RunState RunState
@@ -42,17 +32,29 @@ namespace CassiniDev
             set
             {
                 _runState = value;
+                // use invoke, runstate may come from another thread.
                 switch (value)
                 {
                     case RunState.Idle:
-                        ButtonStart.Enabled = true;
-                        ButtonStop.Enabled = false;
-                        EnableForm();
+                        if (InvokeRequired)
+                        {
+                            Invoke(new Action(EnableForm));
+                        }
+                        else
+                        {
+                            EnableForm();
+                        }
+
                         break;
                     case RunState.Running:
-                        ButtonStart.Enabled = false;
-                        ButtonStop.Enabled = true;
-                        DisableForm();
+                        if (InvokeRequired)
+                        {
+                            Invoke(new Action(DisableForm));
+                        }
+                        else
+                        {
+                            DisableForm();
+                        }
                         break;
                 }
             }
@@ -93,10 +95,7 @@ namespace CassiniDev
 
         public string RootUrl
         {
-            get
-            {
-                return LinkLabelRootUrl.Text;
-            }
+            get { return LinkLabelRootUrl.Text; }
             set { LinkLabelRootUrl.Text = value; }
         }
 
@@ -116,7 +115,31 @@ namespace CassiniDev
                 }
             }
         }
-        
+
+        public IPresenter Presenter { get; set; }
+
+        public int TimeOut
+        {
+            get
+            {
+                int result;
+                int.TryParse(TextBoxIdleTimeOut.Text, out result);
+                return result;
+            }
+            set { TextBoxIdleTimeOut.Text = value.ToString(); }
+        }
+
+        public int WaitForPort
+        {
+            get
+            {
+                int result;
+                int.TryParse(TextBoxWaitForPort.Text, out result);
+                return result;
+            }
+            set { TextBoxWaitForPort.Text = value.ToString(); }
+        }
+
         public string ApplicationPath
         {
             get { return TextBoxAppPath.Text; }
@@ -193,6 +216,7 @@ namespace CassiniDev
 
         public void SetError(ErrorField field, string value)
         {
+            EnableForm();
             switch (field)
             {
                 case ErrorField.ApplicationPath:
@@ -238,30 +262,36 @@ namespace CassiniDev
         public void Start()
         {
             CommandLineArguments args = new CommandLineArguments
-                                        {
-                                            AddHost = AddHost,
-                                            ApplicationPath = ApplicationPath,
-                                            HostName = HostName,
-                                            IPAddress = IPAddress,
-                                            IPMode = IPMode,
-                                            IPv6 = IPv6,
-                                            Port = Port,
-                                            PortMode = PortMode,
-                                            PortRangeEnd = PortRangeEnd,
-                                            PortRangeStart = PortRangeStart,
-                                            VirtualPath = VirtualPath
-                                        };
+                                            {
+                                                AddHost = AddHost,
+                                                ApplicationPath = ApplicationPath,
+                                                HostName = HostName,
+                                                IPAddress = IPAddress,
+                                                IPMode = IPMode,
+                                                IPv6 = IPv6,
+                                                Port = Port,
+                                                PortMode = PortMode,
+                                                PortRangeEnd = PortRangeEnd,
+                                                PortRangeStart = PortRangeStart,
+                                                VirtualPath = VirtualPath,
+                                                TimeOut = TimeOut,
+                                                WaitForPort = WaitForPort
+                                            };
 
-            _presenter.Start(args);
+            Presenter.Start(args);
         }
 
         public void Stop()
         {
-            _presenter.Stop(AddHost);
+            Presenter.Stop(AddHost);
         }
+
+        #endregion
 
         private void EnableForm()
         {
+            ButtonStart.Enabled = true;
+            ButtonStop.Enabled = false;
             TextBoxAppPath.Enabled = true;
             ButtonBrowsePhysicalPath.Enabled = true;
             TextBoxVPath.Enabled = true;
@@ -271,13 +301,42 @@ namespace CassiniDev
             LabelHostName.Enabled = true;
             LabelPhysicalPath.Enabled = true;
             LabelVPath.Enabled = true;
+            TextBoxIdleTimeOut.Enabled = true;
 
             CheckBoxAddHostEntry.Enabled = !String.IsNullOrEmpty(HostName);
+
+            switch (IPMode)
+            {
+                case IPMode.Loopback:
+                    RadioButtonIPLoopBack_CheckedChanged(null, EventArgs.Empty);
+                    break;
+                case IPMode.Any:
+                    RadioButtonIPAny_CheckedChanged(null, EventArgs.Empty);
+                    break;
+                case IPMode.Specific:
+                    RadioButtonIPSpecific_CheckedChanged(null, EventArgs.Empty);
+                    break;
+            }
+            switch (PortMode)
+            {
+                case PortMode.FirstAvailable:
+                    RadioButtonPortFind_CheckedChanged(null, EventArgs.Empty);
+                    break;
+                case PortMode.Specific:
+                    RadioButtonPortSpecific_CheckedChanged(null, EventArgs.Empty);
+                    break;
+            }
+
+            TextBoxHostName_TextChanged(null, EventArgs.Empty);
         }
 
 
         private void DisableForm()
         {
+            TextBoxIdleTimeOut.Enabled = false;
+
+            ButtonStart.Enabled = false;
+            ButtonStop.Enabled = true;
             TextBoxAppPath.Enabled = false;
             ButtonBrowsePhysicalPath.Enabled = false;
             TextBoxVPath.Enabled = false;
@@ -290,34 +349,17 @@ namespace CassiniDev
             LabelVPath.Enabled = false;
         }
 
-        #endregion
-
         #region Form Events
 
         private void ButtonStart_Click(object sender, EventArgs e)
         {
+            DisableForm();
             Start();
         }
 
         private void ButtonStop_Click(object sender, EventArgs e)
         {
             Stop();
-        }
-
-
-        private void CheckBoxAddHostEntry_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!IsAdmin())
-            {
-                if (CheckBoxAddHostEntry.Checked)
-                {
-                    AddShieldToButton(ButtonStart);
-                }
-                else
-                {
-                    RemoveShieldFromButton(ButtonStart);
-                }
-            }
         }
 
         private void ButtonBrowsePhysicalPath_Click(object sender, EventArgs e)
@@ -336,7 +378,7 @@ namespace CassiniDev
             {
                 proc.StartInfo = new ProcessStartInfo();
                 proc.StartInfo.FileName = "iexplore";
-                proc.StartInfo.Arguments = string.Format("\"{0}\"", LinkLabelRootUrl.Text);
+                proc.StartInfo.Arguments = String.Format("\"{0}\"", LinkLabelRootUrl.Text);
                 proc.Start();
             }
         }
@@ -398,34 +440,34 @@ namespace CassiniDev
 
         #endregion
 
-        #region UAC
+        //#region UAC
 
-        private const int BcmFirst = 0x1600; //Normal button
-        private const int BcmSetshield = (BcmFirst + 0x000C); //Elevated button
+        //private const int BcmFirst = 0x1600; //Normal button
+        //private const int BcmSetshield = (BcmFirst + 0x000C); //Elevated button
 
-        [DllImport("user32")]
-        private static extern UInt32 SendMessage(IntPtr hWnd, UInt32 msg, UInt32 wParam, UInt32 lParam);
+        //[DllImport("user32")]
+        //private static extern UInt32 SendMessage(IntPtr hWnd, UInt32 msg, UInt32 wParam, UInt32 lParam);
 
 
-        private static void AddShieldToButton(Button b)
-        {
-            b.FlatStyle = FlatStyle.System;
-            SendMessage(b.Handle, BcmSetshield, 0, 0xFFFFFFFF);
-        }
+        //private static void AddShieldToButton(Button b)
+        //{
+        //    b.FlatStyle = FlatStyle.System;
+        //    SendMessage(b.Handle, BcmSetshield, 0, 0xFFFFFFFF);
+        //}
 
-        private static void RemoveShieldFromButton(Button b)
-        {
-            b.FlatStyle = FlatStyle.System;
-            SendMessage(b.Handle, BcmSetshield, 0, 0x0);
-        }
+        //private static void RemoveShieldFromButton(Button b)
+        //{
+        //    b.FlatStyle = FlatStyle.System;
+        //    SendMessage(b.Handle, BcmSetshield, 0, 0x0);
+        //}
 
-        private static bool IsAdmin()
-        {
-            WindowsIdentity id = WindowsIdentity.GetCurrent();
-            WindowsPrincipal p = new WindowsPrincipal(id);
-            return p.IsInRole(WindowsBuiltInRole.Administrator);
-        }
+        //private static bool IsAdmin()
+        //{
+        //    WindowsIdentity id = WindowsIdentity.GetCurrent();
+        //    WindowsPrincipal p = new WindowsPrincipal(id);
+        //    return p.IsInRole(WindowsBuiltInRole.Administrator);
+        //}
 
-        #endregion
+        //#endregion
     }
 }

@@ -11,6 +11,7 @@
 //  * **********************************************************************************/
 using System;
 using Cassini;
+using CassiniDev.Views;
 
 namespace CassiniDev
 {
@@ -21,42 +22,14 @@ namespace CassiniDev
     /// </summary>
     public static class ServiceFactory
     {
-
-        internal static FactoryStubs Stubs { get; set; }
-
         private static IRules _rules;
-        /// <summary>
-        /// Call ResetStubs to reset factory defaults after a mocking
-        /// </summary>
-        internal static void ResetStubs()
-        {
-            Stubs = new FactoryStubs();
-        }
 
         static ServiceFactory()
         {
             ResetStubs();
         }
 
-        public static IView CreateConsoleView(IPresenter presenter)
-        {
-            return Stubs.CreateConsoleView(presenter);
-        }
-
-        public static IView CreateFormsView(IPresenter presenter)
-        {
-            return Stubs.CreateFormsView(presenter);
-        }
-
-        public static IPresenter CreatePresenter()
-        {
-            return Stubs.CreatePresenter();
-        }
-
-        public static IServer CreateServer(ServerArguments args)
-        {
-            return Stubs.CreateServer(args);
-        }
+        internal static FactoryStubs Stubs { get; set; }
 
         public static IRules Rules
         {
@@ -69,17 +42,49 @@ namespace CassiniDev
                 return _rules;
             }
         }
+
+        /// <summary>
+        /// Call ResetStubs to reset factory defaults after a mocking
+        /// </summary>
+        internal static void ResetStubs()
+        {
+            Stubs = new FactoryStubs();
+        }
+
+        public static IView CreateConsoleView()
+        {
+            return Stubs.CreateConsoleView();
+        }
+
+        public static IView CreateFormsView()
+        {
+            return Stubs.CreateFormsView();
+        }
+
+        public static IPresenter CreatePresenter()
+        {
+            return Stubs.CreatePresenter();
+        }
+
+        public static IServer CreateServer(ServerArguments args)
+        {
+            return Stubs.CreateServer(args);
+        }
+
+        #region Nested type: FactoryStubs
+
         /// <summary>
         /// Implements a testing seam. use [InternalsVisisbleTo..] in test project
         /// </summary>
         internal class FactoryStubs
         {
-            public Func<IPresenter, IView> CreateConsoleView = presenter => new ConsoleView(presenter);
-            public Func<IPresenter, IView> CreateFormsView = presenter => new FormsView(presenter);
+            public Func<IView> CreateConsoleView = () => new ConsoleView();
+            public Func<IView> CreateFormsView = () => new FormsView();
             public Func<IPresenter> CreatePresenter = () => new Presenter();
-            public Func<ServerArguments, IServer> CreateServer = args => new Server(args);
             public Func<IRules> CreateRules = () => new Rules();
+            public Func<ServerArguments, IServer> CreateServer = args => new Server(args);
         }
 
+        #endregion
     }
 }

@@ -10,10 +10,9 @@
 //  *
 //  * **********************************************************************************/
 using System;
-using System.Reflection;
 using System.Windows.Forms;
 using Cassini.CommandLine;
- 
+
 namespace CassiniDev
 {
     /// <summary>
@@ -41,7 +40,7 @@ namespace CassiniDev
 #if GUI
             if (!Parser.ParseArguments(args, sargs))
             {
-                string usage = Parser.ArgumentsUsage(typeof(CommandLineArguments), 120);
+                string usage = Parser.ArgumentsUsage(typeof (CommandLineArguments), 120);
                 MessageBox.Show(usage);
                 Environment.Exit(-1);
                 return;
@@ -53,9 +52,9 @@ namespace CassiniDev
                     Application.SetCompatibleTextRenderingDefault(false);
                     using (IPresenter presenter = ServiceFactory.CreatePresenter())
                     {
-                        IView view = ServiceFactory.CreateFormsView(presenter);
+                        IView view = ServiceFactory.CreateFormsView();
                         presenter.InitializeView(view, sargs);
-                        Application.Run((Form)view);
+                        Application.Run((Form) view);
                     }
                     break;
                 case RunMode.Hostsfile:
@@ -81,25 +80,23 @@ namespace CassiniDev
                                 {
                                     throw new CassiniException("ApplicationPath is null.", ErrorField.ApplicationPath);
                                 }
-                                IView view = ServiceFactory.CreateConsoleView(presenter);
+                                IView view = ServiceFactory.CreateConsoleView();
                                 presenter.InitializeView(view, sargs);
-
-
-                                Console.WriteLine("started: {0}\r\nPress any key to exit....", presenter.Server.RootUrl);
-                                Console.ReadKey();
+                                Console.WriteLine("started: {0}\r\nPress Enter key to exit....", presenter.Server.RootUrl);
+                                Console.ReadLine();
                                 view.Stop();
                             }
                             catch (CassiniException ex)
                             {
-                                Console.Error.WriteLine("error:{0} {1}",
+                                Console.WriteLine("error:{0} {1}",
                                                         ex.Field == ErrorField.None
                                                             ? ex.GetType().Name
                                                             : ex.Field.ToString(), ex.Message);
                             }
                             catch (Exception ex2)
                             {
-                                Console.Error.WriteLine("error:{0}", ex2.Message);
-                                Console.Error.WriteLine(Parser.ArgumentsUsage(typeof(CommandLineArguments)));
+                                Console.WriteLine("error:{0}", ex2.Message);
+                                Console.WriteLine(Parser.ArgumentsUsage(typeof(CommandLineArguments)));
                             }
                         }
                         break;
@@ -109,17 +106,28 @@ namespace CassiniDev
                 }
             }
 #endif
-
         }
+
         private static void SetHostsFile(CommandLineArguments sargs)
         {
-            if (sargs.AddHost)
+            try
             {
-                ServiceFactory.Rules.AddHostEntry(Assembly.GetExecutingAssembly().Location, sargs.IPAddress, sargs.HostName);
+                if (sargs.AddHost)
+                {
+                    ServiceFactory.Rules.AddHostEntry(sargs.IPAddress, sargs.HostName);
+                }
+                else
+                {
+                    ServiceFactory.Rules.RemoveHostEntry(sargs.IPAddress, sargs.HostName);
+                }
             }
-            else
+            catch (UnauthorizedAccessException)
             {
-                ServiceFactory.Rules.RemoveHostEntry(Assembly.GetExecutingAssembly().Location, sargs.IPAddress, sargs.HostName);
+                Environment.Exit(-1);
+            }
+            catch
+            {
+                Environment.Exit(-2);
             }
         }
     }

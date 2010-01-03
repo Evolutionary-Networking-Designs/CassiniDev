@@ -29,6 +29,7 @@
     <DefineConstants>TRACE;DEBUG;CONSOLE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\CassiniDev-console.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,12 +40,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\Microsoft.mshtml.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +125,12 @@
     <Compile Include="..\CassiniDev\ServiceFactory.cs">
       <Link>ServiceFactory.cs</Link>
     </Compile>
+    <Compile Include="..\CassiniDev\Testing\Fixture.cs">
+      <Link>Testing\Fixture.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Testing\HttpRequestHelper.cs">
+      <Link>Testing\HttpRequestHelper.cs</Link>
+    </Compile>
     <Compile Include="..\CassiniDev\Views\ConsoleView.cs">
       <Link>Views\ConsoleView.cs</Link>
     </Compile>
@@ -138,6 +152,10 @@
   <ItemGroup>
     <Content Include="..\CassiniDev\Ms-PL.htm">
       <Link>Ms-PL.htm</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\CassiniDev\ReadMe.htm">
+      <Link>ReadMe.htm</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="..\CassiniDev\ReadMe.txt">

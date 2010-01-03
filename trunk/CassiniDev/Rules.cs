@@ -16,8 +16,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Security.Principal;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace CassiniDev
 {
@@ -26,84 +27,68 @@ namespace CassiniDev
     /// </summary>
     public class Rules : IRules
     {
+        private readonly string _executablePath = Assembly.GetAssembly(typeof (IServer)).Location;
+
         #region Hosts file
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="executablePath"></param>
         /// <param name="ipAddress"></param>
         /// <param name="hostname"></param>
         /// <returns></returns>
-        public int RemoveHostEntry(string executablePath, string ipAddress, string hostname)
+        public int RemoveHostEntry(string ipAddress, string hostname)
         {
-            int exitCode;
-            if (IsAdmin())
+            try
             {
                 SetHostsEntry(false, ipAddress, hostname);
-                exitCode = 0;
+                return 0;
             }
-            else
+            catch
             {
-                exitCode = StartElevated(executablePath,
-                                         string.Format("Hostsfile /ah- /h:{0} /i:{1}", hostname, ipAddress));
             }
-            return exitCode;
+            return StartElevated(_executablePath, string.Format("Hostsfile /ah- /h:{0} /i:{1}", hostname, ipAddress));
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="executablePath"></param>
         /// <param name="ipAddress"></param>
         /// <param name="hostname"></param>
         /// <returns></returns>
-        public int AddHostEntry(string executablePath, string ipAddress, string hostname)
+        public int AddHostEntry(string ipAddress, string hostname)
         {
-            int exitCode;
-            if (IsAdmin())
+            try
             {
                 SetHostsEntry(true, ipAddress, hostname);
-                exitCode = 0;
+                return 0;
             }
-            else
+            catch
             {
-                exitCode = StartElevated(executablePath,
-                                         string.Format("Hostsfile /ah+ /h:{0} /i:{1}", hostname, ipAddress));
             }
-            return exitCode;
+            return StartElevated(_executablePath, string.Format("Hostsfile /ah+ /h:{0} /i:{1}", hostname, ipAddress));
         }
 
 
         private void SetHostsEntry(bool addHost, string ipAddress, string hostname)
         {
-            try
-            {
-                // limitation: while windows allows mulitple entries for a single host, we currently allow only one
-                string hostsFilePath = Path.Combine(Environment.GetEnvironmentVariable("SystemRoot"),
-                                                    @"system32\drivers\etc\hosts");
-                string hostsFileContent = GetFileText(hostsFilePath);
-                hostsFileContent = Regex.Replace(hostsFileContent,
-                                                 string.Format(@"\r\n^\s*[\d\w\.:]+\s{0}\s#\sadded\sby\scassini$",
-                                                               hostname), "", RegexOptions.Multiline);
+            // limitation: while windows allows mulitple entries for a single host, we currently allow only one
+            string windir = Environment.GetEnvironmentVariable("SystemRoot") ?? @"c:\windows";
+            string hostsFilePath = Path.Combine(windir, @"system32\drivers\etc\hosts");
+            string hostsFileContent = GetFileText(hostsFilePath);
+            hostsFileContent = Regex.Replace(hostsFileContent,
+                                             string.Format(@"\r\n^\s*[\d\w\.:]+\s{0}\s#\sadded\sby\scassini$",
+                                                           hostname), "", RegexOptions.Multiline);
 
-                if (addHost)
-                {
-                    hostsFileContent += string.Format("\r\n{0} {1} # added by cassini", ipAddress, hostname);
-                }
-                SetFileText(hostsFilePath, hostsFileContent);
-            }
-            catch (UnauthorizedAccessException)
+            if (addHost)
             {
-                Environment.Exit(-1);
+                hostsFileContent += string.Format("\r\n{0} {1} # added by cassini", ipAddress, hostname);
             }
-            catch
-            {
-                Environment.Exit(-2);
-            }
+            SetFileText(hostsFilePath, hostsFileContent);
         }
 
-        private int StartElevated(string filename, string args)
+
+        private static int StartElevated(string filename, string args)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.UseShellExecute = true;
@@ -127,21 +112,14 @@ namespace CassiniDev
             }
         }
 
-        private bool IsAdmin()
-        {
-            WindowsIdentity id = WindowsIdentity.GetCurrent();
-            WindowsPrincipal p = new WindowsPrincipal(id);
-            return p.IsInRole(WindowsBuiltInRole.Administrator);
-        }
-
         // Testing Seam
-        private string GetFileText(string path)
+        protected string GetFileText(string path)
         {
             return File.ReadAllText(path);
         }
 
         // Testing Seam
-        private void SetFileText(string path, string contents)
+        protected void SetFileText(string path, string contents)
         {
             File.WriteAllText(path, contents);
         }
@@ -358,6 +336,18 @@ namespace CassiniDev
                     }
                     break;
                 case PortMode.Specific:
+                    // start waiting....
+                    //TODO: design this hack away.... why am I waiting in a validation method?
+                    int now = Environment.TickCount;
+
+                    // wait until either 1) the specified port is available or 2) the specified amount of time has passed
+                    while (Environment.TickCount < now + args.WaitForPort &&
+                           GetAvailablePort(args.Port, args.Port, ip, true) != args.Port)
+                    {
+                        Thread.Sleep(100);
+                    }
+
+                    // is the port available?
                     if (GetAvailablePort(args.Port, args.Port, ip, true) != args.Port)
                     {
                         throw new CassiniException("Port is in use.", ErrorField.Port);

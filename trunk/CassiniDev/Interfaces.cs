@@ -1,4 +1,4 @@
-﻿// /* **********************************************************************************
+// /* **********************************************************************************
 //  *
 //  * Copyright (c) Sky Sanders. All rights reserved.
 //  * 
@@ -10,9 +10,7 @@
 //  *
 //  * **********************************************************************************/
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.NetworkInformation;
 
 namespace CassiniDev
 {
@@ -20,6 +18,7 @@ namespace CassiniDev
     {
         IServer Server { get; }
         IView View { get; }
+        //string ExecutablePath { get; set; }
         void InitializeView(IView view, CommandLineArguments args);
         void Start(CommandLineArguments args);
         void Stop(bool removeHostEntry);
@@ -33,13 +32,16 @@ namespace CassiniDev
         string PhysicalPath { get; }
         int Port { get; }
         string RootUrl { get; }
+        event EventHandler Stopped;
         void Start();
         void Stop();
     }
 
     public interface IView
     {
-
+        IPresenter Presenter { get; set; }
+        int TimeOut { get; set; }
+        int WaitForPort { get; set; }
         string ApplicationPath { get; set; }
         string VirtualPath { get; set; }
         string HostName { get; set; }
@@ -65,21 +67,26 @@ namespace CassiniDev
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="executablePath"></param>
         /// <param name="ipAddress"></param>
         /// <param name="hostname"></param>
         /// <returns></returns>
-        int RemoveHostEntry(string executablePath, string ipAddress, string hostname);
+        int RemoveHostEntry(string ipAddress, string hostname);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="executablePath"></param>
         /// <param name="ipAddress"></param>
         /// <param name="hostname"></param>
         /// <returns></returns>
-        int AddHostEntry(string executablePath, string ipAddress, string hostname);
+        int AddHostEntry(string ipAddress, string hostname);
 
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="addHost"></param>
+        ///// <param name="ipAddress"></param>
+        ///// <param name="hostname"></param>
+        //void SetHostsEntry(bool addHost, string ipAddress, string hostname);
         /// <summary>
         /// Returns first available port on the specified IP address. The port scan excludes ports that are open on ANY loopback adapter. 
         /// If the address upon which a port is requested is an 'ANY' address all ports that are open on ANY IP are excluded.

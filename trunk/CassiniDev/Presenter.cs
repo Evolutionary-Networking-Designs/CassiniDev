@@ -12,7 +12,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Reflection;
 
 namespace CassiniDev
 {
@@ -22,7 +21,6 @@ namespace CassiniDev
         private IServer _server;
         private IView _view;
 
-        
         #region IPresenter Members
 
         public IServer Server
@@ -38,11 +36,14 @@ namespace CassiniDev
         public void InitializeView(IView view, CommandLineArguments args)
         {
             _view = view;
+            _view.Presenter = this;
             _view.RunState = RunState.Idle;
 
             _view.AddHost = args.AddHost;
-            _view.ApplicationPath = args.ApplicationPath;
-            _view.VirtualPath = args.VirtualPath;
+            string appPath = args.ApplicationPath.Trim('\"').TrimEnd('\\');
+            _view.ApplicationPath = appPath;
+            string vpath = args.VirtualPath.Trim('\"');
+            _view.VirtualPath = vpath;
             _view.HostName = args.HostName;
             _view.IPAddress = args.IPAddress;
             _view.IPMode = args.IPMode;
@@ -52,6 +53,8 @@ namespace CassiniDev
             _view.PortRangeEnd = args.PortRangeEnd;
             _view.PortRangeStart = args.PortRangeStart;
             _view.RootUrl = string.Empty;
+            _view.WaitForPort = args.WaitForPort;
+            _view.TimeOut = args.TimeOut;
 
             try
             {
@@ -67,7 +70,6 @@ namespace CassiniDev
                 _view.SetError(ex.Field, ex.Message);
             }
         }
-
 
         public void Start(CommandLineArguments args)
         {
@@ -106,14 +108,25 @@ namespace CassiniDev
 
             _view.HostName = hostname;
 
-            _server = ServiceFactory.CreateServer(new ServerArguments() { Port = port, VirtualPath = args.VirtualPath, ApplicationPath = args.ApplicationPath, IPAddress = ip, Hostname = hostname });
+            _server =
+                ServiceFactory.CreateServer(new ServerArguments
+                                                {
+                                                    Port = port,
+                                                    VirtualPath = args.VirtualPath,
+                                                    ApplicationPath = args.ApplicationPath,
+                                                    IPAddress = ip,
+                                                    Hostname = hostname,
+                                                    TimeOut = args.TimeOut
+                                                });
+
             if (args.AddHost)
             {
-                ServiceFactory.Rules.AddHostEntry(Assembly.GetExecutingAssembly().Location, _server.IPAddress.ToString(), _server.HostName);
+                ServiceFactory.Rules.AddHostEntry(_server.IPAddress.ToString(), _server.HostName);
             }
             try
             {
                 _server.Start();
+                _server.Stopped += ServerStopped;
                 _view.RootUrl = _server.RootUrl;
                 _view.RunState = RunState.Running;
             }
@@ -129,10 +142,11 @@ namespace CassiniDev
             _view.RunState = RunState.Idle;
             if (removeHosts)
             {
-                ServiceFactory.Rules.RemoveHostEntry(Assembly.GetExecutingAssembly().Location, _server.IPAddress.ToString(), _server.HostName);
+                ServiceFactory.Rules.RemoveHostEntry(_server.IPAddress.ToString(), _server.HostName);
             }
             if (_server != null)
             {
+                _server.Stopped -= ServerStopped;
                 _server.Dispose();
             }
         }
@@ -143,26 +157,28 @@ namespace CassiniDev
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
             if (!_disposed)
             {
-                if (disposing)
+                if (_server != null)
                 {
-                    if (_server != null)
-                    {
-                        _server.Dispose();
-                    }
+                    _server.Dispose();
                 }
                 _disposed = true;
             }
+
+            GC.SuppressFinalize(this);
+        }
+
+        ~Presenter()
+        {
+            Dispose();
         }
 
         #endregion
 
+        private void ServerStopped(object sender, EventArgs e)
+        {
+            _view.Stop();
+        }
     }
 }

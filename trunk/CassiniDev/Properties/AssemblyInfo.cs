@@ -10,6 +10,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Sky Sanders. All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: AssemblyVersion("3.5.0.4")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("3.5.0.3")]
-[assembly: InternalsVisibleTo("CassiniDev.Tests.RhinoMock")]

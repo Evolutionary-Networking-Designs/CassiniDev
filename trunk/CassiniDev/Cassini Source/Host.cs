@@ -25,6 +25,15 @@ using System.Security.Permissions;
 using System.Security.Principal;
 
 namespace Cassini {
+    /// <summary>
+    /// 01/01/10 sky: added HttpRuntime.Close to IRegisteredObject.Stop to eliminate 
+    ///               System.AppDomainUnloadedException when running tests in NUnit GuiRunner.
+    ///               reference: http://stackoverflow.com/questions/561402/cassini-webserver-webdev-nunit-and-appdomainunloadedexception
+    ///               need to test thoroughly but seems to work just fine with no ill effects
+    /// 01.03.10 sky: removed the HttpRuntime.Close because, even though it tests fine, I am not entirely certain it is in the right place
+    ///               and since I am no longer recommending that the server be used as a library in testing (run a console instance in a new process).
+    ///               
+    /// </summary>  
     class Host : MarshalByRefObject, IRegisteredObject {
         Server _server;
 
@@ -37,6 +46,7 @@ namespace Cassini {
         string _installPath;
         string _physicalClientScriptPath;
         string _lowerCasedClientScriptPathWithTrailingSlash;
+
 
         public override object InitializeLifetimeService() {
             // never expire the license
@@ -110,6 +120,8 @@ namespace Cassini {
             WaitForPendingCallsToFinish();
 
             HostingEnvironment.UnregisterObject(this);
+
+           //HttpRuntime.Close();
         }
 
         public string InstallPath { get { return _installPath; } }

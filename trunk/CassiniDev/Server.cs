@@ -1,4 +1,4 @@
-﻿// /* **********************************************************************************
+// /* **********************************************************************************
 //  *
 //  * Copyright (c) Sky Sanders. All rights reserved.
 //  * 
@@ -32,15 +32,21 @@ namespace Cassini
         private bool _disposed;
         private string _hostName;
         private IPAddress _ipAddress;
+        private int _requestCount;
+        private int _timeout;
+        private Timer _timer;
 
         public Server(ServerArguments args)
             : this(args.Port, args.VirtualPath, args.ApplicationPath)
         {
             _ipAddress = args.IPAddress;
             _hostName = args.Hostname;
+            _timeout = args.TimeOut;
         }
 
         #region IServer Members
+
+        public event EventHandler Stopped;
 
         public string HostName
         {
@@ -58,29 +64,58 @@ namespace Cassini
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
             if (!_disposed)
             {
-                if (disposing)
-                {
-                    Stop();
-                    // just add a little slack for the socket transition to TIME_WAIT
-                    Thread.Sleep(10);
-                }
+                Stop();
+                // just add a little slack for the socket transition to TIME_WAIT
+                Thread.Sleep(10);
             }
             _disposed = true;
+            GC.SuppressFinalize(this);
         }
 
         ~Server()
         {
-            Dispose(false);
+            Dispose();
         }
 
         #endregion
+
+        private void InvokeStopped()
+        {
+            EventHandler handler = Stopped;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        private void IncrementRequestCount()
+        {
+            _requestCount++;
+            Console.Title = _requestCount.ToString();
+            _timer = null;
+        }
+
+        private void TimedOut(object ignored)
+        {
+            Console.Title = "Timed Out";
+            Stop();
+        }
+
+        private void DecrementRequestCount()
+        {
+            _requestCount--;
+            Console.Title = _requestCount.ToString();
+            if (_requestCount < 1)
+            {
+                _requestCount = 0;
+
+                Console.Title = _requestCount.ToString();
+
+                if (_timeout > 0)
+                {
+                    // start timer
+                    _timer = new Timer(TimedOut, null, _timeout, Timeout.Infinite);
+                }
+            }
+        }
     }
 }

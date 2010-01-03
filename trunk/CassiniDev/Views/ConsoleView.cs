@@ -9,33 +9,27 @@
 //  * You must not remove this notice, or any other, from this software.
 //  *
 //  * **********************************************************************************/
-namespace CassiniDev
+using System;
+
+namespace CassiniDev.Views
 {
     public class ConsoleView : IView
     {
-        private readonly IPresenter _presenter;
-
-        /// <summary>
-        /// DI Constructor
-        /// </summary>
-        /// <param name="presenter"></param>
-        public ConsoleView(IPresenter presenter)
-        {
-            _presenter = presenter;
-            
-        }
-
         #region IView Members
 
-        public string ApplicationPath {  get; set; }
+        public IPresenter Presenter { get; set; }
+        public int TimeOut { get; set; }
+        public int WaitForPort { get; set; }
 
-        public string VirtualPath {  get; set; }
+        public string ApplicationPath { get; set; }
+
+        public string VirtualPath { get; set; }
 
         public string HostName { get; set; }
 
         public string IPAddress { get; set; }
 
-        public bool IPv6 {  get; set; }
+        public bool IPv6 { get; set; }
 
         public bool AddHost { get; set; }
 
@@ -66,26 +60,28 @@ namespace CassiniDev
         public void Start()
         {
             CommandLineArguments args = new CommandLineArguments
-                                        {
-                                            AddHost = AddHost,
-                                            ApplicationPath = ApplicationPath,
-                                            HostName = HostName,
-                                            IPAddress = IPAddress,
-                                            IPMode = IPMode,
-                                            IPv6 = IPv6,
-                                            Port = Port,
-                                            PortMode = PortMode,
-                                            PortRangeEnd = PortRangeEnd,
-                                            PortRangeStart = PortRangeStart,
-                                            VirtualPath = VirtualPath
-                                        };
+                                            {
+                                                AddHost = AddHost,
+                                                ApplicationPath = ApplicationPath,
+                                                HostName = HostName,
+                                                IPAddress = IPAddress,
+                                                IPMode = IPMode,
+                                                IPv6 = IPv6,
+                                                Port = Port,
+                                                PortMode = PortMode,
+                                                PortRangeEnd = PortRangeEnd,
+                                                PortRangeStart = PortRangeStart,
+                                                VirtualPath = VirtualPath
+                                            };
 
-            _presenter.Start(args);
+            Presenter.Start(args);
         }
 
         public void Stop()
         {
-            _presenter.Stop(AddHost);
+            Presenter.Stop(AddHost);
+            Environment.Exit(-3);
+            // todo:should notify host?
         }
 
         #endregion
