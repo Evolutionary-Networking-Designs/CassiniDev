@@ -1,0 +1,772 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CassiniDev-console</name>
+    </assembly>
+    <members>
+        <member name="T:CassiniDev.Testing.Fixture">
+            <summary>
+            Made a go at spinning the server up from this process but after dealing with 
+            irratic behaviour regarding apartment state, platform concerns, unloaded app domains,
+            and all the other issues that you can find that people struggle with I just decided
+            to strictly format the console app's output and just spin up an external process. 
+            Seems robust so far.
+            </summary>
+        </member>
+        <member name="M:CassiniDev.Testing.Fixture.NormalizeUri(System.String)">
+            <summary>
+            Combine the RootUrl of the running web application with the relative url
+            specified.
+            </summary>
+            <param name="relativeUrl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Testing.Fixture.GetPort(System.UInt16,System.UInt16,System.Net.IPAddress)">
+            <summary>
+            <para>Finds first available port in range on specified IP address.</para>
+            <para>To check a specific port set start and end to same value.</para>
+            </summary>
+            <param name="portRangeStart"></param>
+            <param name="portRangeEnd"></param>
+            <param name="ipAddress"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException">If no port in range is available.</exception>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:CassiniDev.Testing.Fixture.StartServer(System.String,System.Net.IPAddress,System.UInt16,System.String,System.String,System.Boolean,System.Int32,System.Int32)" -->
+        <member name="M:CassiniDev.Testing.Fixture.StopServer">
+            <summary>
+            <para>Stops the server, if running and removes hosts entry if added.</para>
+            </summary>
+        </member>
+        <member name="M:CassiniDev.Testing.Fixture.StopServer(System.Int32)">
+            <summary>
+            <para>Stops the server, if running and removes hosts entry if added.</para>
+            </summary>
+        </member>
+        <member name="P:CassiniDev.Testing.Fixture.RootUrl">
+            <summary>
+            The root URL of the running web application
+            </summary>
+        </member>
+        <member name="T:Cassini.CommandLine.ArgumentAttribute">
+            <summary>
+            Allows control of command line parsing.
+            Attach this attribute to instance fields of types used
+            as the destination of command line argument parsing.
+            </summary>
+        </member>
+        <member name="M:Cassini.CommandLine.ArgumentAttribute.#ctor(Cassini.CommandLine.ArgumentType)">
+            <summary>
+            Allows control of command line parsing.
+            </summary>
+            <param name="type"> Specifies the error checking to be done on the argument. </param>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.Type">
+            <summary>
+            The error checking to be done on the argument.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.DefaultShortName">
+            <summary>
+            Returns true if the argument did not have an explicit short name specified.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.ShortName">
+            <summary>
+            The short name of the argument.
+            Set to null means use the default short name if it does not
+            conflict with any other parameter name.
+            Set to String.Empty for no short name.
+            This property should not be set for DefaultArgumentAttributes.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.DefaultLongName">
+            <summary>
+            Returns true if the argument did not have an explicit long name specified.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.LongName">
+            <summary>
+            The long name of the argument.
+            Set to null means use the default long name.
+            The long name for every argument must be unique.
+            It is an error to specify a long name of String.Empty.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.DefaultValue">
+            <summary>
+            The default value of the argument.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.HasDefaultValue">
+            <summary>
+            Returns true if the argument has a default value.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.HasHelpText">
+            <summary>
+            Returns true if the argument has help text specified.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentAttribute.HelpText">
+            <summary>
+            The help text for the argument.
+            </summary>
+        </member>
+        <member name="F:CassiniDev.Views.FormsView.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:CassiniDev.Views.FormsView.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:CassiniDev.Views.FormsView.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:CassiniDev.Program">
+            <summary>
+            12/29/09 sky: Implemented more robust command line argument parser (CommandLineParser.cs)
+            12/29/09 sky: Implemented hosts file modification mode allowing this executable to be run in an elevated process
+                          to add/remove hosts file entry corresponding to specified hostname, if desired.
+            12/29/09 sky: Implemented a MVP pattern with service locator and abstract factory for testing and to simplify 
+                          gui and console with same codebase
+            
+            Issues:
+            FormView.Stop() doesn't seem to kill the server host? works in console.
+            Is not a critical issue yet - starting another server on same port works just fine.
+            I think it may have to do with vshost.exe persistance as killing vs stops it.
+            
+            
+            /a:"E:\Projects\cassinidev\trunk\TestWebApp" /v:"/" /h:mycomputer /ah+ /im:Specific /i:192.168.1.102 /v6- /pm:Specific /p:8082 /prs:0 /pre:0
+            /a:"E:\Projects\cassinidev\trunk\TestWebApp"
+            </summary>
+        </member>
+        <member name="T:Cassini.Host">
+            <summary>
+            01/01/10 sky: added HttpRuntime.Close to IRegisteredObject.Stop to eliminate 
+                          System.AppDomainUnloadedException when running tests in NUnit GuiRunner.
+                          reference: http://stackoverflow.com/questions/561402/cassini-webserver-webdev-nunit-and-appdomainunloadedexception
+                          need to test thoroughly but seems to work just fine with no ill effects
+            01.03.10 sky: removed the HttpRuntime.Close because, even though it tests fine, I am not entirely certain it is in the right place
+                          and since I am no longer recommending that the server be used as a library in testing (run a console instance in a new process).
+                          
+            </summary>  
+        </member>
+        <member name="T:Cassini.Server">
+            <summary>
+            
+            Please put all but the most trivial changes and all additions to Server in partial files to
+            reduce the code churn and pain of merging new releases of Cassini. If a method is to be significantly modified,
+            comment it out, explain the modification/move in the header and put the modified version in this file.
+            
+            12/29/09 sky: Implemented IDisposable to help eliminate zombie ports
+            12/29/09 sky: Added instance properties for HostName and IPAddress and constructor to support them
+            12/29/09 sky: Extracted and implemented IServer interface to facilitate stubbing for tests
+            
+            </summary>
+            <summary>
+            12/29/09 sky: changed visibility to public
+            12/29/09 sky: modified CreateSocketBindAndListen: added socket option ReuseAddress to prevent
+                          false port conflicts with freshly released ports in TIME_WAIT state.
+                          In a testing scenario we may be creating and disposing many servers in rapid succession.
+                          Default socket behaviour will send the closed socket into the TIME_WAIT state, a sort of 
+                          cooldown period, making it unavaible. By setting ReuseAddress we are telling winsock to 
+                          accept the binding event if the socket is in TIME_WAIT. 
+            12/29/09 sky: modified Start: replaced hard coded reference to loopback with instance field
+                          _ipAddress and removed the try/catch implicit rollover to ipv6.
+            12/29/09 sky: modified RootUrl: added support for hostname and arbitrary IP address
+            01/01/10 sky: added support for relative paths to constructor
+            
+            </summary>
+        </member>
+        <member name="T:Cassini.CommandLine.Parser">
+             <summary>
+             Parser for command line arguments.
+            
+             The parser specification is infered from the instance fields of the object
+             specified as the destination of the parse.
+             Valid argument types are: int, uint, string, bool, enums
+             Also argument types of Array of the above types are also valid.
+             
+             Error checking options can be controlled by adding a ArgumentAttribute
+             to the instance fields of the destination object.
+            
+             At most one field may be marked with the DefaultArgumentAttribute
+             indicating that arguments without a '-' or '/' prefix will be parsed as that argument.
+            
+             If not specified then the parser will infer default options for parsing each
+             instance field. The default long name of the argument is the field name. The
+             default short name is the first character of the long name. Long names and explicitly
+             specified short names must be unique. Default short names will be used provided that
+             the default short name does not conflict with a long name or an explicitly
+             specified short name.
+            
+             Arguments which are array types are collection arguments. Collection
+             arguments can be specified multiple times.
+             </summary>
+        </member>
+        <member name="F:Cassini.CommandLine.Parser.NewLine">
+            <summary>
+            The System Defined new line string.
+            </summary>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.#ctor">
+            <summary>
+            Don't ever call this.
+            </summary>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.ParseArgumentsWithUsage(System.String[],System.Object)">
+            <summary>
+            Parses Command Line Arguments. Displays usage message to Console.Out
+            if /?, /help or invalid arguments are encounterd.
+            Errors are output on Console.Error.
+            Use ArgumentAttributes to control parsing behaviour.
+            </summary>
+            <param name="arguments"> The actual arguments. </param>
+            <param name="destination"> The resulting parsed arguments. </param>
+            <returns> true if no errors were detected. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.ParseArguments(System.String[],System.Object)">
+            <summary>
+            Parses Command Line Arguments. 
+            Errors are output on Console.Error.
+            Use ArgumentAttributes to control parsing behaviour.
+            </summary>
+            <param name="arguments"> The actual arguments. </param>
+            <param name="destination"> The resulting parsed arguments. </param>
+            <returns> true if no errors were detected. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.ParseArguments(System.String[],System.Object,Cassini.CommandLine.ErrorReporter)">
+            <summary>
+            Parses Command Line Arguments. 
+            Use ArgumentAttributes to control parsing behaviour.
+            </summary>
+            <param name="arguments"> The actual arguments. </param>
+            <param name="destination"> The resulting parsed arguments. </param>
+            <param name="reporter"> The destination for parse errors. </param>
+            <returns> true if no errors were detected. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.ParseHelp(System.String[])">
+            <summary>
+            Checks if a set of arguments asks for help.
+            </summary>
+            <param name="args"> Args to check for help. </param>
+            <returns> Returns true if args contains /? or /help. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.ArgumentsUsage(System.Type)">
+            <summary>
+            Returns a Usage string for command line argument parsing.
+            Use ArgumentAttributes to control parsing behaviour.
+            Formats the output to the width of the current console window.
+            </summary>
+            <param name="argumentType"> The type of the arguments to display usage for. </param>
+            <returns> Printable string containing a user friendly description of command line arguments. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.ArgumentsUsage(System.Type,System.Int32)">
+            <summary>
+            Returns a Usage string for command line argument parsing.
+            Use ArgumentAttributes to control parsing behaviour.
+            </summary>
+            <param name="argumentType"> The type of the arguments to display usage for. </param>
+            <param name="columns"> The number of columns to format the output to. </param>
+            <returns> Printable string containing a user friendly description of command line arguments. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.GetConsoleWindowWidth">
+            <summary>
+            Returns the number of columns in the current console window
+            </summary>
+            <returns>Returns the number of columns in the current console window</returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.IndexOf(System.Text.StringBuilder,System.Char,System.Int32)">
+            <summary>
+            Searches a StringBuilder for a character
+            </summary>
+            <param name="text"> The text to search. </param>
+            <param name="value"> The character value to search for. </param>
+            <param name="startIndex"> The index to stat searching at. </param>
+            <returns> The index of the first occurence of value or -1 if it is not found. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.LastIndexOf(System.Text.StringBuilder,System.Char,System.Int32)">
+            <summary>
+            Searches a StringBuilder for a character in reverse
+            </summary>
+            <param name="text"> The text to search. </param>
+            <param name="value"> The character to search for. </param>
+            <param name="startIndex"> The index to start the search at. </param>
+            <returns>The index of the last occurence of value in text or -1 if it is not found. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.#ctor(System.Type,Cassini.CommandLine.ErrorReporter)">
+            <summary>
+            Creates a new command line argument parser.
+            </summary>
+            <param name="argumentSpecification"> The type of object to  parse. </param>
+            <param name="reporter"> The destination for parse errors. </param>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.ParseArgumentList(System.String[],System.Object)">
+            <summary>
+            Parses an argument list into an object
+            </summary>
+            <param name="args"></param>
+            <param name="destination"></param>
+            <returns> true if an error occurred </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.Parse(System.String[],System.Object)">
+            <summary>
+            Parses an argument list.
+            </summary>
+            <param name="args"> The arguments to parse. </param>
+            <param name="destination"> The destination of the parsed arguments. </param>
+            <returns> true if no parse errors were encountered. </returns>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.GetUsageString(System.Int32)">
+            <summary>
+            A user firendly usage string describing the command line argument syntax.
+            </summary>
+        </member>
+        <member name="M:Cassini.CommandLine.Parser.GetGenericUsageString(System.Type,System.Int32)">
+            <summary>
+            01/01/2010 sky
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.Parser.HasDefaultArgument">
+            <summary>
+            Does this parser have a default argument.
+            </summary>
+            <value> Does this parser have a default argument. </value>
+        </member>
+        <member name="T:CassiniDev.Rules">
+            <summary>
+            Business Rules Service - Needs to be broken into coherent classes
+            </summary>
+        </member>
+        <member name="M:CassiniDev.IRules.RemoveHostEntry(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="hostname"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.IRules.AddHostEntry(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="hostname"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.IRules.GetAvailablePort(System.UInt16,System.UInt16,System.Net.IPAddress,System.Boolean)">
+            <summary>
+            Returns first available port on the specified IP address. The port scan excludes ports that are open on ANY loopback adapter. 
+            If the address upon which a port is requested is an 'ANY' address all ports that are open on ANY IP are excluded.
+            </summary>
+            <param name="rangeStart"></param>
+            <param name="rangeEnd"></param>
+            <param name="ip">The IP address upon which to search for available port.</param>
+            <param name="includeIdlePorts">If true includes ports in TIME_WAIT state in results. TIME_WAIT state is typically cool down period for recently released ports.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.IRules.ValidateHostName(System.String)">
+            <summary>
+            <para>
+            Hostnames are composed of series of labels concatenated with dots, as are all domain names[1]. 
+            For example, "en.wikipedia.org" is a hostname. Each label must be between 1 and 63 characters long, 
+            and the entire hostname has a maximum of 255 characters.</para>
+            <para>
+            The Internet standards (Request for Comments) for protocols mandate that component hostname 
+            labels may contain only the ASCII letters 'a' through 'z' (in a case-insensitive manner), the digits 
+            '0' through '9', and the hyphen. The original specification of hostnames in RFC 952, mandated that 
+            labels could not start with a digit or with a hyphen, and must not end with a hyphen. However, a 
+            subsequent specification (RFC 1123) permitted hostname labels to start with digits. No other symbols, 
+            punctuation characters, or blank spaces are permitted.</para>
+            </summary>
+            <param name="hostname"></param>
+            <returns></returns>
+            http://en.wikipedia.org/wiki/Hostname#Restrictions_on_valid_host_names
+        </member>
+        <member name="M:CassiniDev.IRules.ParseIP(CassiniDev.IPMode,System.Boolean,System.String)">
+            <summary>
+            Converts CommandLineArgument values to an IP address if possible.
+            Throws Exception if not.
+            </summary>
+            <param name="ipmode"></param>
+            <param name="v6"></param>
+            <param name="ipString"></param>
+            <returns></returns>
+            <exception cref="T:CassiniDev.CassiniException">If IPMode is invalid</exception>
+            <exception cref="T:CassiniDev.CassiniException">If IPMode is 'Specific' and ipString is invalid</exception>
+        </member>
+        <member name="M:CassiniDev.IRules.ValidateArgs(CassiniDev.CommandLineArguments)">
+            <summary>
+            Validates all but application path
+            </summary>
+            <param name="args"></param>
+            <exception cref="T:CassiniDev.CassiniException">If vpath is null or does not begin with '/'</exception>
+            <exception cref="T:CassiniDev.CassiniException">If an invalid hostname is specified</exception>
+            <exception cref="T:CassiniDev.CassiniException">If AddHost is true and a null or invalid hostname is specified</exception>
+            <exception cref="T:CassiniDev.CassiniException">If either port range is less than 1</exception>
+            <exception cref="T:CassiniDev.CassiniException">If PortRangeStart is greater than PortRangeEnd</exception>
+            <exception cref="T:CassiniDev.CassiniException">If no available port within specified range is found.</exception>
+            <exception cref="T:CassiniDev.CassiniException">If specified port is in use.</exception>
+            <exception cref="T:CassiniDev.CassiniException">If PortMode is invalid</exception>
+            <exception cref="T:CassiniDev.CassiniException">If PortMode is invalid</exception>
+            <exception cref="T:CassiniDev.CassiniException">If IPMode is 'Specific' and IPAddress is invalid</exception>
+        </member>
+        <member name="M:CassiniDev.Rules.RemoveHostEntry(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="hostname"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Rules.AddHostEntry(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="hostname"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Rules.GetAvailablePort(System.UInt16,System.UInt16,System.Net.IPAddress,System.Boolean)">
+            <summary>
+            Returns first available port on the specified IP address. The port scan excludes ports that are open on ANY loopback adapter. 
+            If the address upon which a port is requested is an 'ANY' address all ports that are open on ANY IP are excluded.
+            </summary>
+            <param name="rangeStart"></param>
+            <param name="rangeEnd"></param>
+            <param name="ip">The IP address upon which to search for available port.</param>
+            <param name="includeIdlePorts">If true includes ports in TIME_WAIT state in results. TIME_WAIT state is typically cool down period for recently released ports.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Rules.ValidateHostName(System.String)">
+            <summary>
+            <para>
+            Hostnames are composed of series of labels concatenated with dots, as are all domain names[1]. 
+            For example, "en.wikipedia.org" is a hostname. Each label must be between 1 and 63 characters long, 
+            and the entire hostname has a maximum of 255 characters.</para>
+            <para>
+            The Internet standards (Request for Comments) for protocols mandate that component hostname 
+            labels may contain only the ASCII letters 'a' through 'z' (in a case-insensitive manner), the digits 
+            '0' through '9', and the hyphen. The original specification of hostnames in RFC 952, mandated that 
+            labels could not start with a digit or with a hyphen, and must not end with a hyphen. However, a 
+            subsequent specification (RFC 1123) permitted hostname labels to start with digits. No other symbols, 
+            punctuation characters, or blank spaces are permitted.</para>
+            </summary>
+            <param name="hostname"></param>
+            <returns></returns>
+            http://en.wikipedia.org/wiki/Hostname#Restrictions_on_valid_host_names
+        </member>
+        <member name="M:CassiniDev.Rules.ParseIP(CassiniDev.IPMode,System.Boolean,System.String)">
+            <summary>
+            Converts CommandLineArgument values to an IP address if possible.
+            Throws Exception if not.
+            </summary>
+            <param name="ipmode"></param>
+            <param name="v6"></param>
+            <param name="ipString"></param>
+            <returns></returns>
+            <exception cref="T:CassiniDev.CassiniException">If IPMode is invalid</exception>
+            <exception cref="T:CassiniDev.CassiniException">If IPMode is 'Specific' and ipString is invalid</exception>
+        </member>
+        <member name="M:CassiniDev.Rules.ValidateArgs(CassiniDev.CommandLineArguments)">
+            <summary>
+            Validates all but application path
+            </summary>
+            <param name="args"></param>
+            <exception cref="T:CassiniDev.CassiniException">If vpath is null or does not begin with '/'</exception>
+            <exception cref="T:CassiniDev.CassiniException">If an invalid hostname is specified</exception>
+            <exception cref="T:CassiniDev.CassiniException">If AddHost is true and a null or invalid hostname is specified</exception>
+            <exception cref="T:CassiniDev.CassiniException">If either port range is less than 1</exception>
+            <exception cref="T:CassiniDev.CassiniException">If PortRangeStart is greater than PortRangeEnd</exception>
+            <exception cref="T:CassiniDev.CassiniException">If no available port within specified range is found.</exception>
+            <exception cref="T:CassiniDev.CassiniException">If specified port is in use.</exception>
+            <exception cref="T:CassiniDev.CassiniException">If PortMode is invalid</exception>
+            <exception cref="T:CassiniDev.CassiniException">If PortMode is invalid</exception>
+            <exception cref="T:CassiniDev.CassiniException">If IPMode is 'Specific' and IPAddress is invalid</exception>
+        </member>
+        <member name="T:Cassini.Connection">
+            <summary>
+            12/29/09 sky: changed visibility to public
+            </summary>
+        </member>
+        <member name="T:Cassini.CommandLine.ArgumentType">
+            <summary>
+            Used to control parsing of command line arguments.
+            </summary>
+        </member>
+        <member name="F:Cassini.CommandLine.ArgumentType.Required">
+            <summary>
+            Indicates that this field is required. An error will be displayed
+            if it is not present when parsing arguments.
+            </summary>
+        </member>
+        <member name="F:Cassini.CommandLine.ArgumentType.Unique">
+            <summary>
+            Only valid in conjunction with Multiple.
+            Duplicate values will result in an error.
+            </summary>
+        </member>
+        <member name="F:Cassini.CommandLine.ArgumentType.Multiple">
+            <summary>
+            Inidicates that the argument may be specified more than once.
+            Only valid if the argument is a collection
+            </summary>
+        </member>
+        <member name="F:Cassini.CommandLine.ArgumentType.AtMostOnce">
+            <summary>
+            The default type for non-collection arguments.
+            The argument is not required, but an error will be reported if it is specified more than once.
+            </summary>
+        </member>
+        <member name="F:Cassini.CommandLine.ArgumentType.LastOccurenceWins">
+            <summary>
+            For non-collection arguments, when the argument is specified more than
+            once no error is reported and the value of the argument is the last
+            value which occurs in the argument list.
+            </summary>
+        </member>
+        <member name="F:Cassini.CommandLine.ArgumentType.MultipleUnique">
+            <summary>
+            The default type for collection arguments.
+            The argument is permitted to occur multiple times, but duplicate 
+            values will cause an error to be reported.
+            </summary>
+        </member>
+        <member name="T:CassiniDev.ServiceFactory">
+            <summary>
+            Simple Abstract Factory and Service Locator pattern to break dependancies and 
+            emplace a testing seam to facilitate mocking.
+            Use [InternalsVisisbleTo..] in test project
+            </summary>
+        </member>
+        <member name="M:CassiniDev.ServiceFactory.ResetStubs">
+            <summary>
+            Call ResetStubs to reset factory defaults after a mocking
+            </summary>
+        </member>
+        <member name="T:CassiniDev.ServiceFactory.FactoryStubs">
+            <summary>
+            Implements a testing seam. use [InternalsVisisbleTo..] in test project
+            </summary>
+        </member>
+        <member name="T:CassiniDev.Testing.HttpRequestHelper">
+            <summary>
+            TODO: check to see if JS is parsed in IHTMLDocument
+                  seems inline js is run but cannot confirm that events like onload are fired. 
+                  so don't count on reliablly running js pages in this... use watin for that
+            TODO: implement a timeout
+            
+            The idea to fetch the content with a webrequest and parse it with mshtml instead of fetching AND parsing with mshtml
+            came from http://cambridgecode.blogspot.com/2009/11/simple-html-parsing-code-using-mshtml.html.
+            
+            This eliminates the dependancy on the windows message pump (Application.DoEvents()) and makes the code just a bit less smelly. 
+            
+            parsing code adapted from http://cambridgecode.blogspot.com/2009/11/simple-html-parsing-code-using-mshtml.html. No need to re-invent that
+            wheel until/if it becomes obvious that it needs improvement. Maybe some tests? ;o)
+            </summary>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.AjaxApp(System.Uri,System.Collections.Generic.ICollection{System.Collections.Generic.KeyValuePair{System.String,System.Object}},System.Net.CookieContainer)">
+            <summary>
+            Posts an AJAX request using text/json as content type.
+            </summary>
+            <param name="requestUri">Service uri including method name</param>
+            <param name="postData">Typically a Dictionary&lt;string, object&gt;. Anonymous types are acceptable</param>
+            <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+            <returns>Json string</returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.AjaxTxt(System.Uri,System.Collections.Generic.ICollection{System.Collections.Generic.KeyValuePair{System.String,System.Object}},System.Net.CookieContainer)">
+            <summary>
+            Posts an AJAX request using application/json as content type.
+            </summary>
+            <param name="requestUri">Service uri including method name</param>
+            <param name="postData">Typically a Dictionary&lt;string, object&gt;. Anonymous types are acceptable</param>
+            <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+            <returns>Json string</returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.Ajax(System.Uri,System.Collections.Generic.ICollection{System.Collections.Generic.KeyValuePair{System.String,System.Object}},System.String,System.Net.CookieContainer)">
+            <summary>
+            Posts an AJAX request
+            </summary>
+            <param name="requestUri">Service uri including method name</param>
+            <param name="postData">Typically a Dictionary&lt;string, object&gt;. Anonymous types are acceptable</param>
+            <param name="contentType">One of the standard UTF8 Json types.</param>
+            <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+            <returns>Json string</returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.Post(System.Uri,System.Collections.Specialized.NameValueCollection,System.Net.CookieContainer)">
+            <summary>
+            Posts a form
+            
+            Is sufficient if all that is required is the html served. If JS execution is desired 
+            limited support is provided by parsing the return value with ParseHtml.
+            </summary>
+            <param name="requestUri"></param>
+            <param name="postData">Standard form values collection</param>
+            <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.Get(System.Uri,System.Collections.Specialized.NameValueCollection,System.Net.CookieContainer)">
+            <summary>
+            Gets a document. 
+            
+            Is sufficient if all that is required is the html served. If JS execution is desired 
+            limited support is provided by parsing the return value with ParseHtml.
+            </summary>
+            <param name="requestUri"></param>
+            <param name="postData">Standar query string arguments</param>
+            <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.SendHttpRequest(System.Uri,System.String,System.String,System.Byte[],System.Net.CookieContainer)">
+            <summary>
+            
+            Is sufficient if all that is required is the html served. If JS execution is desired 
+            limited support is provided by parsing the return value with ParseHtml.
+            </summary>
+            <param name="requestUri"></param>
+            <param name="method"></param>
+            <param name="contentType"></param>
+            <param name="postData">UTF8 encoded bytes</param>
+            <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.ParseHtml(System.String)">
+            <summary>
+            Executes inline JS confirmed; Events such as onload
+            not confirmed. Onload handler injected element not present in
+            body html. May need to wait but having trouble sinking the event.
+            Use Watin for robust script testing.
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.ParseHtml(mshtml.IHTMLDocument2)">
+            <summary>
+            Executes inline JS confirmed; Events such as onload
+            not confirmed. Onload handler injected element not present in
+            body html. May need to wait but having trouble sinking the event.
+            Use Watin for robust script testing.
+            </summary>
+            <summary>
+            
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.ParseHtml(mshtml.IHTMLElement)">
+            <summary>
+            Executes inline JS confirmed; Events such as onload
+            not confirmed. Onload handler injected element not present in
+            body html. May need to wait but having trouble sinking the event.
+            Use Watin for robust script testing.
+            </summary>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.FindElements(CassiniDev.Testing.HtmlElementSearchOptions)">
+            <summary>
+            Finds any elements matching the ElementTagName and the collection of options in searchOptions
+            </summary>
+            <param name="searchOptions">Contains our search specification</param>
+            <returns>List of objects found matching our search options</returns>
+        </member>
+        <member name="M:CassiniDev.Testing.HttpRequestHelper.FindElementByID(System.String)">
+            <summary>
+            Returns the first element whose ID matches the ID parameter
+            </summary>
+            <param name="ID">ID of element to find</param>
+            <returns>Html element found. If no elements are found, returns null</returns>
+        </member>
+        <member name="P:CassiniDev.Testing.HttpRequestHelper.HTMLDocument5">
+            <summary>
+            IHTMLDocument5 accessor to common document HTMLDocument2
+            </summary>
+        </member>
+        <member name="P:CassiniDev.Testing.HttpRequestHelper.HTMLDocument4">
+            <summary>
+            IHTMLDocument4 accessor to common document HTMLDocument2
+            </summary>
+        </member>
+        <member name="P:CassiniDev.Testing.HttpRequestHelper.HTMLDocument3">
+            <summary>
+            IHTMLDocument3 accessor to common document HTMLDocument2
+            </summary>
+        </member>
+        <member name="P:CassiniDev.Testing.HttpRequestHelper.HTMLDocument">
+            <summary>
+            IHTMLDocument accessor to common document HTMLDocument2
+            </summary>
+        </member>
+        <member name="P:CassiniDev.Testing.HttpRequestHelper.HTMLDocument2">
+            <summary>
+            Primary accessor to common document
+            </summary>
+        </member>
+        <member name="T:CassiniDev.Testing.HtmlElementList">
+            <summary>
+            Acts as a named interface to a list of IHTMLElements allowing for extending in later development
+            </summary>
+        </member>
+        <member name="T:CassiniDev.Testing.HtmlElementSearchOptions">
+            <summary>
+            Holds all possible search options
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:CassiniDev.Testing.KeyValue" -->
+        <member name="T:Cassini.CommandLine.ErrorReporter">
+            <summary>
+            A delegate used in error reporting.
+            </summary>
+        </member>
+        <member name="T:Cassini.CommandLine.DefaultArgumentAttribute">
+            <summary>
+            Indicates that this argument is the default argument.
+            '/' or '-' prefix only the argument value is specified.
+            The ShortName property should not be set for DefaultArgumentAttribute
+            instances. The LongName property is used for usage text only and
+            does not affect the usage of the argument.
+            </summary>
+        </member>
+        <member name="M:Cassini.CommandLine.DefaultArgumentAttribute.#ctor(Cassini.CommandLine.ArgumentType)">
+            <summary>
+            Indicates that this argument is the default argument.
+            </summary>
+            <param name="type"> Specifies the error checking to be done on the argument. </param>
+        </member>
+        <member name="T:Cassini.CommandLine.ArgumentsAttribute">
+            <summary>
+            Allows attaching generic help text to arguments class
+            
+            12/29/09 sky: added 
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentsAttribute.HasHelpText">
+            <summary>
+            Returns true if the argument has help text specified.
+            </summary>
+        </member>
+        <member name="P:Cassini.CommandLine.ArgumentsAttribute.HelpText">
+            <summary>
+            The help text for the argument.
+            </summary>
+        </member>
+        <member name="T:CassiniDev.ServerArguments">
+            <summary>
+            Server Constructor arguments
+            </summary>
+        </member>
+        <member name="T:CassiniDev.CommandLineArguments">
+            <summary>
+            Command line arguments
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -33,8 +33,7 @@
   <ItemGroup>
     <Reference Include="CassiniDev-console, Version=3.5.0.4, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <ExecutableExtension>.exe</ExecutableExtension>
-      <HintPath>..\CassiniDev-console\bin\Debug\CassiniDev-console.exe</HintPath>
+      <HintPath>..\bin\CassiniDev-console\Debug\CassiniDev-console.exe</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
