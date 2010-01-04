@@ -40,10 +40,17 @@ namespace CassiniDev
             _view.RunState = RunState.Idle;
 
             _view.AddHost = args.AddHost;
-            string appPath = args.ApplicationPath.Trim('\"').TrimEnd('\\');
-            _view.ApplicationPath = appPath;
-            string vpath = args.VirtualPath.Trim('\"');
-            _view.VirtualPath = vpath;
+            if(!string.IsNullOrEmpty(args.ApplicationPath))
+            {
+                args.ApplicationPath = args.ApplicationPath.Trim('\"').TrimEnd('\\');
+            }
+
+            _view.ApplicationPath = args.ApplicationPath;
+            if(!string.IsNullOrEmpty(args.VirtualPath))
+            {
+                args.VirtualPath = args.VirtualPath.Trim('\"');
+            }
+            _view.VirtualPath = args.VirtualPath;
             _view.HostName = args.HostName;
             _view.IPAddress = args.IPAddress;
             _view.IPMode = args.IPMode;

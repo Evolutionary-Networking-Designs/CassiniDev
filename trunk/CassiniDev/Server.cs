@@ -90,25 +90,24 @@ namespace Cassini
         private void IncrementRequestCount()
         {
             _requestCount++;
-            Console.Title = _requestCount.ToString();
             _timer = null;
         }
 
         private void TimedOut(object ignored)
         {
-            Console.Title = "Timed Out";
+            
             Stop();
         }
 
         private void DecrementRequestCount()
         {
             _requestCount--;
-            Console.Title = _requestCount.ToString();
+            
             if (_requestCount < 1)
             {
                 _requestCount = 0;
 
-                Console.Title = _requestCount.ToString();
+                
 
                 if (_timeout > 0)
                 {
