@@ -23,6 +23,8 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\CassiniDev.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -144,4 +146,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(TargetDir)CassiniDev.exe" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+xcopy "$(TargetDir)CassiniDev.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

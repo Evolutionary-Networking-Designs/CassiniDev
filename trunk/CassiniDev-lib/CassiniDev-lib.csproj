@@ -5,21 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{539F0304-F14A-413F-A56A-AFB7724EA1A7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CassiniDev</RootNamespace>
-    <AssemblyName>CassiniDev-console</AssemblyName>
+    <AssemblyName>CassiniDev-lib</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\CassiniDev.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -28,10 +20,9 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;CONSOLE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\CassiniDev-console.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -146,20 +137,21 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\CassiniDev\Cassini Source\Cassini.ico">
+      <Link>Cassini Source\Cassini.ico</Link>
+    </Content>
+    <Content Include="..\CassiniDev\Ms-PL.htm">
+      <Link>Ms-PL.htm</Link>
+    </Content>
+    <Content Include="..\CassiniDev\ReadMe.htm">
+      <Link>ReadMe.htm</Link>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="..\CassiniDev\Views\FormsView.resx">
       <Link>Views\FormsView.resx</Link>
       <DependentUpon>FormsView.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\CassiniDev\Ms-PL.htm">
-      <Link>Ms-PL.htm</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\CassiniDev\ReadMe.htm">
-      <Link>ReadMe.htm</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -170,7 +162,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)CassiniDev-console.exe" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-xcopy "$(TargetDir)CassiniDev-console.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)CassiniDev-lib.dll" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+xcopy "$(TargetDir)CassiniDev-lib.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+</PostBuildEvent>
   </PropertyGroup>
 </Project>
