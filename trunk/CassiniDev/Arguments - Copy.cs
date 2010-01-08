@@ -134,11 +134,12 @@ namespace CassiniDev
             {
                 sb.AppendFormat(" /pre:{0}", PortRangeEnd);
             }
-            if(TimeOut>0)
+            if(TimeOut!=0)
             {
                 sb.AppendFormat(" /t:{0}", TimeOut);
             }
-            if (WaitForPort > 0)
+
+            if (WaitForPort != 0)
             {
                 sb.AppendFormat(" /w:{0}", WaitForPort);
             }

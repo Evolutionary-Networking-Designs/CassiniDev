@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:tns="http://TestWebApp" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" targetNamespace="http://TestWebApp" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://TestWebApp/Imports">
+      <xsd:import schemaLocation="http://localhost:7352/TestWCFService.svc?xsd=xsd0" namespace="http://TestWebApp" />
+      <xsd:import schemaLocation="http://localhost:7352/TestWCFService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:7352/TestWCFService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/CassiniDev.FixtureExamples.TestWeb" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ITestWCFService_HelloWorld_InputMessage">
+    <wsdl:part name="parameters" element="tns:HelloWorld" />
+  </wsdl:message>
+  <wsdl:message name="ITestWCFService_HelloWorld_OutputMessage">
+    <wsdl:part name="parameters" element="tns:HelloWorldResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITestWCFService_HelloWorldWithArgsInOut_InputMessage">
+    <wsdl:part name="parameters" element="tns:HelloWorldWithArgsInOut" />
+  </wsdl:message>
+  <wsdl:message name="ITestWCFService_HelloWorldWithArgsInOut_OutputMessage">
+    <wsdl:part name="parameters" element="tns:HelloWorldWithArgsInOutResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ITestWCFService">
+    <wsdl:operation name="HelloWorld">
+      <wsdl:input wsaw:Action="http://TestWebApp/ITestWCFService/HelloWorld" message="tns:ITestWCFService_HelloWorld_InputMessage" />
+      <wsdl:output wsaw:Action="http://TestWebApp/ITestWCFService/HelloWorldResponse" message="tns:ITestWCFService_HelloWorld_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="HelloWorldWithArgsInOut">
+      <wsdl:input wsaw:Action="http://TestWebApp/ITestWCFService/HelloWorldWithArgsInOut" message="tns:ITestWCFService_HelloWorldWithArgsInOut_InputMessage" />
+      <wsdl:output wsaw:Action="http://TestWebApp/ITestWCFService/HelloWorldWithArgsInOutResponse" message="tns:ITestWCFService_HelloWorldWithArgsInOut_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

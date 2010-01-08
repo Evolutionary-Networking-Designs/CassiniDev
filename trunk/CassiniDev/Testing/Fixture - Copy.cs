@@ -137,8 +137,8 @@ namespace CassiniDev.Testing
                                           VirtualPath = string.Format("\"{0}\"",virtualPath),
                                           TimeOut = timeOut,
                                           WaitForPort = waitForPort,
-                                          IPMode=IPMode.Specific,
-                                          PortMode=PortMode.Specific 
+                                          IPMode= IPMode.Specific,
+                                          PortMode= PortMode.Specific
                                       }).ToString();
 
 

@@ -8,6 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.FixtureExamples.NUnit", "CassiniDev.FixtureExamples.NUnit\CassiniDev.FixtureExamples.NUnit.csproj", "{2B12B263-2107-44E8-A56C-7BD1DDD40943}"
+	ProjectSection(ProjectDependencies) = postProject
+		{52AE62B3-1B40-4C1F-926A-98711A20A69E} = {52AE62B3-1B40-4C1F-926A-98711A20A69E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.FixtureExamples.TestWeb", "CassiniDev.FixtureExamples.TestWeb\CassiniDev.FixtureExamples.TestWeb.csproj", "{52AE62B3-1B40-4C1F-926A-98711A20A69E}"
 EndProject

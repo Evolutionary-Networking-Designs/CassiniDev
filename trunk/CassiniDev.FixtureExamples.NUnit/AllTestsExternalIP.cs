@@ -1,18 +1,9 @@
-// /* **********************************************************************************
-//  *
-//  * Copyright (c) Sky Sanders. All rights reserved.
-//  * 
-//  * This source code is subject to terms and conditions of the Microsoft Public
-//  * License (Ms-PL). A copy of the license can be found in the license.htm file
-//  * included in this distribution.
-//  *
-//  * You must not remove this notice, or any other, from this software.
-//  *
-//  * **********************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.ServiceModel;
+using CassiniDev.FixtureExamples.NUnit.TestWCFServiceReference;
 using CassiniDev.Testing;
 using mshtml;
 using NUnit.Framework;
@@ -22,10 +13,93 @@ namespace CassiniDev.FixtureExamples.NUnit
     /// <summary>
     /// All tests in one file spinning up one server.
     /// </summary>
-    [TestFixture, Category("Combined")]
-    public class AllTests : TestAppFixture
+    [TestFixture]
+    public class AllTestsExternalIP : Fixture
     {
-   
+        /// <summary>
+        /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
+        /// </summary>
+        [Test]
+        public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorld()
+        {
+            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorld");
+            string json = HttpRequestHelper.AjaxTxt(uri, null, null);
+            Assert.AreEqual("{\"d\":\"Hello World\"}", json);
+        }
+
+        /// <summary>
+        /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
+        /// </summary>
+        [Test]
+        public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorldWithArgsInOut()
+        {
+            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorldWithArgsInOut");
+            Dictionary<string, object> postData = new Dictionary<string, object>();
+
+            // if you have a reference to the type expected you can serialize an instance
+            // or just simply create an anonymous type that is shaped like the type expected...
+            postData.Add("args", new { Message = "HI!" });
+
+            string json = HttpRequestHelper.AjaxTxt(uri, postData, null);
+
+            Assert.AreEqual("{\"d\":{\"__type\":\"HelloWorldArgs:#CassiniDev.FixtureExamples.TestWeb\",\"Message\":\"you said: HI!\"}}", json);
+        }
+
+        /// <summary>
+        /// Will fail
+        /// </summary>
+        [Test]
+        public void WCFWithGeneratedClientHelloWorld()
+        {
+            Uri uri = NormalizeUri("TestWCFService.svc");
+            using (TestWCFServiceClient client = new TestWCFServiceClient(
+                new WSHttpBinding(), new EndpointAddress(uri)))
+            {
+                client.Open();
+                var result = client.HelloWorld();
+                Assert.AreEqual("Hello World", result);
+            }
+        }
+
+        /// <summary>
+        /// Will fail
+        /// </summary>
+        [Test]
+        public void WCFWithGeneratedClientHelloWorldWithArgsInOut()
+        {
+            Uri uri = NormalizeUri("TestWCFService.svc");
+            using (TestWCFServiceClient client = new TestWCFServiceClient(
+                new WSHttpBinding(), new EndpointAddress(uri)))
+            {
+                client.Open();
+                TestWCFServiceReference.HelloWorldArgs args =
+                    new CassiniDev.FixtureExamples.NUnit.TestWCFServiceReference.HelloWorldArgs();
+                args.Message = "HEY";
+                HelloWorldArgs result = client.HelloWorldWithArgsInOut(args);
+                Assert.AreEqual("you said: HEY", result.Message);
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// all WCF tests will fail on any but locahost/loopback - No protocol binding matches the given address.... 
+        /// User xml web service for JSON until issue is resolved
+        /// </summary>
+        [TestFixtureSetUp]
+        public void TestFixtureSetUp()
+        {
+            var ip = IPAddress.Parse("192.168.1.102");
+            StartServer(@"..\..\..\CassiniDev.FixtureExamples.TestWeb", ip, GetPort(8080, 9000, ip), "/", null, false, 10000, 15000);
+        }
+
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            StopServer();
+        }
+
         /// <summary>
         /// Inline javascript execution verified.
         /// 
@@ -135,7 +209,7 @@ namespace CassiniDev.FixtureExamples.NUnit
         public void GetWebFormWithHttpWebRequest()
         {
             Uri requestUri = NormalizeUri("default.aspx");
-            HttpWebRequest req = (HttpWebRequest) WebRequest.Create(requestUri);
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requestUri);
             string responseText;
             using (WebResponse response = req.GetResponse())
             {
@@ -148,28 +222,7 @@ namespace CassiniDev.FixtureExamples.NUnit
             Assert.IsTrue(responseText.IndexOf("This is the default document of the TestWebApp") > 0);
         }
 
-        [Test]
-        public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorld()
-        {
-            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorld");
-            string json = HttpRequestHelper.AjaxTxt(uri, null, null);
-            Assert.AreEqual("{\"d\":\"Hello World\"}", json);
-        }
-
-        [Test]
-        public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorldWithArgsInOut()
-        {
-            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorldWithArgsInOut");
-            Dictionary<string, object> postData = new Dictionary<string, object>();
-
-            // if you have a reference to the type expected you can serialize an instance
-            // or just simply create an anonymous type that is shaped like the type expected...
-            postData.Add("args", new {Message = "HI!"});
-
-            string json = HttpRequestHelper.AjaxTxt(uri, postData, null);
-
-            Assert.AreEqual("{\"d\":{\"__type\":\"HelloWorldArgs:#CassiniDev.FixtureExamples.TestWeb\",\"Message\":\"you said: HI!\"}}", json);
-        }
+   
 
         [Test]
         public void XmlWebServicePostFormGetXmlHelloWorld()
@@ -197,9 +250,11 @@ namespace CassiniDev.FixtureExamples.NUnit
         {
             Uri uri = NormalizeUri("TestWebService.asmx/HelloWorldWithArgsInOut");
             Dictionary<string, object> postData = new Dictionary<string, object>();
-            postData.Add("args", new {Message = "HI!"});
+            postData.Add("args", new { Message = "HI!" });
             string json = HttpRequestHelper.AjaxApp(uri, postData, null);
             Assert.AreEqual("{\"d\":{\"__type\":\"CassiniDev.FixtureExamples.TestWeb.HelloWorldArgs\",\"Message\":\"you said: HI!\"}}", json);
         }
+
+   
     }
 }
