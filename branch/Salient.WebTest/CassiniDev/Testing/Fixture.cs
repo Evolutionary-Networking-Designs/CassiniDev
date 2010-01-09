@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
+using Cassini;
 
 namespace CassiniDev.Testing
 {
@@ -23,6 +24,8 @@ namespace CassiniDev.Testing
     /// and all the other issues that you can find that people struggle with I just decided
     /// to strictly format the console app's output and just spin up an external process. 
     /// Seems robust so far.
+    /// 
+    /// 01/06/10 sky: exposed server events
     /// </summary>
     public class Fixture : IDisposable
     {
@@ -32,8 +35,49 @@ namespace CassiniDev.Testing
         private StreamWriter _input;
         private IPAddress _ipAddress;
         private Thread _outputThread;
+        private Thread _monitorThread;
         private string _rootUrl;
         private Process _serverProcess;
+
+
+
+        ///<summary>
+        ///</summary>
+        public event EventHandler<RequestEventArgs> RequestComplete;
+        ///<summary>
+        ///</summary>
+        public event EventHandler<ServerEventArgs> ServerStarted;
+        ///<summary>
+        ///</summary>
+        public event EventHandler<ServerEventArgs> ServerStopped;
+        ///<summary>
+        ///</summary>
+        public event EventHandler<RequestEventArgs> RequestBegin;
+
+
+        protected virtual void OnRequestComplete(RequestEventArgs e)
+        {
+            EventHandler<RequestEventArgs> complete = RequestComplete;
+            if (complete != null) complete(this, e);
+        }
+
+        protected virtual void OnRequestBegin(RequestEventArgs e)
+        {
+            EventHandler<RequestEventArgs> handler = RequestBegin;
+            if (handler != null) handler(this, e);
+        }
+
+        protected virtual void OnServerStarted(ServerEventArgs e)
+        {
+            EventHandler<ServerEventArgs> handler = ServerStarted;
+            if (handler != null) handler(null, e);
+        }
+
+        protected virtual void OnServerStopped(ServerEventArgs e)
+        {
+            EventHandler<ServerEventArgs> handler = ServerStopped;
+            if (handler != null) handler(null, e);
+        }
 
         /// <summary>
         /// The root URL of the running web application
@@ -51,7 +95,7 @@ namespace CassiniDev.Testing
         /// <returns></returns>
         public virtual Uri NormalizeUri(string relativeUrl)
         {
-            relativeUrl = relativeUrl.TrimStart(new[] {'/'});
+            relativeUrl = relativeUrl.TrimStart(new[] { '/' });
             string rootUrl = _rootUrl;
             if (!rootUrl.EndsWith("/"))
             {
@@ -87,16 +131,19 @@ namespace CassiniDev.Testing
         /// <param name="ipAddress">IP to listen on.</param>
         /// <param name="port">Port to listen on.</param>
         /// <param name="virtualPath">Optional. default value '/'</param>
-        /// <param name="hostname">Optional unless addHostsEntry is true. In all cases is used to construct RootUrl.</param>
-        /// <param name="addHostsEntry">If true, add hosts file entry. Requires read/write permissions to hosts file.</param>
-        /// <param name="waitForPort">Length of time, in ms, to wait for a specific port before throwing an exception or exiting. 0 = don't wait.</param>
-        /// <param name="timeOut">Length of time, in ms, to wait for a request before stopping the server. 0 = no timeout.</param>
+        /// <param name="hostname">Optional unless addHostsEntry is true. In all cases is used to construct RootUrl.
         /// <para>If true attempts to add a temporary entry to windows hosts file comprised of ipAddress and hostname.</para>
         /// <para>The entry is removed when server is stopped.</para>
         /// <para>Throws UnauthorizedAccessException if process does not have write permissions to hosts file.</para>
         /// </param>
-        public virtual void StartServer(string applicationPath, IPAddress ipAddress, ushort port, string virtualPath,
-                                        string hostname, bool addHostsEntry, int waitForPort, int timeOut)
+        /// <param name="addHostsEntry">If true, add hosts file entry. Requires read/write permissions to hosts file.</param>
+        /// <param name="waitForPort">Length of time, in ms, to wait for a specific port before throwing an exception or exiting. 0 = don't wait.</param>
+        /// <param name="timeOut">Length of time, in ms, to wait for a request before stopping the server. 0 = no timeout.</param>
+
+        /// </param>
+        /// 01/06/10 - fixed bug: added IPMode.Specific and PortMode.Specific to command line args
+        ///            trimmed the RootUrl parsed from standard out
+        public virtual void StartServer(string applicationPath, IPAddress ipAddress, ushort port, string virtualPath, string hostname, bool addHostsEntry, int waitForPort, int timeOut)
         {
             _hostAdded = addHostsEntry;
             _hostname = hostname;
@@ -125,19 +172,23 @@ namespace CassiniDev.Testing
                 ServiceFactory.Rules.AddHostEntry(_ipAddress.ToString(), _hostname);
             }
 
+
             // use the arg object to construct command line string
-
-
             string commandLine = (new CommandLineArguments
                                       {
                                           Port = port,
                                           ApplicationPath = string.Format("\"{0}\"", Path.GetFullPath(applicationPath).Trim('\"').TrimEnd('\\')),
                                           HostName = hostname,
                                           IPAddress = ipAddress.ToString(),
-                                          VirtualPath = string.Format("\"{0}\"",virtualPath),
+                                          IPMode = IPMode.Specific,
+                                          PortMode = PortMode.Specific,
+                                          VirtualPath = string.Format("\"{0}\"", virtualPath),
                                           TimeOut = timeOut,
-                                          WaitForPort = waitForPort
+                                          WaitForPort = waitForPort,
+                                          Quiet = false,
+                                          Headless = true
                                       }).ToString();
+
 
 
             _serverProcess = new Process();
@@ -153,26 +204,63 @@ namespace CassiniDev.Testing
                                                WorkingDirectory = Environment.CurrentDirectory
                                            };
 
-            // we are going to monitor each line of the output until we get a start or error signal
-            // and then just ignore the rest
+            // we are going to monitor each line of the output to handle events - really poor man's marshalling
 
             string line = null;
 
             _serverProcess.Start();
+            _monitorThread = new Thread(() =>
+                                            {
+                                                _serverProcess.WaitForExit();
+                                                // cleanup
+                                                StopServer();
+
+                                            });
+            _monitorThread.Start();
 
             _outputThread = new Thread(() =>
                                            {
+                                               // watch StandardOut for messages
                                                string l = _serverProcess.StandardOutput.ReadLine();
                                                while (l != null)
                                                {
+                                                   Trace.WriteLine(l);
                                                    if (l.StartsWith("started:") || l.StartsWith("error:"))
                                                    {
                                                        line = l;
                                                    }
-                                                   l = _serverProcess.StandardOutput.ReadLine();
+
+
+                                                   if (l.StartsWith("RequestComplete:RequestInfo:"))
+                                                   {
+                                                       // raise an event
+                                                       var reqest = new RequestInfo();
+                                                       string info = l.Substring("RequestComplete:".Length);
+                                                       reqest.ParseUrlEncoded(info);
+                                                       OnRequestComplete(new RequestEventArgs(reqest));
+                                                   }
+                                                   if (l.StartsWith("RequestBegin:RequestInfo:"))
+                                                   {
+                                                       // raise an event
+                                                       var reqest = new RequestInfo();
+                                                       string info = l.Substring("RequestBegin:".Length);
+                                                       reqest.ParseUrlEncoded(info);
+                                                       OnRequestBegin(new RequestEventArgs(reqest));
+                                                   }
+
+                                                   try
+                                                   {
+                                                       l = _serverProcess.StandardOutput.ReadLine();
+                                                   }
+                                                   catch (Exception ex)
+                                                   {
+                                                       Trace.WriteLine(ex.ToString());
+                                                       break;
+                                                   }
                                                }
                                            });
             _outputThread.Start();
+
 
             // use StandardInput to send the newline to stop the server when required
             _input = _serverProcess.StandardInput;
@@ -189,7 +277,9 @@ namespace CassiniDev.Testing
             }
 
             // line is the root url
-            _rootUrl = line.Substring(line.IndexOf(':') + 1);
+            _rootUrl = line.Substring(line.IndexOf(':') + 1).Trim();
+            
+            OnServerStarted(new ServerEventArgs(_rootUrl));
         }
 
         /// <summary>
@@ -210,8 +300,9 @@ namespace CassiniDev.Testing
             {
                 try
                 {
-                    _input.WriteLine();
-                    _serverProcess.WaitForExit(10000);
+                    //_input.WriteLine();
+                    //_serverProcess.WaitForExit(10000);
+                    _serverProcess.Kill();
                     if (_hostAdded)
                     {
                         ServiceFactory.Rules.RemoveHostEntry(_ipAddress.ToString(), _hostname);
@@ -223,8 +314,17 @@ namespace CassiniDev.Testing
                 }
                 finally
                 {
-                    _serverProcess.Dispose();
+                    
+                    try
+                    {
+                        _serverProcess.Dispose();
+                    }
+                    catch
+                    {
+                        bool n = true;
+                    }
                     _serverProcess = null;
+                    OnServerStopped(new ServerEventArgs(_rootUrl));
                 }
             }
         }
@@ -245,10 +345,7 @@ namespace CassiniDev.Testing
             GC.SuppressFinalize(this);
         }
 
-        ~Fixture()
-        {
-            Dispose();
-        }
+
 
         #endregion
     }

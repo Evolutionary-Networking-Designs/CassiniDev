@@ -10,6 +10,7 @@
 //  *
 //  * **********************************************************************************/
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using CassiniDev;
@@ -25,17 +26,20 @@ namespace Cassini
     /// 12/29/09 sky: Implemented IDisposable to help eliminate zombie ports
     /// 12/29/09 sky: Added instance properties for HostName and IPAddress and constructor to support them
     /// 12/29/09 sky: Extracted and implemented IServer interface to facilitate stubbing for tests
-    /// 
+    /// 01/06/10 sky: added events
     /// </summary>
     public partial class Server : IServer
     {
-        private bool _disposed;
-        private string _hostName;
-        private IPAddress _ipAddress;
+        
+        private readonly string _hostName;
+        private readonly IPAddress _ipAddress;
         private int _requestCount;
-        private int _timeout;
-        private Timer _timer;
+        private readonly int _timeout;
 
+
+        ///<summary>
+        ///</summary>
+        ///<param name="args"></param>
         public Server(ServerArguments args)
             : this(args.Port, args.VirtualPath, args.ApplicationPath)
         {
@@ -46,7 +50,21 @@ namespace Cassini
 
         #region IServer Members
 
-        public event EventHandler Stopped;
+        ///<summary>
+        ///</summary>
+        public event EventHandler<RequestEventArgs> RequestComplete;
+
+        ///<summary>
+        ///</summary>
+        public event EventHandler<ServerEventArgs> ServerStarted;
+
+        ///<summary>
+        ///</summary>
+        public event EventHandler<ServerEventArgs> ServerStopped;
+
+        ///<summary>
+        ///</summary>
+        public event EventHandler<RequestEventArgs> RequestBegin;
 
         public string HostName
         {
@@ -60,61 +78,113 @@ namespace Cassini
 
         #endregion
 
+        #region Event invocation
+
+        internal virtual void OnServerStarted(ServerEventArgs e)
+        {
+            EventHandler<ServerEventArgs> handler = ServerStarted;
+            if (handler != null)
+            {
+                handler(null, e);
+            }
+        }
+
+        internal virtual void OnServerStopped(ServerEventArgs e)
+        {
+            EventHandler<ServerEventArgs> handler = ServerStopped;
+            if (handler != null)
+            {
+                handler(null, e);
+            }
+        }
+
+        internal virtual void OnRequestBegin(RequestEventArgs e)
+        {
+            EventHandler<RequestEventArgs> handler = RequestBegin;
+            if (handler != null)
+            {
+                handler(null, e);
+            }
+        }
+
+        internal virtual void OnRequestComplete(RequestEventArgs e)
+        {
+            EventHandler<RequestEventArgs> complete = RequestComplete;
+            if (complete != null)
+            {
+                complete(null, e);
+            }
+        }
+
+        #endregion
+
         #region IDisposable
+        private bool _disposed;
 
         public void Dispose()
         {
             if (!_disposed)
             {
-                Stop();
-                // just add a little slack for the socket transition to TIME_WAIT
-                Thread.Sleep(10);
+                if (!_shutdownInProgress)
+                {
+                    Stop();
+                    // just add a little slack for the socket transition to TIME_WAIT
+                    Thread.Sleep(10);
+                }
             }
             _disposed = true;
             GC.SuppressFinalize(this);
         }
 
-        ~Server()
-        {
-            Dispose();
-        }
-
         #endregion
 
-        private void InvokeStopped()
-        {
-            EventHandler handler = Stopped;
-            if (handler != null) handler(this, EventArgs.Empty);
-        }
+        #region Idle shutdown implementation
+
+        private Timer _timer;
 
         private void IncrementRequestCount()
         {
             _requestCount++;
-            _timer = null;
+            if (_timer != null)
+            {
+                _timer.Dispose();
+                _timer = null;
+            }
+            
         }
 
         private void TimedOut(object ignored)
         {
-            
-            Stop();
+            if(_timer!=null)
+            {
+                _timer.Dispose();
+                _timer = null;
+                Stop();
+            }
+        }
+
+        private void StartTimer()
+        {
+            if (_timeout > 0)
+            {
+                // start timer
+                _timer = new Timer(TimedOut, null, _timeout, Timeout.Infinite);
+            }
         }
 
         private void DecrementRequestCount()
         {
             _requestCount--;
-            
+
             if (_requestCount < 1)
             {
                 _requestCount = 0;
 
-                
+                StartTimer();
 
-                if (_timeout > 0)
-                {
-                    // start timer
-                    _timer = new Timer(TimedOut, null, _timeout, Timeout.Infinite);
-                }
             }
         }
+
+        #endregion
     }
 }

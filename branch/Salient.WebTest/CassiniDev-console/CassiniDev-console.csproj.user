@@ -3,7 +3,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>
-    </StartArguments>
+    <StartArguments>/a:E:\Projects\webtest\Salient.WebTest.ContentWeb\ /q- /im:Specific /i:192.168.1.102 /h:sky /v:/logger</StartArguments>
   </PropertyGroup>
 </Project>

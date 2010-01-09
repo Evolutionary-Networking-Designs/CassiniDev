@@ -13,9 +13,16 @@ using System;
 
 namespace CassiniDev.Views
 {
+    ///<summary>
+    ///</summary>
     public class ConsoleView : IView
     {
         #region IView Members
+
+        public bool Dialog
+        {
+            set { /*noop*/}
+        }
 
         public IPresenter Presenter { get; set; }
         public int TimeOut { get; set; }
@@ -57,32 +64,7 @@ namespace CassiniDev.Views
             throw new CassiniException(message, field);
         }
 
-        public void Start()
-        {
-            CommandLineArguments args = new CommandLineArguments
-                                            {
-                                                AddHost = AddHost,
-                                                ApplicationPath = ApplicationPath,
-                                                HostName = HostName,
-                                                IPAddress = IPAddress,
-                                                IPMode = IPMode,
-                                                IPv6 = IPv6,
-                                                Port = Port,
-                                                PortMode = PortMode,
-                                                PortRangeEnd = PortRangeEnd,
-                                                PortRangeStart = PortRangeStart,
-                                                VirtualPath = VirtualPath
-                                            };
-
-            Presenter.Start(args);
-        }
-
-        public void Stop()
-        {
-            Presenter.Stop(AddHost);
-            Environment.Exit(-3);
-            // todo:should notify host?
-        }
+ 
 
         #endregion
     }

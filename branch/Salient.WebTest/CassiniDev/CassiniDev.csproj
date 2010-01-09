@@ -55,6 +55,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -79,7 +82,12 @@
     <Compile Include="CommandLineParser\Parser.cs" />
     <Compile Include="Testing\Fixture.cs" />
     <Compile Include="Testing\HttpRequestHelper.cs" />
-    <Compile Include="Views\ConsoleView.cs" />
+    <Compile Include="Views\CassiniArgsCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\CassiniArgsCtrl.Designer.cs">
+      <DependentUpon>CassiniArgsCtrl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ServiceFactory.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Presenter.cs" />
@@ -118,6 +126,18 @@
     </Compile>
     <Compile Include="Arguments.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="Views\IPAddressCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\IPAddressCtrl.Designer.cs">
+      <DependentUpon>IPAddressCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PortCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PortCtrl.Designer.cs">
+      <DependentUpon>PortCtrl.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Cassini Source\Cassini.ico" />
@@ -129,6 +149,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\CassiniArgsCtrl.resx">
+      <DependentUpon>CassiniArgsCtrl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\FormsView.resx">
       <DependentUpon>FormsView.cs</DependentUpon>
     </EmbeddedResource>
@@ -136,6 +159,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\IPAddressCtrl.resx">
+      <DependentUpon>IPAddressCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PortCtrl.resx">
+      <DependentUpon>PortCtrl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -14,29 +14,85 @@ using System.Net;
 
 namespace CassiniDev
 {
+    ///<summary>
+    ///</summary>
     public interface IPresenter : IDisposable
     {
-        IServer Server { get; }
-        IView View { get; }
-        //string ExecutablePath { get; set; }
+ 
+        ///<summary>
+        ///</summary>
+        ///<param name="view"></param>
+        ///<param name="args"></param>
         void InitializeView(IView view, CommandLineArguments args);
+        ///<summary>
+        ///</summary>
+        ///<param name="args"></param>
         void Start(CommandLineArguments args);
-        void Stop(bool removeHostEntry);
+        ///<summary>
+        ///</summary>
+        void Stop();
+        ///<summary>
+        ///</summary>
+        event EventHandler<ServerEventArgs> ServerStarted;
+        ///<summary>
+        ///</summary>
+        event EventHandler<ServerEventArgs> ServerStopped;
+        ///<summary>
+        ///</summary>
+        event EventHandler<RequestEventArgs> RequestBegin;
+        ///<summary>
+        ///</summary>
+        event EventHandler<RequestEventArgs> RequestComplete;
     }
 
+    ///<summary>
+    ///</summary>
     public interface IServer : IDisposable
     {
+        ///<summary>
+        ///</summary>
+        event EventHandler<ServerEventArgs> ServerStarted;
+        ///<summary>
+        ///</summary>
+        event EventHandler<ServerEventArgs> ServerStopped;
+        ///<summary>
+        ///</summary>
+        event EventHandler<RequestEventArgs> RequestBegin;
+        ///<summary>
+        ///</summary>
+        event EventHandler<RequestEventArgs> RequestComplete;
+        ///<summary>
+        ///</summary>
         string HostName { get; }
+        ///<summary>
+        ///</summary>
         IPAddress IPAddress { get; }
+        ///<summary>
+        ///</summary>
         string VirtualPath { get; }
+        ///<summary>
+        ///</summary>
         string PhysicalPath { get; }
+        ///<summary>
+        ///</summary>
         int Port { get; }
+        ///<summary>
+        ///</summary>
         string RootUrl { get; }
-        event EventHandler Stopped;
+        
+        //event EventHandler Stopped;
+        ///<summary>
+        ///</summary>
         void Start();
+        ///<summary>
+        ///</summary>
         void Stop();
     }
 
+    ///<summary>
+    /// TODO: implement start and stop events on presenter and get rid of start/stop on IView as it breaks
+    /// the pattern
+    ///</summary>
     public interface IView
     {
         IPresenter Presenter { get; set; }
@@ -57,8 +113,8 @@ namespace CassiniDev
         RunState RunState { get; set; }
         void ClearError();
         void SetError(ErrorField field, string value);
-        void Start();
-        void Stop();
+        //void Start();
+        //void Stop();
     }
 
 

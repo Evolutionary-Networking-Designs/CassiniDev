@@ -299,11 +299,6 @@ namespace CassiniDev
                 throw new CassiniException("Invalid VPath", ErrorField.VirtualPath);
             }
 
-            if (!string.IsNullOrEmpty(args.HostName) && !ValidateHostName(args.HostName))
-            {
-                throw new CassiniException("Invalid Hostname", ErrorField.HostName);
-            }
-
             if (args.AddHost && (string.IsNullOrEmpty(args.HostName) || !ValidateHostName(args.HostName)))
             {
                 throw new CassiniException("Invalid Hostname", ErrorField.HostName);

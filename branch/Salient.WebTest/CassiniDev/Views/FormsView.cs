@@ -15,6 +15,9 @@ using System.Windows.Forms;
 
 namespace CassiniDev.Views
 {
+    /// <summary>
+    /// TODO: use NumericUpDowns
+    /// </summary>
     public partial class FormsView : Form, IView
     {
         private RunState _runState;
@@ -112,6 +115,24 @@ namespace CassiniDev.Views
                     case PortMode.Specific:
                         RadioButtonPortSpecific.Checked = true;
                         break;
+                }
+            }
+        }
+
+
+        public bool Dialog
+        {
+            set
+            {
+                if (value)
+                {
+                    ButtonStart.Text = "OK";
+                    ButtonStart.DialogResult = DialogResult.OK;
+                    AcceptButton = ButtonStart;
+
+                    ButtonStop.Text = "Cancel";
+                    ButtonStop.DialogResult = DialogResult.Cancel;
+                    CancelButton = ButtonStop;
                 }
             }
         }
@@ -259,33 +280,8 @@ namespace CassiniDev.Views
             }
         }
 
-        public void Start()
-        {
-            CommandLineArguments args = new CommandLineArguments
-                                            {
-                                                AddHost = AddHost,
-                                                ApplicationPath = ApplicationPath,
-                                                HostName = HostName,
-                                                IPAddress = IPAddress,
-                                                IPMode = IPMode,
-                                                IPv6 = IPv6,
-                                                Port = Port,
-                                                PortMode = PortMode,
-                                                PortRangeEnd = PortRangeEnd,
-                                                PortRangeStart = PortRangeStart,
-                                                VirtualPath = VirtualPath,
-                                                TimeOut = TimeOut,
-                                                WaitForPort = WaitForPort
-                                            };
-
-            Presenter.Start(args);
-        }
-
-        public void Stop()
-        {
-            Presenter.Stop(AddHost);
-        }
-
+  
+        
         #endregion
 
         private void EnableForm()
@@ -354,12 +350,29 @@ namespace CassiniDev.Views
         private void ButtonStart_Click(object sender, EventArgs e)
         {
             DisableForm();
-            Start();
+            CommandLineArguments args = new CommandLineArguments
+            {
+                AddHost = AddHost,
+                ApplicationPath = ApplicationPath,
+                HostName = HostName,
+                IPAddress = IPAddress,
+                IPMode = IPMode,
+                IPv6 = IPv6,
+                Port = Port,
+                PortMode = PortMode,
+                PortRangeEnd = PortRangeEnd,
+                PortRangeStart = PortRangeStart,
+                VirtualPath = VirtualPath,
+                TimeOut = TimeOut,
+                WaitForPort = WaitForPort
+            };
+
+            Presenter.Start(args);
         }
 
         private void ButtonStop_Click(object sender, EventArgs e)
         {
-            Stop();
+            Presenter.Stop();
         }
 
         private void ButtonBrowsePhysicalPath_Click(object sender, EventArgs e)
@@ -388,7 +401,7 @@ namespace CassiniDev.Views
         {
             if (RunState == RunState.Running)
             {
-                Stop();
+                Presenter.Stop();
             }
         }
 
@@ -440,34 +453,5 @@ namespace CassiniDev.Views
 
         #endregion
 
-        //#region UAC
-
-        //private const int BcmFirst = 0x1600; //Normal button
-        //private const int BcmSetshield = (BcmFirst + 0x000C); //Elevated button
-
-        //[DllImport("user32")]
-        //private static extern UInt32 SendMessage(IntPtr hWnd, UInt32 msg, UInt32 wParam, UInt32 lParam);
-
-
-        //private static void AddShieldToButton(Button b)
-        //{
-        //    b.FlatStyle = FlatStyle.System;
-        //    SendMessage(b.Handle, BcmSetshield, 0, 0xFFFFFFFF);
-        //}
-
-        //private static void RemoveShieldFromButton(Button b)
-        //{
-        //    b.FlatStyle = FlatStyle.System;
-        //    SendMessage(b.Handle, BcmSetshield, 0, 0x0);
-        //}
-
-        //private static bool IsAdmin()
-        //{
-        //    WindowsIdentity id = WindowsIdentity.GetCurrent();
-        //    WindowsPrincipal p = new WindowsPrincipal(id);
-        //    return p.IsInRole(WindowsBuiltInRole.Administrator);
-        //}
-
-        //#endregion
     }
 }

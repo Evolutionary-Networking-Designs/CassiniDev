@@ -11,17 +11,16 @@
  * **********************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Runtime.Remoting;
 using System.Threading;
 using System.Web;
 using System.Web.Hosting;
+using CassiniDev;
 
 namespace Cassini
 {
@@ -41,13 +40,19 @@ namespace Cassini
     /// </summary>
     public partial class Server : MarshalByRefObject
     {
-        int _port;
-        string _virtualPath;
-        string _physicalPath;
+        readonly int _port;
+        readonly string _virtualPath;
+        readonly string _physicalPath;
         bool _shutdownInProgress;
         Socket _socket;
         Host _host;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="virtualPath"></param>
+        /// <param name="physicalPath"></param>
         public Server(int port, string virtualPath, string physicalPath)
         {
             _port = port;
@@ -56,12 +61,19 @@ namespace Cassini
             _physicalPath = _physicalPath.EndsWith("\\", StringComparison.Ordinal) ? _physicalPath : _physicalPath + "\\";
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override object InitializeLifetimeService()
         {
             // never expire the license
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string VirtualPath
         {
             get
@@ -70,6 +82,9 @@ namespace Cassini
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string PhysicalPath
         {
             get
@@ -78,6 +93,9 @@ namespace Cassini
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Port
         {
             get
@@ -86,6 +104,9 @@ namespace Cassini
             }
         }
 
+        /// <summary>
+        /// sky: modified to allow hostname and arbitrary IP
+        /// </summary>
         public string RootUrl
         {
             get
@@ -111,11 +132,15 @@ namespace Cassini
             }
         }
 
-        //
-        // Socket listening
-        // 
 
-        static Socket CreateSocketBindAndListen(AddressFamily family, IPAddress address, int port)
+        /// <summary>
+        /// Socket listening 
+        /// </summary>
+        /// <param name="family"></param>
+        /// <param name="address"></param>
+        /// <param name="port"></param>
+        /// <returns></returns>
+        private static Socket CreateSocketBindAndListen(AddressFamily family, IPAddress address, int port)
         {
             var socket = new Socket(family, SocketType.Stream, ProtocolType.Tcp);
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
@@ -124,11 +149,16 @@ namespace Cassini
             return socket;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Start()
         {
             _socket = CreateSocketBindAndListen(AddressFamily.InterNetwork, _ipAddress, _port);
             //start the timer
-            DecrementRequestCount();
+            StartTimer();
+            
+
             ThreadPool.QueueUserWorkItem(delegate
             {
                 while (!_shutdownInProgress)
@@ -137,7 +167,6 @@ namespace Cassini
                     {
                         Socket acceptedSocket = _socket.Accept();
 
-                        
                         ThreadPool.QueueUserWorkItem(delegate
                         {
                             if (!_shutdownInProgress)
@@ -163,6 +192,8 @@ namespace Cassini
                                 
                                 // process request in worker app domain
                                 host.ProcessRequest(conn);
+
+                                DecrementRequestCount();
                             }
                         });
                     }
@@ -171,12 +202,20 @@ namespace Cassini
                         Thread.Sleep(100);
                     }
                 }
+
             });
+
+            OnServerStarted(new ServerEventArgs(RootUrl));
         }
 
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public void Stop()
         {
             _shutdownInProgress = true;
+            OnServerStopped(new ServerEventArgs(RootUrl));
 
             try
             {
@@ -212,18 +251,30 @@ namespace Cassini
             {
                 _host = null;
             }
-            InvokeStopped();
+
+            
+            
         }
 
-        // called at the end of request processing
-        // to disconnect the remoting proxy for Connection object
-        // and allow GC to pick it up
-        public void OnRequestEnd(Connection conn)
+        /// <summary>
+        /// Called at the end of request processing to disconnect the remoting proxy for Connection object
+        /// and allow GC to pick it up.
+        /// 
+        /// 01/06/10 sky: modified signature to enable instrumentation
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="info"></param>
+        public virtual void OnRequestEnd(Connection conn, RequestInfo info)
         {
+            OnRequestComplete(new RequestEventArgs(info));
+
             RemotingServices.Disconnect(conn);
-            DecrementRequestCount();
+         
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void HostStopped()
         {
             _host = null;
@@ -271,7 +322,7 @@ namespace Cassini
                 BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
                 null,
                 buildManagerHost,
-                new object[2] { hostType.Assembly.FullName, hostType.Assembly.Location });
+                new object[] { hostType.Assembly.FullName, hostType.Assembly.Location });
 
             // create Host in the worker app domain
             return appManager.CreateObject(appId, hostType, virtualPath, physicalPath, false);

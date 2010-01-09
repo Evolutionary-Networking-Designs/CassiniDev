@@ -15,23 +15,33 @@ using System.Net;
 
 namespace CassiniDev
 {
+    ///<summary>
+    ///</summary>
     public class Presenter : IPresenter
     {
+        private CommandLineArguments _args;
         private bool _disposed;
         private IServer _server;
+        //TODO: eliminate view reference - use events
         private IView _view;
 
         #region IPresenter Members
 
-        public IServer Server
-        {
-            get { return _server; }
-        }
+        ///<summary>
+        ///</summary>
+        public event EventHandler<RequestEventArgs> RequestComplete;
 
-        public IView View
-        {
-            get { return _view; }
-        }
+        ///<summary>
+        ///</summary>
+        public event EventHandler<RequestEventArgs> RequestBegin;
+
+        ///<summary>
+        ///</summary>
+        public event EventHandler<ServerEventArgs> ServerStarted;
+
+        ///<summary>
+        ///</summary>
+        public event EventHandler<ServerEventArgs> ServerStopped;
 
         public void InitializeView(IView view, CommandLineArguments args)
         {
@@ -40,13 +50,13 @@ namespace CassiniDev
             _view.RunState = RunState.Idle;
 
             _view.AddHost = args.AddHost;
-            if(!string.IsNullOrEmpty(args.ApplicationPath))
+            if (!string.IsNullOrEmpty(args.ApplicationPath))
             {
                 args.ApplicationPath = args.ApplicationPath.Trim('\"').TrimEnd('\\');
             }
 
             _view.ApplicationPath = args.ApplicationPath;
-            if(!string.IsNullOrEmpty(args.VirtualPath))
+            if (!string.IsNullOrEmpty(args.VirtualPath))
             {
                 args.VirtualPath = args.VirtualPath.Trim('\"');
             }
@@ -80,7 +90,11 @@ namespace CassiniDev
 
         public void Start(CommandLineArguments args)
         {
-            _view.ClearError();
+            _args = null;
+            if (_view != null)
+            {
+                _view.ClearError();
+            }
 
             try
             {
@@ -88,74 +102,110 @@ namespace CassiniDev
             }
             catch (CassiniException ex)
             {
-                _view.SetError(ex.Field, ex.Message);
-                return;
+                if (_view != null)
+                {
+                    _view.SetError(ex.Field, ex.Message);
+                    return;
+                }
+                throw;
             }
 
             if (string.IsNullOrEmpty(args.ApplicationPath) || !Directory.Exists(args.ApplicationPath))
             {
-                _view.SetError(ErrorField.ApplicationPath, "Invalid Application Path");
-                return;
+                if (_view != null)
+                {
+                    _view.SetError(ErrorField.ApplicationPath, "Invalid Application Path");
+                    return;
+                }
+                throw new CassiniException("Invalid Application Path", ErrorField.ApplicationPath);
             }
 
             // prepare arguments
             IPAddress ip = ServiceFactory.Rules.ParseIP(args.IPMode, args.IPv6, args.IPAddress);
-            _view.IPAddress = ip.ToString();
+
+            if (_view != null)
+            {
+                _view.IPAddress = ip.ToString();
+            }
+
             ushort port = args.Port;
             if (args.PortMode == PortMode.FirstAvailable)
             {
                 port = ServiceFactory.Rules.GetAvailablePort(args.PortRangeStart, args.PortRangeEnd, ip, true);
             }
-            _view.Port = port;
-            string hostname = args.HostName;
-            //if (string.IsNullOrEmpty(hostname))
-            //{
-            //    hostname = ip.ToString();
-            //}
 
-            _view.HostName = hostname;
+            if (_view != null)
+            {
+                _view.Port = port;
+            }
 
-            _server =
-                ServiceFactory.CreateServer(new ServerArguments
-                                                {
-                                                    Port = port,
-                                                    VirtualPath = args.VirtualPath,
-                                                    ApplicationPath = args.ApplicationPath,
-                                                    IPAddress = ip,
-                                                    Hostname = hostname,
-                                                    TimeOut = args.TimeOut
-                                                });
+
+            if (_view != null)
+            {
+                _view.HostName = args.HostName;
+            }
+
+            _server = ServiceFactory.CreateServer(new ServerArguments
+                                                      {
+                                                          Port = port,
+                                                          VirtualPath = args.VirtualPath,
+                                                          ApplicationPath = args.ApplicationPath,
+                                                          IPAddress = ip,
+                                                          Hostname = args.HostName,
+                                                          TimeOut = args.TimeOut
+                                                      });
+
+            WireServerEvents();
 
             if (args.AddHost)
             {
                 ServiceFactory.Rules.AddHostEntry(_server.IPAddress.ToString(), _server.HostName);
             }
+
             try
             {
+                
                 _server.Start();
-                _server.Stopped += ServerStopped;
-                _view.RootUrl = _server.RootUrl;
-                _view.RunState = RunState.Running;
+                _args = args;
+
+                if (_view != null)
+                {
+                    _view.RootUrl = _server.RootUrl;
+                    _view.RunState = RunState.Running;
+                }
             }
             catch (Exception ex)
             {
-                _view.SetError(ErrorField.None, ex.Message);
-                _server.Dispose();
+                if (_view != null)
+                {
+                    _view.SetError(ErrorField.None, ex.Message);
+                }
+
+                Stop();
             }
         }
 
-        public void Stop(bool removeHosts)
+        public void Stop()
         {
-            _view.RunState = RunState.Idle;
-            if (removeHosts)
+            if (_view != null)
+            {
+                //TODO: set view to listen for events - remove this 
+                _view.RunState = RunState.Idle;
+            }
+
+            if (_args.AddHost)
             {
                 ServiceFactory.Rules.RemoveHostEntry(_server.IPAddress.ToString(), _server.HostName);
             }
+
+
             if (_server != null)
             {
-                _server.Stopped -= ServerStopped;
-                _server.Dispose();
+                _server.Stop();
+                UnWireServerEvents();
+                _server = null;
             }
+            
         }
 
         #endregion
@@ -168,7 +218,7 @@ namespace CassiniDev
             {
                 if (_server != null)
                 {
-                    _server.Dispose();
+                    _server.Stop();
                 }
                 _disposed = true;
             }
@@ -176,16 +226,77 @@ namespace CassiniDev
             GC.SuppressFinalize(this);
         }
 
-        ~Presenter()
+        #endregion
+
+        #region Event invocation
+
+        private void WireServerEvents()
         {
-            Dispose();
+            _server.ServerStarted += OnServerStarted;
+            _server.ServerStopped += OnServerStopped;
+            _server.RequestBegin += OnRequestBegin;
+            _server.RequestComplete += OnRequestComplete;
+        }
+
+        private void UnWireServerEvents()
+        {
+            _server.ServerStarted -= OnServerStarted;
+            _server.RequestBegin -= OnRequestBegin;
+            _server.RequestComplete -= OnRequestComplete;
+        }
+
+        protected virtual void OnServerStarted(ServerEventArgs e)
+        {
+            EventHandler<ServerEventArgs> handler = ServerStarted;
+            if (handler != null) handler(null, e);
+        }
+        
+        protected virtual void OnServerStopped(ServerEventArgs e)
+        {
+            EventHandler<ServerEventArgs> handler = ServerStopped;
+            if (handler != null)
+            {
+                handler(null, e);
+            }
+        }
+        
+        protected virtual void OnRequestComplete(RequestEventArgs e)
+        {
+            EventHandler<RequestEventArgs> complete = RequestComplete;
+            if (complete != null) complete(this, e);
+        }
+
+        protected virtual void OnRequestBegin(RequestEventArgs e)
+        {
+            EventHandler<RequestEventArgs> handler = RequestBegin;
+            if (handler != null) handler(this, e);
+        }
+        #region Server event handlers
+
+        private void OnServerStarted(object sender, ServerEventArgs e)
+        {
+            OnServerStarted(e);
+        }
+
+        private void OnServerStopped(object sender, ServerEventArgs e)
+        {
+            OnServerStopped(e);
+        }
+
+        private void OnRequestComplete(object sender, RequestEventArgs e)
+        {
+            OnRequestComplete(e);
+        }
+
+        private void OnRequestBegin(object sender, RequestEventArgs e)
+        {
+            OnRequestBegin(e);
         }
 
         #endregion
+        #endregion
 
-        private void ServerStopped(object sender, EventArgs e)
-        {
-            _view.Stop();
-        }
+
+
     }
 }

@@ -306,7 +306,7 @@ namespace CassiniDev.Testing
 
         public static Uri AppendQuery(Uri uri, string query)
         {
-            return new Uri(uri + (string.IsNullOrEmpty(uri.Query) ? "?" : "&:") + query);
+            return new Uri(uri + (string.IsNullOrEmpty(uri.Query) ? "?" : "&") + query);
         }
 
         #endregion

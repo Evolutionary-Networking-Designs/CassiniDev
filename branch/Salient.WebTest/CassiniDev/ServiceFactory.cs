@@ -51,11 +51,7 @@ namespace CassiniDev
             Stubs = new FactoryStubs();
         }
 
-        public static IView CreateConsoleView()
-        {
-            return Stubs.CreateConsoleView();
-        }
-
+        
         public static IView CreateFormsView()
         {
             return Stubs.CreateFormsView();
@@ -78,7 +74,7 @@ namespace CassiniDev
         /// </summary>
         internal class FactoryStubs
         {
-            public Func<IView> CreateConsoleView = () => new ConsoleView();
+            
             public Func<IView> CreateFormsView = () => new FormsView();
             public Func<IPresenter> CreatePresenter = () => new Presenter();
             public Func<IRules> CreateRules = () => new Rules();
