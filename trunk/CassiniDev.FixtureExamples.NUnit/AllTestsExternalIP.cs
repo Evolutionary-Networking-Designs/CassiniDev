@@ -16,10 +16,14 @@ namespace CassiniDev.FixtureExamples.NUnit
     [TestFixture]
     public class AllTestsExternalIP : Fixture
     {
+        //private Uri NormalizeUri(string relativePath)
+        //{
+        //    return new Uri(String.Format("http://{0}:{1}/{2}", _ip, _port,relativePath));
+        //}
         /// <summary>
         /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
         /// </summary>
-        [Test]
+        [Test, ExpectedException(typeof(WebException))]
         public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorld()
         {
             Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorld");
@@ -30,7 +34,7 @@ namespace CassiniDev.FixtureExamples.NUnit
         /// <summary>
         /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
         /// </summary>
-        [Test]
+        [Test, ExpectedException(typeof(WebException))]
         public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorldWithArgsInOut()
         {
             Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorldWithArgsInOut");
@@ -48,7 +52,7 @@ namespace CassiniDev.FixtureExamples.NUnit
         /// <summary>
         /// Will fail
         /// </summary>
-        [Test]
+        [Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
         public void WCFWithGeneratedClientHelloWorld()
         {
             Uri uri = NormalizeUri("TestWCFService.svc");
@@ -64,7 +68,7 @@ namespace CassiniDev.FixtureExamples.NUnit
         /// <summary>
         /// Will fail
         /// </summary>
-        [Test]
+        [Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
         public void WCFWithGeneratedClientHelloWorldWithArgsInOut()
         {
             Uri uri = NormalizeUri("TestWCFService.svc");
@@ -81,8 +85,8 @@ namespace CassiniDev.FixtureExamples.NUnit
         }
 
 
-
-
+        private IPAddress _ip;
+        private int _port;
         /// <summary>
         /// all WCF tests will fail on any but locahost/loopback - No protocol binding matches the given address.... 
         /// User xml web service for JSON until issue is resolved
@@ -90,14 +94,15 @@ namespace CassiniDev.FixtureExamples.NUnit
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            var ip = IPAddress.Parse("192.168.1.102");
+            Console.WriteLine("Setup your IP address in TestFixtureSetUp or these tests will fail.");
+            var ip = IPAddress.Parse("192.168.0.103");
             StartServer(@"..\..\..\CassiniDev.FixtureExamples.TestWeb", ip, GetPort(8080, 9000, ip), "/", null, false, 10000, 15000);
         }
 
         [TestFixtureTearDown]
         public void TestFixtureTearDown()
         {
-            StopServer();
+            //StopServer();
         }
 
         /// <summary>
@@ -251,10 +256,17 @@ namespace CassiniDev.FixtureExamples.NUnit
             Uri uri = NormalizeUri("TestWebService.asmx/HelloWorldWithArgsInOut");
             Dictionary<string, object> postData = new Dictionary<string, object>();
             postData.Add("args", new { Message = "HI!" });
+            
+            
             string json = HttpRequestHelper.AjaxApp(uri, postData, null);
-            Assert.AreEqual("{\"d\":{\"__type\":\"CassiniDev.FixtureExamples.TestWeb.HelloWorldArgs\",\"Message\":\"you said: HI!\"}}", json);
+            var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<AjaxWrapper<HelloWorldArgs>>(json);
+            Assert.AreEqual("you said: HI!", obj.d.Message);
         }
 
    
+    }
+    public class AjaxWrapper<T>
+    {
+        public T d;   
     }
 }
