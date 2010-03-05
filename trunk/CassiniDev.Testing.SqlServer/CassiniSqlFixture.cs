@@ -14,8 +14,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
+using Salient.SqlServer.Testing;
 
-namespace CassiniDev.Testing
+namespace CassiniDev.Testing.SqlServer
 {
     /// <summary>
     /// Made a go at spinning the server up from this process but after dealing with 
@@ -24,7 +25,7 @@ namespace CassiniDev.Testing
     /// to strictly format the console app's output and just spin up an external process. 
     /// Seems robust so far.
     /// </summary>
-    public partial class Fixture : IDisposable
+    public partial class CassiniSqlFixture : DatabaseFixture, IDisposable
     {
         private bool _disposed;
         private bool _hostAdded;
@@ -34,6 +35,18 @@ namespace CassiniDev.Testing
         private Thread _outputThread;
         private string _rootUrl;
         private Process _serverProcess;
+
+        public CassiniSqlFixture(string dataSource, string initialCatalog) : base(dataSource, initialCatalog)
+        {
+        }
+
+        public CassiniSqlFixture(string dataSource, string initialCatalog, string userId, string password) : base(dataSource, initialCatalog, userId, password)
+        {
+        }
+
+        public CassiniSqlFixture(string connectionString) : base(connectionString)
+        {
+        }
 
         /// <summary>
         /// The root URL of the running web application
@@ -247,7 +260,7 @@ namespace CassiniDev.Testing
             GC.SuppressFinalize(this);
         }
 
-        ~Fixture()
+        ~CassiniSqlFixture()
         {
             Dispose();
         }
