@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -21,11 +22,12 @@ namespace CassiniDev.FixtureExamples.VSTS
             return _fixture.NormalizeUri(relativeUrl);
         }
 
-        
+
         protected static void InitializeFixture()
         {
             _fixture = new Fixture();
-            _fixture.StartServer(@"..\..\..\CassiniDev.FixtureExamples.TestWeb\", IPAddress.Loopback, GetPort(8080, 9000, IPAddress.Loopback), "/", "localhost", false, 25000, 12000);
+            const string path = @"..\..\..\..\..\..\CassiniDev.FixtureExamples.TestWeb\";
+            _fixture.StartServer(path, IPAddress.Loopback, GetPort(8080, 9000, IPAddress.Loopback), "/", "localhost", false, 25000, 12000);
         }
 
         protected static void CleanupFixture()

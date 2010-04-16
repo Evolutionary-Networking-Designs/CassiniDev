@@ -17,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
+using Microsoft.Win32;
 using mshtml;
 
 namespace CassiniDev.Testing
@@ -37,6 +38,8 @@ namespace CassiniDev.Testing
     /// </summary>
     public class HttpRequestHelper : IDisposable
     {
+        public const string ContentTypeApplicationOctet = "application/octet-stream";
+        public const string ContentTypeMultiParFormData = "multipart/form-data;";
         public const string ContentTypeApplicationFormUTF8 = "application/x-www-form-urlencoded; charset=UTF-8";
         public const string ContentTypeApplicationJsonUTF8 = "application/json; charset=UTF-8";
         public const string ContentTypeTextJsonUTF8 = "text/json; charset=UTF-8";
@@ -100,7 +103,7 @@ namespace CassiniDev.Testing
         /// <param name="requestUri"></param>
         /// <param name="postData">Standard form values collection</param>
         /// <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
-        /// <returns></returns>
+        /// <returns>Response text</returns>
         public static string Post(Uri requestUri, NameValueCollection postData, CookieContainer cookies)
         {
             byte[] data = null;
@@ -110,6 +113,127 @@ namespace CassiniDev.Testing
             }
 
             return SendHttpRequest(requestUri, "POST", ContentTypeApplicationFormUTF8, data, cookies);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestUri"></param>
+        /// <param name="postData">Standard form values collection</param>
+        /// <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+        /// <param name="fileName">The physical path of the file to upload</param>
+        /// <param name="fileContentType">Optional. If omitted, the registry will be queried in an attempt to identify the content type for the file's extension. If indeterminable application/octet-stream will be submitted</param>
+        /// <param name="fileFieldName">Optional, a form field name to assign to the uploaded file data. If ommited the value 'file' will be submitted.</param>
+        /// <returns>Response Text</returns>
+        public static string Post(Uri requestUri, NameValueCollection postData, CookieContainer cookies, string fileName, string fileContentType, string fileFieldName)
+        {
+            using (var fileData = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                return Post(requestUri, postData, cookies, fileData, fileName, fileContentType, fileFieldName);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// Reference:
+        /// http://tools.ietf.org/html/rfc1867
+        /// http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.2
+        /// http://tools.ietf.org/html/rfc2388
+        /// </summary>
+        /// <param name="requestUri"></param>
+        /// <param name="postData">Standard form values collection</param>
+        /// <param name="cookies">Optional, can pass null. Used to send and retrieve cookies. Pass the same instance to subsequent calls to maintain state if required.</param>
+        /// <param name="fileData">An open, positioned stream containing the file data</param>
+        /// <param name="fileName">Optional, a name to assign to the file data. If ommited the value 'file' will be submitted.</param>
+        /// <param name="fileContentType">Optional. If omitted, application/octet-stream will be submitted.</param>
+        /// <param name="fileFieldName">Optional, a form field name to assign to the uploaded file data. If ommited the value 'file' will be submitted.</param>
+        /// <returns></returns>
+        public static string Post(Uri requestUri, NameValueCollection postData, CookieContainer cookies, Stream fileData, string fileName, string fileContentType, string fileFieldName)
+        {
+            HttpWebRequest webrequest = (HttpWebRequest)WebRequest.Create(requestUri);
+            
+            webrequest.Method = "POST";
+
+            if (cookies != null)
+            {
+                webrequest.CookieContainer = cookies;
+            }
+
+            string boundary = "----------" + DateTime.Now.Ticks.ToString("x");
+
+            webrequest.ContentType = "multipart/form-data; boundary=" + boundary;
+
+            StringBuilder sbHeader = new StringBuilder();
+
+            // add form fields, if any
+            if (postData != null)
+            {
+                foreach (string key in postData.AllKeys)
+                {
+                    string[] values = postData.GetValues(key);
+                    if (values != null)
+                        foreach (string value in values)
+                        {
+                            sbHeader.AppendFormat("--{0}\r\n", boundary);
+                            sbHeader.AppendFormat("Content-Disposition: form-data; name=\"{0}\";\r\n\r\n{1}\r\n", key, value);
+                        }
+                }
+            }
+
+            if (fileData != null)
+            {
+                sbHeader.AppendFormat("--{0}\r\n", boundary);
+                sbHeader.AppendFormat("Content-Disposition: form-data; name=\"{0}\"; {1}\r\n",
+                    string.IsNullOrEmpty(fileFieldName) ? "file" : fileFieldName,
+                    string.IsNullOrEmpty(fileName) ? "" : string.Format("filename=\"{0}\";", Path.GetFileName(fileName)));
+
+                sbHeader.AppendFormat("Content-Type: {0}\r\n\r\n",
+                    string.IsNullOrEmpty(fileContentType) ? "application/octet-stream" : fileContentType);
+            }
+
+            byte[] header = Encoding.UTF8.GetBytes(sbHeader.ToString());
+            byte[] footer = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+            long contentLength = header.Length + (fileData != null ? fileData.Length : 0) + footer.Length;
+
+            webrequest.ContentLength = contentLength;
+
+            string returnValue;
+            
+            using (Stream requestStream = webrequest.GetRequestStream())
+            {
+                requestStream.Write(header, 0, header.Length);
+                
+
+                if (fileData != null)
+                {
+                    // write the file data, if any
+                    byte[] buffer = new Byte[checked((uint)Math.Min(4096, (int)fileData.Length))];
+                    int bytesRead = 0;
+                    while ((bytesRead = fileData.Read(buffer, 0, buffer.Length)) != 0)
+                    {
+                        requestStream.Write(buffer, 0, bytesRead);
+                        
+                    }
+
+                }
+
+                // write footer
+                requestStream.Write(footer, 0, footer.Length);
+
+                // get the response
+                using (WebResponse response = webrequest.GetResponse())
+                {
+                    using (Stream responseStream = response.GetResponseStream())
+                    {
+                        using (StreamReader reader = new StreamReader(responseStream))
+                        {
+                            returnValue = reader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+
+            return returnValue;
         }
 
         /// <summary>
@@ -149,7 +273,7 @@ namespace CassiniDev.Testing
         public static string SendHttpRequest(Uri requestUri, string method, string contentType, byte[] postData,
                                              CookieContainer cookies)
         {
-            HttpWebRequest req = (HttpWebRequest) WebRequest.Create(requestUri);
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requestUri);
 
             // set the headers
             // TODO: provide built in useragent options
@@ -192,7 +316,7 @@ namespace CassiniDev.Testing
         /// </summary>
         public IHTMLDocument5 HTMLDocument5
         {
-            get { return (IHTMLDocument5) _doc2; }
+            get { return (IHTMLDocument5)_doc2; }
         }
 
         /// <summary>
@@ -200,7 +324,7 @@ namespace CassiniDev.Testing
         /// </summary>
         public IHTMLDocument4 HTMLDocument4
         {
-            get { return (IHTMLDocument4) _doc2; }
+            get { return (IHTMLDocument4)_doc2; }
         }
 
         /// <summary>
@@ -208,7 +332,7 @@ namespace CassiniDev.Testing
         /// </summary>
         public IHTMLDocument3 HTMLDocument3
         {
-            get { return (IHTMLDocument3) _doc2; }
+            get { return (IHTMLDocument3)_doc2; }
         }
 
         /// <summary>
@@ -231,8 +355,8 @@ namespace CassiniDev.Testing
 
         private static IHTMLDocument2 GetMsHtmlDocument(String source)
         {
-            IHTMLDocument2 rtn = (IHTMLDocument2) new HTMLDocument();
-            rtn.write(new object[] {source});
+            IHTMLDocument2 rtn = (IHTMLDocument2)new HTMLDocument();
+            rtn.write(new object[] { source });
             rtn.close();
             return rtn;
         }
@@ -341,7 +465,7 @@ namespace CassiniDev.Testing
             HtmlElementList rtn = new HtmlElementList();
 
             // Search through every known element in this document object
-            foreach (IHTMLElement element in (IHTMLElementCollection) _doc2.body.all)
+            foreach (IHTMLElement element in (IHTMLElementCollection)_doc2.body.all)
             {
                 // If HtmlElementSearchOptions.ElementTagName is not empty or null, it is a required search parameter
                 // Otherwise, any element tag type will be searched on
@@ -412,6 +536,41 @@ namespace CassiniDev.Testing
             if (foundElements.Count > 0) rtn = foundElements[0];
 
             return rtn;
+        }
+
+        public static string GetContentType(string fileName)
+        {
+            try
+            {
+                RegistryKey key = Registry.ClassesRoot.OpenSubKey(@"MIME\Database\Content Type");
+
+                if (key != null)
+                {
+                    foreach (string keyName in key.GetSubKeyNames())
+                    {
+
+                        RegistryKey subKey = key.OpenSubKey(keyName);
+                        if (subKey != null)
+                        {
+                            string subKeyValue = (string)subKey.GetValue("Extension");
+                            if (!string.IsNullOrEmpty(subKeyValue))
+                            {
+                                if (string.Compare(Path.GetExtension(fileName).ToUpperInvariant(), subKeyValue.ToUpperInvariant(), StringComparison.OrdinalIgnoreCase) == 0)
+                                {
+                                    return keyName;
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+            }
+// ReSharper disable EmptyGeneralCatchClause
+            catch {}
+// ReSharper restore EmptyGeneralCatchClause
+
+            return "";
         }
 
         #region Obsolete - Can use HttpWebRequest and just parse it with MSHTML

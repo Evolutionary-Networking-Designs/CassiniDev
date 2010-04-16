@@ -1,3 +1,16 @@
+﻿// /*!
+//  * Project: Salient.Web.HttpLib
+//  * http://salient.codeplex.com
+//  *
+//  * Copyright 2010, Sky Sanders
+//  * Dual licensed under the MIT or GPL Version 2 licenses.
+//  * http://salient.codeplex.com/license
+//  *
+//  * Date: April 11 2010 
+//  */
+
+#region
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -5,8 +18,11 @@ using System.Net;
 using System.ServiceModel;
 using CassiniDev.FixtureExamples.NUnit.TestWCFServiceReference;
 using CassiniDev.Testing;
-using mshtml;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using Salient.Web.HttpLib;
+
+#endregion
 
 namespace CassiniDev.FixtureExamples.NUnit
 {
@@ -14,79 +30,8 @@ namespace CassiniDev.FixtureExamples.NUnit
     /// All tests in one file spinning up one server.
     /// </summary>
     [TestFixture]
-    public class AllTestsExternalIP : Fixture
+    public class NewAllTestsExternalIP : Fixture
     {
-        //private Uri NormalizeUri(string relativePath)
-        //{
-        //    return new Uri(String.Format("http://{0}:{1}/{2}", _ip, _port,relativePath));
-        //}
-        /// <summary>
-        /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
-        /// </summary>
-        [Test, ExpectedException(typeof(WebException))]
-        public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorld()
-        {
-            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorld");
-            string json = HttpRequestHelper.AjaxTxt(uri, null, null);
-            Assert.AreEqual("{\"d\":\"Hello World\"}", json);
-        }
-
-        /// <summary>
-        /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
-        /// </summary>
-        [Test, ExpectedException(typeof(WebException))]
-        public void PostJsonGetJsonWithHttpRequestHelperWcfHelloWorldWithArgsInOut()
-        {
-            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorldWithArgsInOut");
-            Dictionary<string, object> postData = new Dictionary<string, object>();
-
-            // if you have a reference to the type expected you can serialize an instance
-            // or just simply create an anonymous type that is shaped like the type expected...
-            postData.Add("args", new { Message = "HI!" });
-
-            string json = HttpRequestHelper.AjaxTxt(uri, postData, null);
-
-            Assert.AreEqual("{\"d\":{\"__type\":\"HelloWorldArgs:#CassiniDev.FixtureExamples.TestWeb\",\"Message\":\"you said: HI!\"}}", json);
-        }
-
-        /// <summary>
-        /// Will fail
-        /// </summary>
-        [Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
-        public void WCFWithGeneratedClientHelloWorld()
-        {
-            Uri uri = NormalizeUri("TestWCFService.svc");
-            using (TestWCFServiceClient client = new TestWCFServiceClient(
-                new WSHttpBinding(), new EndpointAddress(uri)))
-            {
-                client.Open();
-                var result = client.HelloWorld();
-                Assert.AreEqual("Hello World", result);
-            }
-        }
-
-        /// <summary>
-        /// Will fail
-        /// </summary>
-        [Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
-        public void WCFWithGeneratedClientHelloWorldWithArgsInOut()
-        {
-            Uri uri = NormalizeUri("TestWCFService.svc");
-            using (TestWCFServiceClient client = new TestWCFServiceClient(
-                new WSHttpBinding(), new EndpointAddress(uri)))
-            {
-                client.Open();
-                TestWCFServiceReference.HelloWorldArgs args =
-                    new CassiniDev.FixtureExamples.NUnit.TestWCFServiceReference.HelloWorldArgs();
-                args.Message = "HEY";
-                HelloWorldArgs result = client.HelloWorldWithArgsInOut(args);
-                Assert.AreEqual("you said: HEY", result.Message);
-            }
-        }
-
-
-        private IPAddress _ip;
-        private int _port;
         /// <summary>
         /// all WCF tests will fail on any but locahost/loopback - No protocol binding matches the given address.... 
         /// User xml web service for JSON until issue is resolved
@@ -95,71 +40,96 @@ namespace CassiniDev.FixtureExamples.NUnit
         public void TestFixtureSetUp()
         {
             Console.WriteLine("Setup your IP address in TestFixtureSetUp or these tests will fail.");
-            var ip = IPAddress.Parse("192.168.0.103");
-            StartServer(@"..\..\..\CassiniDev.FixtureExamples.TestWeb", ip, GetPort(8080, 9000, ip), "/", null, false, 10000, 15000);
+            IPAddress ip = IPAddress.Parse("192.168.0.103");
+            StartServer(@"..\..\..\CassiniDev.FixtureExamples.TestWeb", ip, GetPort(8080, 9000, ip), "/", null, false,
+                        10000, 15000);
         }
 
         [TestFixtureTearDown]
         public void TestFixtureTearDown()
         {
-            //StopServer();
+            StopServer();
+        }
+
+        #region WCF Fails on external IP address
+
+        /// <summary>
+        /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
+        /// </summary>
+        [Test, ExpectedException(typeof(WebException))]
+        public void _FAILING_PostJsonGetJsonWithHttpRequestHelperWcfHelloWorld()
+        {
+            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorld");
+            string json = RequestFactory.CreatePostJsonText(uri).GetResponse().GetResponseStream().Text();
+            Assert.AreEqual("{\"d\":\"Hello World\"}", json);
         }
 
         /// <summary>
-        /// Inline javascript execution verified.
-        /// 
-        /// event driven script results not verified... assertion is expecting no result
-        /// please break this test if you can. lol.
-        /// 
-        /// If reliable JS execution is required you will need to use a UX testing framework like
-        /// Watin.
+        /// Will fail on any but locahost/loopback - No protocol binding matches the given address.... 
         /// </summary>
-        [Test]
-        public void GetHtmlWithHttpRequestHelperAndParseWithMSHTMLAndVerifyJavascriptExecution()
+        [Test, ExpectedException(typeof(WebException))]
+        public void _FAILING_PostJsonGetJsonWithHttpRequestHelperWcfHelloWorldWithArgsInOut()
         {
-            Uri jsUri = NormalizeUri("TestJavascript.htm");
+            Uri uri = NormalizeUri("TestAjaxService.svc/HelloWorldWithArgsInOut");
+            Dictionary<string, object> postData = new Dictionary<string, object>();
 
-            string responseText = HttpRequestHelper.Get(jsUri, null, null);
-            using (HttpRequestHelper browser = new HttpRequestHelper())
+            // if you have a reference to the type expected you can serialize an instance
+            // or just simply create an anonymous type that is shaped like the type expected...
+            postData.Add("args", new { Message = "HI!" });
+
+            string json = RequestFactory.CreatePostJsonText(uri).GetResponse().GetResponseStream().Text();
+
+            Assert.AreEqual(
+                "{\"d\":{\"__type\":\"HelloWorldArgs:#CassiniDev.FixtureExamples.TestWeb\",\"Message\":\"you said: HI!\"}}",
+                json);
+        }
+
+        /// <summary>
+        /// Will fail
+        /// </summary>
+        [Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
+        public void _FAILING_WCFWithGeneratedClientHelloWorld()
+        {
+            Uri uri = NormalizeUri("TestWCFService.svc");
+            using (TestWCFServiceClient client = new TestWCFServiceClient(
+                new WSHttpBinding(), new EndpointAddress(uri)))
             {
-                // parse the html in internet explorer
-                IHTMLDocument2 doc = browser.ParseHtml(responseText);
-
-                // get the resultant html
-                string content = doc.body.outerHTML;
-
-                Assert.IsTrue(content.IndexOf("HEY IM IN A SCRIPT") > 0, "inline script document.write not executed");
-                Assert.IsTrue(content.IndexOf("this is some text from javascript") == -1,
-                              "if failed then event driven script document.appendChile executed!");
+                client.Open();
+                string result = client.HelloWorld();
+                Assert.AreEqual("Hello World", result);
             }
         }
+
+        /// <summary>
+        /// Will fail
+        /// </summary>
+        [Test, ExpectedException(typeof(CommunicationObjectFaultedException))]
+        public void _FAILING_WCFWithGeneratedClientHelloWorldWithArgsInOut()
+        {
+            Uri uri = NormalizeUri("TestWCFService.svc");
+            using (TestWCFServiceClient client = new TestWCFServiceClient(
+                new WSHttpBinding(), new EndpointAddress(uri)))
+            {
+                client.Open();
+                HelloWorldArgs args =
+                    new HelloWorldArgs();
+                args.Message = "HEY";
+                HelloWorldArgs result = client.HelloWorldWithArgsInOut(args);
+                Assert.AreEqual("you said: HEY", result.Message);
+            }
+        }
+
+        
+        #endregion
 
         [Test]
         public void GetWebFormWithHttpRequestHelper()
         {
             Uri requestUri = NormalizeUri("default.aspx");
-            string responseText = HttpRequestHelper.Get(requestUri, null, null);
+            string responseText = RequestFactory.CreateGet(requestUri).GetResponse().GetResponseStream().Text();
             Assert.IsTrue(responseText.IndexOf("This is the default document of the TestWebApp") > 0);
         }
 
-        [Test]
-        public void GetWebFormWithHttpRequestHelperAndParseWithMSHTML()
-        {
-            Uri requestUri = NormalizeUri("default.aspx");
-
-            string responseText = HttpRequestHelper.Get(requestUri, null, null);
-            Assert.IsTrue(responseText.IndexOf("This is the default document of the TestWebApp") > 0);
-            using (HttpRequestHelper browser = new HttpRequestHelper())
-            {
-                // parse the html in internet explorer
-                IHTMLDocument2 doc = browser.ParseHtml(responseText);
-                // get the resultant html
-                string content = doc.body.outerHTML;
-                Assert.IsTrue(content.IndexOf("This is the default document of the TestWebApp") > 0);
-                IHTMLElement form = browser.FindElementByID("form1");
-                Assert.IsNotNull(form);
-            }
-        }
 
         /// <summary>
         /// Demonstrate the use of cookies across one or more http requests.
@@ -177,7 +147,7 @@ namespace CassiniDev.FixtureExamples.NUnit
             Uri requestUri = NormalizeUri("TestWebFormCookies1.aspx");
 
             // pass the cookie container with the requestUri
-            HttpRequestHelper.Get(requestUri, null, cookies);
+            RequestFactory.CreateGet(requestUri, null, cookies).GetResponse();
 
             // get the cookies for this path from the container
             CookieCollection mycookies = cookies.GetCookies(requestUri);
@@ -193,7 +163,7 @@ namespace CassiniDev.FixtureExamples.NUnit
             requestUri = NormalizeUri("TestWebFormCookies2.aspx");
 
             // just pass the same CookieContainer
-            HttpRequestHelper.Get(requestUri, null, cookies);
+            RequestFactory.CreateGet(requestUri, null, cookies).GetResponse();
 
             //....
             mycookies = cookies.GetCookies(requestUri);
@@ -214,7 +184,7 @@ namespace CassiniDev.FixtureExamples.NUnit
         public void GetWebFormWithHttpWebRequest()
         {
             Uri requestUri = NormalizeUri("default.aspx");
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requestUri);
+            HttpWebRequest req = (HttpWebRequest) WebRequest.Create(requestUri);
             string responseText;
             using (WebResponse response = req.GetResponse())
             {
@@ -227,13 +197,12 @@ namespace CassiniDev.FixtureExamples.NUnit
             Assert.IsTrue(responseText.IndexOf("This is the default document of the TestWebApp") > 0);
         }
 
-   
 
         [Test]
         public void XmlWebServicePostFormGetXmlHelloWorld()
         {
             Uri uri = NormalizeUri("TestWebService.asmx/HelloWorld");
-            string xml = HttpRequestHelper.Post(uri, null, null);
+            string xml = RequestFactory.CreatePostForm(uri).GetResponse().GetResponseStream().Text();
             //
             Assert.IsTrue(xml.IndexOf("<string xmlns=\"http://tempuri.org/\">Hello World</string>") > -1);
         }
@@ -246,7 +215,7 @@ namespace CassiniDev.FixtureExamples.NUnit
         public void XmlWebServicePostJsonGetJsonHelloWorld()
         {
             Uri uri = NormalizeUri("TestWebService.asmx/HelloWorld");
-            string json = HttpRequestHelper.AjaxApp(uri, null, null);
+            string json = RequestFactory.CreatePostJsonApp(uri).GetResponse().GetResponseStream().Text();
             Assert.AreEqual("{\"d\":\"Hello World\"}", json);
         }
 
@@ -255,14 +224,12 @@ namespace CassiniDev.FixtureExamples.NUnit
         {
             Uri uri = NormalizeUri("TestWebService.asmx/HelloWorldWithArgsInOut");
             Dictionary<string, object> postData = new Dictionary<string, object>();
-            postData.Add("args", new { Message = "HI!" });
-            
-            
-            string json = HttpRequestHelper.AjaxApp(uri, postData, null);
-            var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<AjaxWrapper<HelloWorldArgs>>(json);
+            postData.Add("args", new {Message = "HI!"});
+
+
+            string json = RequestFactory.CreatePostJsonApp(uri, postData).GetResponse().GetResponseStream().Text();
+            AjaxWrapper<HelloWorldArgs> obj = JsonConvert.DeserializeObject<AjaxWrapper<HelloWorldArgs>>(json);
             Assert.AreEqual("you said: HI!", obj.d.Message);
         }
-
-   
     }
 }
