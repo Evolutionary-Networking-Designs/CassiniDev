@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="Salient.Web.HttpLib.TestSite.AjaxService" CodeBehind="AjaxService.svc.cs" %>

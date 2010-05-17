@@ -31,7 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Salient.SqlServer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -46,17 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CassiniSqlFixture.cs" />
+    <None Include="CassiniSqlFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="References\Salient.SqlServer.dll" />
-    <Content Include="References\Salient.SqlServer.pdb" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CassiniDev-console\CassiniDev-console.csproj">
-      <Project>{539F0304-F14A-413F-A56A-AFB7724EA1A7}</Project>
-      <Name>CassiniDev-console</Name>
+    <ProjectReference Include="..\..\Salient.Data\Salient.SqlServer\Salient.SqlServer.csproj">
+      <Project>{A4FDC529-7D84-4D7B-ABC7-063411365402}</Project>
+      <Name>Salient.SqlServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -68,8 +63,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)CassiniDev.Testing.SqlServer.dll" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-xcopy "$(TargetDir)CassiniDev.Testing.SqlServer.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-</PostBuildEvent>
+    <PostBuildEvent>rem xcopy "$(TargetDir)CassiniDev.Testing.SqlServer.dll" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+rem xcopy "$(TargetDir)CassiniDev.Testing.SqlServer.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
   </PropertyGroup>
 </Project>
