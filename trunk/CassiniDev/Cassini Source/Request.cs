@@ -796,6 +796,23 @@ namespace Cassini {
                         return;
                     }
                     break;
+
+                // FIX: #12506
+                case HttpWorkerRequest.HeaderContentType:
+                    
+                    string contentType=null;
+
+                    if(value=="application/octet-stream")
+                    {
+                        // application/octet-stream is default for unknown so lets
+                        // take a shot at determining the type.
+                        // don't do this for other content-types as you are going to
+                        // end up sending text/plain for endpoints that are handled by
+                        // asp.net such as .aspx, .asmx, .axd, etc etc
+                        contentType = Connection.GetContentType(_pathTranslated);    
+                    }
+                    value = contentType ?? value;
+                    break;
             }
 
             _responseHeadersBuilder.Append(GetKnownResponseHeaderName(index));

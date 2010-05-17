@@ -27,21 +27,22 @@ namespace Cassini
     /// 12/29/09 sky: Extracted and implemented IServer interface to facilitate stubbing for tests
     /// 
     /// </summary>
-    public partial class Server : IServer
+    public partial class Server : IDisposable
     {
         private bool _disposed;
-        private string _hostName;
-        private IPAddress _ipAddress;
+        private readonly string _hostName;
+        private readonly IPAddress _ipAddress;
         private int _requestCount;
-        private int _timeout;
+        private readonly int _timeout;
         private Timer _timer;
 
-        public Server(ServerArguments args)
-            : this(args.Port, args.VirtualPath, args.ApplicationPath)
+
+        public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName, int timeout)
+            : this(port, virtualPath, physicalPath)
         {
-            _ipAddress = args.IPAddress;
-            _hostName = args.Hostname;
-            _timeout = args.TimeOut;
+            _ipAddress = ipAddress;
+            _hostName = hostName;
+            _timeout = timeout;
         }
 
         #region IServer Members
@@ -95,19 +96,19 @@ namespace Cassini
 
         private void TimedOut(object ignored)
         {
-            
+
             Stop();
         }
 
         private void DecrementRequestCount()
         {
             _requestCount--;
-            
+
             if (_requestCount < 1)
             {
                 _requestCount = 0;
 
-                
+
 
                 if (_timeout > 0)
                 {

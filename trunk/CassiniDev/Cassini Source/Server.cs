@@ -106,7 +106,8 @@ namespace Cassini
 
                 return _port != 80 ?
                     String.Format("http://{0}:{1}{2}", hostname, _port, _virtualPath) :
-                    string.Format("http://{0}.{1}", hostname, _virtualPath);
+                    //FIX: #12017 - TODO:TEST
+                    string.Format("http://{0}{1}", hostname, _virtualPath);
 
             }
         }

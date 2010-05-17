@@ -10,5 +10,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Sky Sanders. All Rights Reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("3.5.0.5")]
+[assembly: AssemblyVersion("3.5.1.0")]
 [assembly: ComVisible(false)]

@@ -24,17 +24,18 @@
     <SccProvider>
     </SccProvider>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\CassiniDev.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;GUI</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\CassiniDev.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,22 +46,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft.NET\Primary Interop Assemblies\Microsoft.mshtml.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cassini Source\ByteParser.cs">
@@ -77,24 +69,24 @@
     <Compile Include="CommandLineParser\DefaultArgumentAttribute.cs" />
     <Compile Include="CommandLineParser\ErrorReporter.cs" />
     <Compile Include="CommandLineParser\Parser.cs" />
-    <Compile Include="Testing\Fixture.cs" />
-    <Compile Include="Testing\HttpRequestHelper.cs" />
-    <Compile Include="Views\ConsoleView.cs" />
-    <Compile Include="ServiceFactory.cs" />
-    <Compile Include="Interfaces.cs" />
-    <Compile Include="Presenter.cs" />
+    <Compile Include="NetworkUtils.cs" />
+    <Compile Include="Program.cs" />
+    <None Include="..\CasssiniDev-DevKey.snk">
+      <Link>CasssiniDev-DevKey.snk</Link>
+    </None>
+    <None Include="ServerArguments.cs" />
     <Compile Include="Server.cs" />
-    <Compile Include="Rules.cs" />
+    <Compile Include="HostsFile.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="CommandLineParser\ArgumentAttribute.cs" />
     <Compile Include="Cassini Source\Connection.cs">
       <SubType>
       </SubType>
     </Compile>
-    <Compile Include="Views\FormsView.cs">
+    <Compile Include="FormsView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\FormsView.Designer.cs">
+    <Compile Include="FormsView.Designer.cs">
       <DependentUpon>FormsView.cs</DependentUpon>
     </Compile>
     <Compile Include="Cassini Source\Host.cs">
@@ -105,7 +97,6 @@
       <SubType>
       </SubType>
     </Compile>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -129,7 +120,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\FormsView.resx">
+    <EmbeddedResource Include="FormsView.resx">
       <DependentUpon>FormsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -147,8 +138,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)CassiniDev.exe" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-xcopy "$(TargetDir)CassiniDev.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-</PostBuildEvent>
+    <PostBuildEvent>rem - xcopy "$(TargetDir)CassiniDev.exe" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+rem - xcopy "$(TargetDir)CassiniDev.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
+xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
   </PropertyGroup>
 </Project>

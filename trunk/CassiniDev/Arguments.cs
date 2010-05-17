@@ -9,26 +9,15 @@
 //  * You must not remove this notice, or any other, from this software.
 //  *
 //  * **********************************************************************************/
+using System;
+using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Cassini.CommandLine;
 
 namespace CassiniDev
 {
-    /// <summary>
-    /// Server Constructor arguments
-    /// </summary>
-    public class ServerArguments
-    {
-        public ushort Port { get; set; }
-        public string VirtualPath { get; set; }
-        public string ApplicationPath { get; set; }
-        public IPAddress IPAddress { get; set; }
-        public string Hostname { get; set; }
-        public int TimeOut { get; set; }
-    }
-
-
     /// <summary>
     /// Command line arguments
     /// </summary>
@@ -54,15 +43,15 @@ namespace CassiniDev
             HelpText = "If IPMode 'Any' or 'LoopBack' are specified use the V6 address")] public bool IPv6;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "p",
-            HelpText = "Port to listen to. Ignored if PortMode=FirstAvailable.")] public ushort Port;
+            HelpText = "Port to listen to. Ignored if PortMode=FirstAvailable.")] public int Port;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "pm", DefaultValue = PortMode.FirstAvailable, HelpText = "")] public PortMode PortMode;
 
-        [Argument(ArgumentType.AtMostOnce, ShortName = "pre", DefaultValue = (ushort) 9000,
-            HelpText = "End of port range. Ignored if PortMode != FirstAvailable")] public ushort PortRangeEnd = 9000;
+        [Argument(ArgumentType.AtMostOnce, ShortName = "pre", DefaultValue = (int) 9000,
+            HelpText = "End of port range. Ignored if PortMode != FirstAvailable")] public int PortRangeEnd = 9000;
 
-        [Argument(ArgumentType.AtMostOnce, ShortName = "prs", DefaultValue = (ushort) 8080,
-            HelpText = "Start of port range. Ignored if PortMode != FirstAvailable")] public ushort PortRangeStart =
+        [Argument(ArgumentType.AtMostOnce, ShortName = "prs", DefaultValue = (int) 8080,
+            HelpText = "Start of port range. Ignored if PortMode != FirstAvailable")] public int PortRangeStart =
                 8080;
 
         [DefaultArgument(ArgumentType.AtMostOnce, DefaultValue = RunMode.Server, HelpText = "[Server|Hostsfile]")] public RunMode RunMode;
@@ -144,5 +133,124 @@ namespace CassiniDev
             }
             return sb.ToString().Trim();
         }
+
+        /// <summary>
+        /// </summary>
+        public void Validate()
+        {
+            if (string.IsNullOrEmpty(ApplicationPath))
+            {
+                throw new CassiniException("ApplicationPath is null.", ErrorField.ApplicationPath);
+            }
+
+            if (!Directory.Exists(ApplicationPath))
+            {
+                throw new CassiniException("ApplicationPath does not exist.", ErrorField.ApplicationPath);
+            }
+
+            ApplicationPath = ApplicationPath.Trim('\"').TrimEnd('\\');
+
+            if (!string.IsNullOrEmpty(VirtualPath))
+            {
+                VirtualPath = VirtualPath.Trim('\"');
+            }
+
+            if (string.IsNullOrEmpty(VirtualPath) || !VirtualPath.StartsWith("/"))
+            {
+                throw new CassiniException("Invalid VPath", ErrorField.VirtualPath);
+            }
+
+
+            if (AddHost && string.IsNullOrEmpty(HostName))
+            {
+                throw new CassiniException("Invalid Hostname", ErrorField.HostName);
+            }
+
+            IPAddress ip = ParseIP(IPMode, IPv6, IPAddress);
+
+            switch (PortMode)
+            {
+                case PortMode.FirstAvailable:
+
+                    if (PortRangeStart < 1)
+                    {
+                        throw new CassiniException("Invalid port.", ErrorField.PortRangeStart);
+                    }
+
+                    if (PortRangeEnd < 1)
+                    {
+                        throw new CassiniException("Invalid port.", ErrorField.PortRangeEnd);
+                    }
+
+                    if (PortRangeStart > PortRangeEnd)
+                    {
+                        throw new CassiniException("Port range end must be equal or greater than port range start.",
+                                                   ErrorField.PortRange);
+                    }
+                    if (CassiniNetworkUtils.GetAvailablePort(PortRangeStart, PortRangeEnd, ip, true) == 0)
+                    {
+                        throw new CassiniException("No available port found.", ErrorField.PortRange);
+                    }
+                    break;
+                case PortMode.Specific:
+                    // start waiting....
+                    //TODO: design this hack away.... why am I waiting in a validation method?
+                    int now = Environment.TickCount;
+
+                    // wait until either 1) the specified port is available or 2) the specified amount of time has passed
+                    while (Environment.TickCount < now + WaitForPort &&
+                           CassiniNetworkUtils.GetAvailablePort(Port, Port, ip, true) != Port)
+                    {
+                        Thread.Sleep(100);
+                    }
+
+                    // is the port available?
+                    if (CassiniNetworkUtils.GetAvailablePort(Port, Port, ip, true) != Port)
+                    {
+                        throw new CassiniException("Port is in use.", ErrorField.Port);
+                    }
+                    break;
+                default:
+                    throw new CassiniException("Invalid PortMode", ErrorField.None);
+            }
+        }
+
+
+        /// <summary>
+        /// Converts CommandLineArgument values to an IP address if possible.
+        /// Throws Exception if not.
+        /// </summary>
+        /// <param name="ipmode"></param>
+        /// <param name="v6"></param>
+        /// <param name="ipString"></param>
+        /// <returns></returns>
+        /// <exception cref="CassiniException">If IPMode is invalid</exception>
+        /// <exception cref="CassiniException">If IPMode is 'Specific' and ipString is invalid</exception>
+        public static IPAddress ParseIP(IPMode ipmode, bool v6, string ipString)
+        {
+            IPAddress ip;
+            switch (ipmode)
+            {
+                case IPMode.Loopback:
+
+                    ip = v6 ? System.Net.IPAddress.IPv6Loopback : System.Net.IPAddress.Loopback;
+                    break;
+                case IPMode.Any:
+                    ip = v6 ? System.Net.IPAddress.IPv6Any : System.Net.IPAddress.Any;
+                    break;
+                case IPMode.Specific:
+
+                    if (!System.Net.IPAddress.TryParse(ipString, out ip))
+                    {
+                        throw new CassiniException("Invalid IP Address", ErrorField.IPAddress);
+                    }
+                    break;
+                default:
+                    throw new CassiniException("Invalid IPMode", ErrorField.None);
+            }
+            return ip;
+        }
+
+ 
     }
 }
