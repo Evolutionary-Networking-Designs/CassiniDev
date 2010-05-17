@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{511D05E1-3A2C-44F1-A814-32150146344B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CassiniDev</RootNamespace>
+    <AssemblyName>CassiniDev4</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CassiniDev\Arguments.cs">
+      <Link>Arguments.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Cassini Source\ByteParser.cs">
+      <Link>Cassini Source\ByteParser.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Cassini Source\ByteString.cs">
+      <Link>Cassini Source\ByteString.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Cassini Source\Connection.cs">
+      <Link>Cassini Source\Connection.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Cassini Source\Host.cs">
+      <Link>Cassini Source\Host.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Cassini Source\Messages.cs">
+      <Link>Cassini Source\Messages.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Cassini Source\Request.cs">
+      <Link>Cassini Source\Request.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Cassini Source\Server.cs">
+      <Link>Cassini Source\Server.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\CommandLineParser\ArgumentAttribute.cs">
+      <Link>CommandLineParser\ArgumentAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\CommandLineParser\ArgumentsAttribute.cs">
+      <Link>CommandLineParser\ArgumentsAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\CommandLineParser\ArgumentType.cs">
+      <Link>CommandLineParser\ArgumentType.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\CommandLineParser\DefaultArgumentAttribute.cs">
+      <Link>CommandLineParser\DefaultArgumentAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\CommandLineParser\ErrorReporter.cs">
+      <Link>CommandLineParser\ErrorReporter.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\CommandLineParser\Parser.cs">
+      <Link>CommandLineParser\Parser.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Enums.cs">
+      <Link>Enums.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Exceptions.cs">
+      <Link>Exceptions.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\FormsView.cs">
+      <Link>FormsView.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="..\CassiniDev\FormsView.designer.cs">
+      <Link>FormsView.designer.cs</Link>
+      <DependentUpon>FormsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\CassiniDev\HostsFile.cs">
+      <Link>HostsFile.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\NetworkUtils.cs">
+      <Link>NetworkUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\Server.cs">
+      <Link>Server.cs</Link>
+    </Compile>
+    <Compile Include="..\CassiniDev\ServerArguments.cs">
+      <Link>ServerArguments.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="..\CassiniDev\FormsView.resx">
+      <Link>FormsView.resx</Link>
+      <DependentUpon>FormsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="..\CasssiniDev-DevKey.snk">
+      <Link>CasssiniDev-DevKey.snk</Link>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
