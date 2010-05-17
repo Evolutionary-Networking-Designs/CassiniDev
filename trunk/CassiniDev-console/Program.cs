@@ -43,6 +43,11 @@ namespace CassiniDev
                                 CassiniNetworkUtils.GetAvailablePort(args.PortRangeStart, args.PortRangeEnd, ip, true) : 
                                 args.Port;
 
+                            if(args.AddHost)
+                            {
+                                HostsFile.AddHostEntry(ip.ToString(), args.HostName);
+                            }
+
                             using (var server =
                                 new Server(port, args.VirtualPath, args.ApplicationPath,
                                     ip, args.HostName, args.TimeOut))

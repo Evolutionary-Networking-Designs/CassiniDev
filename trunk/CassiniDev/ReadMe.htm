@@ -1,0 +1,612 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <base target="_blank" />
+    <title>CassiniDev 3.5.0.4</title>
+    <style type="text/css">
+        /*<![CDATA[*/html
+        {
+            color: #000;
+            background: #FFF;
+        }
+        body, div, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td
+        {
+            margin: 0;
+            padding: 0;
+        }
+        /*
+dl, dt, dd, ul, ol, li
+{
+	margin: 0;
+	padding: 0;
+}
+*/table
+        {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        fieldset, img
+        {
+            border: 0;
+        }
+        address, caption, cite, code, dfn, em, strong, th, var
+        {
+            font-style: normal;
+            font-weight: normal;
+        }
+        /*
+li
+{
+	list-style: none;
+}
+*/caption, th
+        {
+            text-align: left;
+        }
+        h1, h2, h3, h4, h5, h6
+        {
+            font-size: 100%;
+            font-weight: normal;
+        }
+        q:before, q:after
+        {
+            content: '';
+        }
+        abbr, acronym
+        {
+            border: 0;
+            font-variant: normal;
+        }
+        sup
+        {
+            vertical-align: text-top;
+        }
+        sub
+        {
+            vertical-align: text-bottom;
+        }
+        input, textarea, select
+        {
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+        }
+        input, textarea, select
+        { *font-size:100%;}
+        legend
+        {
+            color: #000;
+        }
+        small
+        {
+            font-size: smaller;
+        }
+        big
+        {
+            font-size: larger;
+        }
+        h1
+        {
+            font-size: xx-large;
+        }
+        h2
+        {
+            font-size: x-large;
+        }
+        h3
+        {
+            font-size: large;
+            border-bottom: 1px solid #AAAAAA;
+        }
+        h4
+        {
+            font-size: medium;
+        }
+        h5
+        {
+            font-size: small;
+        }
+        h6
+        {
+            font-size: xx-small;
+        }
+        font[size=1]
+        {
+            font-size: xx-small;
+        }
+        font[size=2]
+        {
+            font-size: small;
+        }
+        font[size=3]
+        {
+            font-size: medium;
+        }
+        font[size=4]
+        {
+            font-size: large;
+        }
+        font[size=5]
+        {
+            font-size: x-large;
+        }
+        font[size=6]
+        {
+            font-size: xx-large;
+        }
+        font[size=7]
+        {
+            font-size: 300%;
+        }
+        font[size=-1]
+        {
+            font-size: smaller;
+        }
+        font[size=-2]
+        {
+            font-size: 60%;
+        }
+        /*
+end reset
+*/body
+        {
+            font: 13px/1.231 Verdana,Geneva,Arial,Helvetica,clean,sans-serif; *font-size:small;*font:x-small;}
+        select, input, button, textarea
+        {
+            font-family: 99% Verdana,Geneva,Arial,Helvetica,clean,sans-serif;
+        }
+        table
+        {
+            font-size: inherit;
+            font: 100%;
+        }
+        .code, pre, code, kbd, samp, tt
+        {
+            font-family: Consolas, Monaco , "Bitstream Vera Sans Mono" , "Courier New" , Courier, monospace !important; *font-size:108%;line-height:100%;}
+        blockquote
+        {
+            background-color: #EEEEEE;
+            border-color: -moz-use-text-color -moz-use-text-color -moz-use-text-color #CCCCCC;
+            border-style: none none none solid;
+            border-width: 0 0 0 3px;
+            margin: .5em;
+            padding: .5em;
+            margin-left: 2em;
+        }
+        /*]]>*/
+        .style1
+        {
+            font-size: x-small;
+        }
+    </style>
+</head>
+<body>
+    <div class="Section1">
+        <div>
+            <h2>
+                CassiniDev 3.5.1.0/4.0.1.0 
+                beta</h2>
+        </div>
+        <h5>
+            <i>Cassini for Developers and Testers:&nbsp; <a href="http://cassinidev.codeplex.com/">
+                http://cassinidev.codeplex.com</a></i></h5>
+        <p>
+            &nbsp;</p>
+        <p>
+            CassiniDev is a branch of Microsoft&#39;s Cassini sample.
+        </p>
+        <p>
+            &nbsp;</p>
+        <p>
+            The goal of the project is to provide a robust web host that addresses many of 
+            the limitations and difficulties encountered when using Cassini and/or Visual 
+            Studio Development Server both as a standalone executable and in automated 
+            testing scenarios.</p>
+        <p>
+            &nbsp;</p>
+        <h4>
+            Enhanced Hosting Options</h4>
+        <ul>
+            <li>Full support for any IP address. Not limited to localhost. 
+                <br />
+                <span class="style1">NOTE: Due to an intentional limitation in 
+                SimpleWorkerRequest, WCF content is not servable on other than the loopback 
+                (localhost)</span></li>
+            <li>HostName support with option to temporarily add hosts file entry.</li>
+            <li>Port scan option. Dynamically assign an available port when specific port is not
+                required or known to be available.</li>
+            <li>WaitOnPort: Length of time, in ms, to wait for specific port to become available.</li>
+            <li>TimeOut: Length of time, in ms, to sit idle before stopping server.</li>
+            <li>Single file GUI and Console applications and Assembly file.</li>
+        </ul>
+        <p>
+            &nbsp;</p>
+        <h4>
+            Robust Testing Functionality</h4>
+        <p>
+            &nbsp;</p>
+        <p>
+            Two tests fixtures and usage examples are included to enable reliable automation 
+            of CassiniDev in testing scenarios.
+        </p>
+        <ul>
+            <li>CassiniDevServerOP controls a shelled instance of CassiniDev-console that is run 
+                out-of-process.</li>
+            <li>CassiniDevServer wraps CassiniDev-lib which provides an in-process server 
+                suitable for debugging tests and is the preferred method of usage.</li>
+        </ul>
+        <h5>
+            Confirmed Testing Scenarios:</h5>
+        <ul>
+            <li>MSTests using Visual Studio Test Runner.</li>
+            <li>MSTest tests using all TestDriven runner and coverage options.</li>
+            <li>NUnit tests using NUnit GUI and NUnit console.</li>
+            <li>NUnit tests using NUnit VS integration</li>
+            <li>NUnit tests using Resharper VS integration</li>
+            <li>NUnit tests using all TestDriven runner and coverage options.</li>
+            <li>NUnit tests in TeamCity pulling from CodePlex</li>
+        </ul>
+        <div>
+            <hr />
+            <h4>
+                &nbsp;</h4>
+        </div>
+        <h4>
+            Command Line Argument Reference:</h4>
+        &nbsp;
+        <table border="1" cellspacing="0" cellpadding="0">
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/?</strong></p>
+                </td>
+                <td valign="top">
+                    <p>
+                        Display Usage</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/ApplicationPath:</strong>&lt;string&gt;</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /a:)</p>
+                    <p>
+                        NOTE: Omit trailing slash from quoted paths</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/VirtualPath:</strong>&lt;string&gt;</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /v:)</p>
+                    <p>
+                        Default value: '/'</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/HostName:</strong>&lt;string&gt;</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /h:)</p>
+                    <p>
+                        Is used to construct RootUrl for hosted application. HostName is optional unless
+                        AddHost is true. If null, &#39;localhost&#39; or IP
+                        Address are used.</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/AddHost</strong>[+|-]</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /ah:)</p>
+                    <p>
+                        Default value: '-'</p>
+                    <p>
+                        Add temporary entry to hosts file to facilitate named DNS resolution. Entry is removed
+                        when server is stopped. Write permissions to the hosts file are required.</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/IPMode:</strong>{Loopback|Any|Specific}</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /im:)</p>
+                    <p>
+                        Default value: 'Loopback'</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/IPAddress:</strong>&lt;string&gt;</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /i:)</p>
+                    <p>
+                        Ignored unless IPMode = &#39;Specific&#39;</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/IPv6</strong>[+|-]</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /v6:)</p>
+                    <p>
+                        Default value:'-'</p>
+                    <p>
+                        Ignored unless IPMode = &#39;Any&#39; or &#39;Specific&#39;</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/PortMode:</strong>{FirstAvailable|Specific}</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /pm:)</p>
+                    <p>
+                        Default value:'FirstAvailable'</p>
+                    <p>
+                        If PortMode = &#39;FirstAvailable&#39; the specified
+                        port range is scanned for the first available port.</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/Port:</strong>{1|65535}</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /p:)</p>
+                    <p>
+                        Ignored unless PortMode = &#39;Specific&#39;</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/PortRangeEnd:</strong> {1|65535}</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /pre:)</p>
+                    <p>
+                        Default value:'9000'</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/PortRangeStart:</strong> &lt;ushort&gt;</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /prs:)</p>
+                    <p>
+                        Default value:'8080'</p>
+                    <p>
+                        &nbsp;</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/WaitForPort:</strong> &lt;int&gt;</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /w:)</p>
+                    <p>
+                        Default value:'0'</p>
+                    <p>
+                        Length of time, in ms, to wait for specific port to become available. 0 = no wait.</p>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <p>
+                        <strong>/TimeOut:</strong> &lt;int&gt;</p>
+                </td>
+                <td valign="top">
+                    <p>
+                        (short form /t:)</p>
+                    <p>
+                        Default value:'0'</p>
+                    <p>
+                        Length of time, in ms, to sit idle before stopping server. 0 = no timeout.</p>
+                </td>
+            </tr>
+        </table>
+        <h4>
+            &nbsp;</h4>
+        <h4>
+            Usage Examples:</h4>
+        <ul>
+            <li><strong>CassiniDev</strong><br />
+                <span class="style1">Start GUI application idle. </span> </li>
+            <li><strong>/a:c:\projects</strong><br />
+                <span class="style1">Start GUI or console application auto hosting c:\projects on <a href="http://localhost">
+                    http://localhost</a> and the first available port starting with 8080. </span> </li>
+            <li><strong>CassiniDev</strong> <strong>/a:c:\projects /pm:Specific /p:8080</strong><br />
+                <span class="style1">Start GUI or console application auto hosting c:\projects on 
+                </span> <a href="http://localhost:8080/myapp">
+                    <span class="style1">http://localhost:8080/</span></a>.</li>
+            <li><strong>CassiniDev</strong> <strong>/a:c:\projects /im:Specific /i:192.168.0.1 /pm:Specific
+                /p:81 /v:/myapp /ah+ /h:mycomputer.com</strong><br />
+                <span class="style1">Start GUI or console application auto hosting c:\projects on <a href="http://mycomputer.com:81/myapp">
+                    http://mycomputer.com:81/myapp</a> and add hosts file entry.</span></li>
+        </ul>
+        <hr />
+        <p>
+            &nbsp;</p>
+        <h4>
+            New in CassiniDev v3.5.1.0/v4.0.1.0 beta</h4>
+        <ul>
+            <li>Added .Net 4 / VS10 build.</li>
+            <li>Simplified test fixtures.</li>
+            <li>Un-Refactored the not-so-simple MVP pattern to reduce code bloat and complexity.</li>
+            <li>Added content-type support for a wide variety of files previously not supported 
+                by Cassini. Thanks Zippy.</li>
+        </ul>
+        <hr />
+        <p>
+            &nbsp;</p>
+        <h4>
+            New in CassiniDev v3.5.0.5</h4>
+        <ul>
+            <li>Reintroduced the Lib project and signed all</li>
+            <li>Implemented the CassiniSqlFixture - works great, as far as i can tell, just whipped
+                it up to support a test case and I like it, build a disposable sql database, spin
+                up a web server and shut it all down disposed. What's not to like?</li>
+            <li>Fixed bug in Fixture: IPMode, PortMode, Timeout and WaitForPort were not being set
+                properly.</li>
+            <li>Reintroduced library project, set build events to build a binary release directory
+                for use as external for Salient.WebTest</li>
+            <li>Removed some faulty debug code and cleaned up a stupid last minute mistake r.e.
+                path</li>
+            <li>Fixed typo in readme. Quoted paths are allowed on command line, just be sure to
+                omit trailing slash or it will be interpreted as an escape.</li>
+            <li>Refactored to a simple MVP pattern with a simple Service Locator/Abstract Factory
+                class to facilitate testing.</li>
+        </ul>
+        <hr />
+        <p>
+            &nbsp;</p>
+        <h4>
+            New in CassiniDev v3.5.0.4</h4>
+        <ul>
+            <li>Added Cassini hosting Fixture and supporting classes to facilitate use of CassiniDev
+                in testing scenarios
+                <ul>
+                    <li>While CassiniDev and CassiniDev-console may be referenced as a library it is not 
+                        recommended for testing scenarios.<br />
+                        A fixture class has been provided (CassiniDev.Testing.Fixture)
+                        that reliably hosts the console application in a separate process.</li>
+                </ul>
+            </li>
+            <li>Include test projects demonstrating some possible scenarios for use of CassiniDev
+                in integration/interaction/smoke testing of web based resources.</li>
+        </ul>
+        <hr />
+        <p>
+            &nbsp;</p>
+        <h4>
+            New in CassiniDev v3.5.0.3</h4>
+        <ul>
+            <li>Improved command line parsing.</li>
+            <li>Console version added for use in headless processes
+                <ul>
+                    <li>The console application can be run in a non-interactive session and requires that
+                        all supplied arguments are valid for the process to start.</li>
+                    <li>The GUI application will reject invalid arguments with a dialog notification and
+                        present the UI for modification of arguments.</li>
+                </ul>
+            </li>
+            <li>Both versions are standalone and require no GAC assembly.</li>
+            <li>Implemented arbitrary IP use including both IPv4 and IPv6 Any and Loopback.</li>
+            <li>Added port scanning to allow dynamic allocation of first available port in specified
+                range.</li>
+            <li>Added hosts file utility. CassiniDev can dynamically add a temporary hosts file
+                entry to allow dns resolution of application specific domains.</li>
+            <li>Implemented support for relative paths.</li>
+        </ul>
+        <hr />
+        <p>
+            &nbsp;</p>
+        <h4>
+            Branched from <a href="http://blogs.msdn.com/dmitryr/archive/2009/04/23/cassini-support-for-friendly-urls-routing.aspx">
+                Cassini v3.5.0.2</a></h4>
+        <p>
+            &nbsp;</p>
+        <hr />
+        <p>
+            &nbsp;</p>
+        &nbsp;
+        <h4>
+            New in Cassini v3.5.0.2</h4>
+        <ul>
+            <li>Fix for the default documents.</li>
+        </ul>
+        <hr />
+        <p>
+            &nbsp;</p>
+        <h4>
+            New in Cassini v3.5.0.1</h4>
+        <ul>
+            <li>Support for MVC friendly URLs (directory listing only overrides 404 responses for
+                directories)</li>
+        </ul>
+        <hr />
+        <p>
+            &nbsp;</p>
+        <h4>
+            New in Cassini v3.5</h4>
+        <ul>
+            <li>Runs as a single EXE -- does not require an assembly in GAC</li>
+            <li>Supported IPv6-only configurations</li>
+            <li>Upgraded to support .NET Framework 3.5</li>
+            <li>Includes VS project file</li>
+            <li>License changed to Ms-PL</li>
+        </ul>
+    </div>
+    <hr />
+    <p>
+        &nbsp;</p>
+        <h4>
+            To Do:</h4>
+        <p>
+            &nbsp;</p>
+        <ul>
+            <li>Test IPv6 functionality thoroughly.</li>
+            <li>A few instrumentation points would improve the testing/debugging experience.</li>
+            <li>Application virtual path and single app hosting limitations:<ul>
+                <li>I would like to see a scenario in which a virtual web directory can be described
+                as the hosting environment allowing pointers to shared resources and perhaps multiple
+                web applications.</li>
+                </ul>
+            </li>
+        </ul>
+        </body>
+</html>
