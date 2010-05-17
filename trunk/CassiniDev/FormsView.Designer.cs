@@ -29,6 +29,8 @@
             this.ButtonBrowsePhysicalPath = new System.Windows.Forms.Button();
             this.LabelHostName = new System.Windows.Forms.Label();
             this.GroupBoxPort = new System.Windows.Forms.GroupBox();
+            this.LabelWaitForPort = new System.Windows.Forms.Label();
+            this.TextBoxWaitForPort = new System.Windows.Forms.TextBox();
             this.TextBoxPortRangeEnd = new System.Windows.Forms.TextBox();
             this.TextBoxPortRangeStart = new System.Windows.Forms.TextBox();
             this.TextBoxPort = new System.Windows.Forms.TextBox();
@@ -45,8 +47,6 @@
             this.ButtonStop = new System.Windows.Forms.Button();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.TextBoxWaitForPort = new System.Windows.Forms.TextBox();
-            this.LabelWaitForPort = new System.Windows.Forms.Label();
             this.TextBoxIdleTimeOut = new System.Windows.Forms.TextBox();
             this.LabelIdleTimeOut = new System.Windows.Forms.Label();
             this.GroupBoxPort.SuspendLayout();
@@ -67,18 +67,24 @@
             // 
             // TextBoxAppPath
             // 
+            this.TextBoxAppPath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.TextBoxAppPath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
             this.TextBoxAppPath.Location = new System.Drawing.Point(12, 26);
             this.TextBoxAppPath.Name = "TextBoxAppPath";
             this.TextBoxAppPath.Size = new System.Drawing.Size(252, 20);
             this.TextBoxAppPath.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.TextBoxAppPath, "The physical directory of the web application or site to serve.");
             // 
             // TextBoxVPath
             // 
+            this.TextBoxVPath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.TextBoxVPath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
             this.TextBoxVPath.Location = new System.Drawing.Point(12, 65);
             this.TextBoxVPath.Name = "TextBoxVPath";
             this.TextBoxVPath.Size = new System.Drawing.Size(268, 20);
             this.TextBoxVPath.TabIndex = 2;
             this.TextBoxVPath.Text = "/";
+            this.toolTip1.SetToolTip(this.TextBoxVPath, "The virtual path upon which to root the application.");
             // 
             // TextBoxHostName
             // 
@@ -86,6 +92,7 @@
             this.TextBoxHostName.Name = "TextBoxHostName";
             this.TextBoxHostName.Size = new System.Drawing.Size(180, 20);
             this.TextBoxHostName.TabIndex = 3;
+            this.toolTip1.SetToolTip(this.TextBoxHostName, resources.GetString("TextBoxHostName.ToolTip"));
             this.TextBoxHostName.TextChanged += new System.EventHandler(this.TextBoxHostName_TextChanged);
             // 
             // LabelPhysicalPath
@@ -96,6 +103,7 @@
             this.LabelPhysicalPath.Size = new System.Drawing.Size(71, 13);
             this.LabelPhysicalPath.TabIndex = 1;
             this.LabelPhysicalPath.Text = "Physical Path";
+            this.toolTip1.SetToolTip(this.LabelPhysicalPath, "The physical directory of the web application or site to serve.");
             // 
             // CheckBoxAddHostEntry
             // 
@@ -107,8 +115,7 @@
             this.CheckBoxAddHostEntry.Size = new System.Drawing.Size(105, 18);
             this.CheckBoxAddHostEntry.TabIndex = 4;
             this.CheckBoxAddHostEntry.Text = "Add hosts entry";
-            this.toolTip1.SetToolTip(this.CheckBoxAddHostEntry, "Host Name will be added to the hosts file while this server \r\nis running and remo" +
-                    "ved when it is stopped.\r\nRequires elevated process.");
+            this.toolTip1.SetToolTip(this.CheckBoxAddHostEntry, resources.GetString("CheckBoxAddHostEntry.ToolTip"));
             this.CheckBoxAddHostEntry.UseVisualStyleBackColor = true;
             // 
             // LabelVPath
@@ -119,6 +126,7 @@
             this.LabelVPath.Size = new System.Drawing.Size(61, 13);
             this.LabelVPath.TabIndex = 3;
             this.LabelVPath.Text = "Virtual Path";
+            this.toolTip1.SetToolTip(this.LabelVPath, "The virtual path upon which to root the application.");
             // 
             // ButtonBrowsePhysicalPath
             // 
@@ -128,6 +136,7 @@
             this.ButtonBrowsePhysicalPath.Size = new System.Drawing.Size(27, 23);
             this.ButtonBrowsePhysicalPath.TabIndex = 1;
             this.ButtonBrowsePhysicalPath.Text = "...";
+            this.toolTip1.SetToolTip(this.ButtonBrowsePhysicalPath, "Browse");
             this.ButtonBrowsePhysicalPath.UseVisualStyleBackColor = true;
             this.ButtonBrowsePhysicalPath.Click += new System.EventHandler(this.ButtonBrowsePhysicalPath_Click);
             // 
@@ -139,6 +148,7 @@
             this.LabelHostName.Size = new System.Drawing.Size(106, 13);
             this.LabelHostName.TabIndex = 5;
             this.LabelHostName.Text = "Host Name (optional)";
+            this.toolTip1.SetToolTip(this.LabelHostName, resources.GetString("LabelHostName.ToolTip"));
             // 
             // GroupBoxPort
             // 
@@ -157,6 +167,25 @@
             this.GroupBoxPort.TabStop = false;
             this.GroupBoxPort.Text = "Port";
             // 
+            // LabelWaitForPort
+            // 
+            this.LabelWaitForPort.AutoSize = true;
+            this.LabelWaitForPort.Location = new System.Drawing.Point(6, 42);
+            this.LabelWaitForPort.Name = "LabelWaitForPort";
+            this.LabelWaitForPort.Size = new System.Drawing.Size(68, 13);
+            this.LabelWaitForPort.TabIndex = 18;
+            this.LabelWaitForPort.Text = "Wait for port:";
+            this.toolTip1.SetToolTip(this.LabelWaitForPort, "The amount of time, in milliseconds, to wait for a port to become available befor" +
+                    "e failing.");
+            // 
+            // TextBoxWaitForPort
+            // 
+            this.TextBoxWaitForPort.Location = new System.Drawing.Point(80, 39);
+            this.TextBoxWaitForPort.Name = "TextBoxWaitForPort";
+            this.TextBoxWaitForPort.Size = new System.Drawing.Size(71, 20);
+            this.TextBoxWaitForPort.TabIndex = 17;
+            this.toolTip1.SetToolTip(this.TextBoxWaitForPort, resources.GetString("TextBoxWaitForPort.ToolTip"));
+            // 
             // TextBoxPortRangeEnd
             // 
             this.TextBoxPortRangeEnd.Location = new System.Drawing.Point(237, 12);
@@ -164,6 +193,7 @@
             this.TextBoxPortRangeEnd.Size = new System.Drawing.Size(37, 20);
             this.TextBoxPortRangeEnd.TabIndex = 15;
             this.TextBoxPortRangeEnd.Text = "65534";
+            this.toolTip1.SetToolTip(this.TextBoxPortRangeEnd, "Host on the first available port found in specified range.");
             // 
             // TextBoxPortRangeStart
             // 
@@ -172,6 +202,7 @@
             this.TextBoxPortRangeStart.Size = new System.Drawing.Size(36, 20);
             this.TextBoxPortRangeStart.TabIndex = 14;
             this.TextBoxPortRangeStart.Text = "8080";
+            this.toolTip1.SetToolTip(this.TextBoxPortRangeStart, "Host on the first available port found in specified range.");
             // 
             // TextBoxPort
             // 
@@ -190,6 +221,7 @@
             this.LabelPortRangeSeperator.Size = new System.Drawing.Size(22, 13);
             this.LabelPortRangeSeperator.TabIndex = 16;
             this.LabelPortRangeSeperator.Text = "<->";
+            this.toolTip1.SetToolTip(this.LabelPortRangeSeperator, "Host on the first available port found in specified range.");
             // 
             // RadioButtonPortFind
             // 
@@ -202,6 +234,7 @@
             this.RadioButtonPortFind.TabIndex = 6;
             this.RadioButtonPortFind.TabStop = true;
             this.RadioButtonPortFind.Text = "Range";
+            this.toolTip1.SetToolTip(this.RadioButtonPortFind, "Host on the first available port found in specified range.");
             this.RadioButtonPortFind.UseVisualStyleBackColor = true;
             this.RadioButtonPortFind.CheckedChanged += new System.EventHandler(this.RadioButtonPortFind_CheckedChanged);
             // 
@@ -215,6 +248,8 @@
             this.RadioButtonPortSpecific.TabIndex = 6;
             this.RadioButtonPortSpecific.TabStop = true;
             this.RadioButtonPortSpecific.Text = "Specific";
+            this.toolTip1.SetToolTip(this.RadioButtonPortSpecific, "Host on specific port. \r\nIf port is already in use a warning will be issued and s" +
+                    "erver will not start.");
             this.RadioButtonPortSpecific.UseVisualStyleBackColor = true;
             this.RadioButtonPortSpecific.CheckedChanged += new System.EventHandler(this.RadioButtonPortSpecific_CheckedChanged);
             // 
@@ -241,6 +276,7 @@
             this.CheckBoxIPV6.Size = new System.Drawing.Size(77, 18);
             this.CheckBoxIPV6.TabIndex = 8;
             this.CheckBoxIPV6.Text = "Use IPV6";
+            this.toolTip1.SetToolTip(this.CheckBoxIPV6, "Use the IPV6 version of selected IP");
             this.CheckBoxIPV6.UseVisualStyleBackColor = true;
             // 
             // TextBoxIPSpecific
@@ -260,6 +296,8 @@
             this.RadioButtonIPSpecific.Size = new System.Drawing.Size(69, 18);
             this.RadioButtonIPSpecific.TabIndex = 5;
             this.RadioButtonIPSpecific.Text = "Specific";
+            this.toolTip1.SetToolTip(this.RadioButtonIPSpecific, "Host on specified IP address.\r\nWCF Services may not be served using this setting." +
+                    " Use Loopback.");
             this.RadioButtonIPSpecific.UseVisualStyleBackColor = true;
             this.RadioButtonIPSpecific.CheckedChanged += new System.EventHandler(this.RadioButtonIPSpecific_CheckedChanged);
             // 
@@ -272,6 +310,8 @@
             this.RadioButtonIPAny.Size = new System.Drawing.Size(49, 18);
             this.RadioButtonIPAny.TabIndex = 5;
             this.RadioButtonIPAny.Text = "Any";
+            this.toolTip1.SetToolTip(this.RadioButtonIPAny, "Host on all IP addresses at the specified port.\r\nWCF Services may not be served u" +
+                    "sing this setting. Use Loopback.");
             this.RadioButtonIPAny.UseVisualStyleBackColor = true;
             this.RadioButtonIPAny.CheckedChanged += new System.EventHandler(this.RadioButtonIPAny_CheckedChanged);
             // 
@@ -286,6 +326,8 @@
             this.RadioButtonIPLoopBack.TabIndex = 5;
             this.RadioButtonIPLoopBack.TabStop = true;
             this.RadioButtonIPLoopBack.Text = "Loopback";
+            this.toolTip1.SetToolTip(this.RadioButtonIPLoopBack, "Use the default loopback adapter. \r\nIf any sort of WCF service is to be served, t" +
+                    "his is the only viable option.");
             this.RadioButtonIPLoopBack.UseVisualStyleBackColor = true;
             this.RadioButtonIPLoopBack.CheckedChanged += new System.EventHandler(this.RadioButtonIPLoopBack_CheckedChanged);
             // 
@@ -297,6 +339,7 @@
             this.ButtonStart.Size = new System.Drawing.Size(75, 23);
             this.ButtonStart.TabIndex = 22;
             this.ButtonStart.Text = "Start";
+            this.toolTip1.SetToolTip(this.ButtonStart, "Start hosting application using specified criteria");
             this.ButtonStart.UseVisualStyleBackColor = true;
             this.ButtonStart.Click += new System.EventHandler(this.ButtonStart_Click);
             // 
@@ -310,6 +353,7 @@
             this.ButtonStop.Size = new System.Drawing.Size(75, 23);
             this.ButtonStop.TabIndex = 21;
             this.ButtonStop.Text = "Stop";
+            this.toolTip1.SetToolTip(this.ButtonStop, "Stop running server and release IP:Port");
             this.ButtonStop.UseVisualStyleBackColor = true;
             this.ButtonStop.Click += new System.EventHandler(this.ButtonStop_Click);
             // 
@@ -317,28 +361,14 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // TextBoxWaitForPort
-            // 
-            this.TextBoxWaitForPort.Location = new System.Drawing.Point(80, 39);
-            this.TextBoxWaitForPort.Name = "TextBoxWaitForPort";
-            this.TextBoxWaitForPort.Size = new System.Drawing.Size(71, 20);
-            this.TextBoxWaitForPort.TabIndex = 17;
-            // 
-            // LabelWaitForPort
-            // 
-            this.LabelWaitForPort.AutoSize = true;
-            this.LabelWaitForPort.Location = new System.Drawing.Point(6, 42);
-            this.LabelWaitForPort.Name = "LabelWaitForPort";
-            this.LabelWaitForPort.Size = new System.Drawing.Size(68, 13);
-            this.LabelWaitForPort.TabIndex = 18;
-            this.LabelWaitForPort.Text = "Wait for port:";
-            // 
             // TextBoxIdleTimeOut
             // 
             this.TextBoxIdleTimeOut.Location = new System.Drawing.Point(92, 130);
             this.TextBoxIdleTimeOut.Name = "TextBoxIdleTimeOut";
             this.TextBoxIdleTimeOut.Size = new System.Drawing.Size(83, 20);
             this.TextBoxIdleTimeOut.TabIndex = 25;
+            this.toolTip1.SetToolTip(this.TextBoxIdleTimeOut, "The amount of time, in milliseconds, to remain idle, i.e. no requests, before sto" +
+                    "pping the server.\r\n");
             // 
             // LabelIdleTimeOut
             // 
@@ -348,6 +378,8 @@
             this.LabelIdleTimeOut.Size = new System.Drawing.Size(73, 13);
             this.LabelIdleTimeOut.TabIndex = 26;
             this.LabelIdleTimeOut.Text = "Idle Time Out:";
+            this.toolTip1.SetToolTip(this.LabelIdleTimeOut, "The amount of time, in milliseconds, to remain idle, i.e. no requests, before sto" +
+                    "pping the server.");
             // 
             // FormsView
             // 

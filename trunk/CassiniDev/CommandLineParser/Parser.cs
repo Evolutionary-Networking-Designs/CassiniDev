@@ -277,7 +277,7 @@ namespace Cassini.CommandLine
         /// <returns> true if no errors were detected. </returns>
         public static bool ParseArgumentsWithUsage(string[] arguments, object destination)
         {
-            if (Parser.ParseHelp(arguments) || !Parser.ParseArguments(arguments, destination))
+            if (ParseHelp(arguments) || !ParseArguments(arguments, destination))
             {
                 // error encountered in arguments. Display usage message
                 System.Console.Write(Parser.ArgumentsUsage(destination.GetType()));
@@ -409,7 +409,7 @@ namespace Cassini.CommandLine
             return -1;
         }
 
-        
+
         /// <summary>
         /// Creates a new command line argument parser.
         /// </summary>
@@ -613,7 +613,7 @@ namespace Cassini.CommandLine
             {
                 builder.AppendLine(genericUsage);
             }
-            
+
 
             foreach (ArgumentHelpStrings helpStrings in strings)
             {
@@ -673,7 +673,7 @@ namespace Cassini.CommandLine
                     builder.Append(newLine);
                 }
             }
-            
+
 
             return builder.ToString();
         }
@@ -681,16 +681,16 @@ namespace Cassini.CommandLine
         /// <summary>
         /// 01/01/2010 sky
         /// </summary>
-        private static string GetGenericUsageString(Type type,int cols)
+        private static string GetGenericUsageString(Type type, int cols)
         {
-            object[] attributes = type.GetCustomAttributes(typeof (ArgumentsAttribute), true);
-            if(attributes.Length== 0 || !((ArgumentsAttribute)attributes[0]).HasHelpText)
+            object[] attributes = type.GetCustomAttributes(typeof(ArgumentsAttribute), true);
+            if (attributes.Length == 0 || !((ArgumentsAttribute)attributes[0]).HasHelpText)
             {
                 return string.Empty;
             }
 
             StringBuilder sb = new StringBuilder();
-            string usage = ((ArgumentsAttribute) attributes[0]).HelpText;
+            string usage = ((ArgumentsAttribute)attributes[0]).HelpText;
             // simple width formatter
             var lines = Regex.Split(usage, Environment.NewLine);
             foreach (string line in lines)
@@ -699,7 +699,7 @@ namespace Cassini.CommandLine
                 var currentLine = string.Empty;
                 foreach (string word in words)
                 {
-                    if (currentLine.Length+word.Length+1>cols)
+                    if (currentLine.Length + word.Length + 1 > cols)
                     {
                         // start new line
                         sb.AppendLine(currentLine);
@@ -721,7 +721,7 @@ namespace Cassini.CommandLine
             builder.Append(newLine);
             currentColumn = 0;
         }
-        
+
         private ArgumentHelpStrings[] GetAllHelpStrings()
         {
             ArgumentHelpStrings[] strings = new ArgumentHelpStrings[NumberOfParametersToDisplay()];
@@ -1106,7 +1106,8 @@ namespace Cassini.CommandLine
                             bool valid = false;
                             foreach (string name in Enum.GetNames(type))
                             {
-                                if (name == stringData)
+
+                                if (string.Compare(name, stringData, StringComparison.InvariantCultureIgnoreCase) == 0)
                                 {
                                     valid = true;
                                     break;

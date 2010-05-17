@@ -24,48 +24,62 @@ namespace CassiniDev
     public class CommandLineArguments
     {
         [Argument(ArgumentType.AtMostOnce, ShortName = "ah", DefaultValue = false,
-            HelpText = "If true add entry to Windows hosts file. Requires write permissions to hosts file.")] public
+            HelpText = "If true add entry to Windows hosts file. Requires write permissions to hosts file.")]
+        public
             bool AddHost;
 
-        [Argument(ArgumentType.AtMostOnce, ShortName = "a", HelpText = "Physical location of content.")] public string
+        [Argument(ArgumentType.AtMostOnce, ShortName = "a", HelpText = "Physical location of content.")]
+        public string
             ApplicationPath;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "h",
-            HelpText = "Host name used for app root url. Optional unless AddHost is true.")] public string HostName;
+            HelpText = "Host name used for app root url. Optional unless AddHost is true.")]
+        public string HostName;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "i",
-            HelpText = "IP address to listen to. Ignored if IPMode != Specific")] public string IPAddress;
+            HelpText = "IP address to listen to. Ignored if IPMode != Specific")]
+        public string IPAddress;
 
-        [Argument(ArgumentType.AtMostOnce, ShortName = "im", DefaultValue = IPMode.Loopback, HelpText = "")] public
+        [Argument(ArgumentType.AtMostOnce, ShortName = "im", DefaultValue = IPMode.Loopback, HelpText = "")]
+        public
             IPMode IPMode;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "v6", DefaultValue = false,
-            HelpText = "If IPMode 'Any' or 'LoopBack' are specified use the V6 address")] public bool IPv6;
+            HelpText = "If IPMode 'Any' or 'LoopBack' are specified use the V6 address")]
+        public bool IPv6;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "p",
-            HelpText = "Port to listen to. Ignored if PortMode=FirstAvailable.")] public int Port;
+            HelpText = "Port to listen to. Ignored if PortMode=FirstAvailable.")]
+        public int Port;
 
-        [Argument(ArgumentType.AtMostOnce, ShortName = "pm", DefaultValue = PortMode.FirstAvailable, HelpText = "")] public PortMode PortMode;
+        [Argument(ArgumentType.AtMostOnce, ShortName = "pm", DefaultValue = PortMode.FirstAvailable, HelpText = "")]
+        public PortMode PortMode;
 
-        [Argument(ArgumentType.AtMostOnce, ShortName = "pre", DefaultValue = (int) 9000,
-            HelpText = "End of port range. Ignored if PortMode != FirstAvailable")] public int PortRangeEnd = 9000;
+        [Argument(ArgumentType.AtMostOnce, ShortName = "pre", DefaultValue = (int)9000,
+            HelpText = "End of port range. Ignored if PortMode != FirstAvailable")]
+        public int PortRangeEnd = 9000;
 
-        [Argument(ArgumentType.AtMostOnce, ShortName = "prs", DefaultValue = (int) 8080,
-            HelpText = "Start of port range. Ignored if PortMode != FirstAvailable")] public int PortRangeStart =
-                8080;
+        [Argument(ArgumentType.AtMostOnce, ShortName = "prs", DefaultValue = (int)8080,
+            HelpText = "Start of port range. Ignored if PortMode != FirstAvailable")]
+        public int PortRangeStart =
+            8080;
 
-        [DefaultArgument(ArgumentType.AtMostOnce, DefaultValue = RunMode.Server, HelpText = "[Server|Hostsfile]")] public RunMode RunMode;
+        [DefaultArgument(ArgumentType.AtMostOnce, DefaultValue = RunMode.Server, HelpText = "[Server|Hostsfile]")]
+        public RunMode RunMode;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "t", DefaultValue = 0,
-            HelpText = "Length of time, in ms, to wait for a request before stopping the server. 0 = no timeout.")] public int TimeOut;
+            HelpText = "Length of time, in ms, to wait for a request before stopping the server. 0 = no timeout.")]
+        public int TimeOut;
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "v", DefaultValue = "/", HelpText = "Optional. default value '/'"
-            )] public string VirtualPath = "/";
+            )]
+        public string VirtualPath = "/";
 
         [Argument(ArgumentType.AtMostOnce, ShortName = "w", DefaultValue = 0,
             HelpText =
                 "Length of time, in ms, to wait for a specific port before throwing an exception or exiting. 0 = don't wait."
-            )] public int WaitForPort;
+            )]
+        public int WaitForPort;
 
 
         public override string ToString()
@@ -123,7 +137,7 @@ namespace CassiniDev
             {
                 sb.AppendFormat(" /pre:{0}", PortRangeEnd);
             }
-            if(TimeOut>0)
+            if (TimeOut > 0)
             {
                 sb.AppendFormat(" /t:{0}", TimeOut);
             }
@@ -153,14 +167,25 @@ namespace CassiniDev
             if (!string.IsNullOrEmpty(VirtualPath))
             {
                 VirtualPath = VirtualPath.Trim('\"');
-            }
+                VirtualPath = VirtualPath.Trim('/');
+                VirtualPath = "/" + VirtualPath;
 
-            if (string.IsNullOrEmpty(VirtualPath) || !VirtualPath.StartsWith("/"))
+            }
+            else
             {
-                throw new CassiniException("Invalid VPath", ErrorField.VirtualPath);
+                VirtualPath = "/";
             }
 
+            
 
+            
+
+            if (!VirtualPath.StartsWith("/"))
+            {
+                VirtualPath = "/" + VirtualPath;
+            }
+            
+            
             if (AddHost && string.IsNullOrEmpty(HostName))
             {
                 throw new CassiniException("Invalid Hostname", ErrorField.HostName);
@@ -251,6 +276,6 @@ namespace CassiniDev
             return ip;
         }
 
- 
+
     }
 }

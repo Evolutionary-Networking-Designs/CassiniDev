@@ -120,6 +120,30 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>147, 17</value>
   </metadata>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>147, 17</value>
+  </metadata>
+  <data name="TextBoxHostName.ToolTip" xml:space="preserve">
+    <value>The host name to use in place of 'localhost'. 
+This value must be a valid DNS host name or be present in the local hosts file.
+You may check 'Add hosts entry' to add such an entry to the hosts file for the duration of the hosting session.
+Adding a hosts entry requires elevated permissions, both upon adding and again upon removal.</value>
+  </data>
+  <data name="CheckBoxAddHostEntry.ToolTip" xml:space="preserve">
+    <value>You may check 'Add hosts entry' to add such an entry to the hosts file for the duration of the hosting session.
+Adding a hosts entry requires elevated permissions, both upon adding and again upon removal.</value>
+  </data>
+  <data name="LabelHostName.ToolTip" xml:space="preserve">
+    <value>The host name to use in place of 'localhost'. 
+This value must be a valid DNS host name or be present in the local hosts file.
+You may check 'Add hosts entry' to add such an entry to the hosts file for the duration of the hosting session.
+Adding a hosts entry requires elevated permissions, both upon adding and again upon removal.
+</value>
+  </data>
+  <data name="TextBoxWaitForPort.ToolTip" xml:space="preserve">
+    <value>The amount of time, in milliseconds, to wait for a port to become available before failing.
+This can be useful when rapidly starting and stopping servers on a specific port that may require a short cooldown interval.</value>
+  </data>
   <metadata name="errorProvider1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
