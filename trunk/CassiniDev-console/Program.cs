@@ -34,11 +34,12 @@ namespace CassiniDev
                 switch (args.RunMode)
                 {
                     case RunMode.Server:
+                        IPAddress ip=IPAddress.Loopback;
                         try
                         {
                             args.Validate();
 
-                            IPAddress ip = CommandLineArguments.ParseIP(args.IPMode, args.IPv6, args.IPAddress);
+                            ip = CommandLineArguments.ParseIP(args.IPMode, args.IPv6, args.IPAddress);
                             int port = args.PortMode == PortMode.FirstAvailable ?
                                 CassiniNetworkUtils.GetAvailablePort(args.PortRangeStart, args.PortRangeEnd, ip, true) : 
                                 args.Port;
@@ -69,6 +70,14 @@ namespace CassiniDev
                         {
                             Console.WriteLine("error:{0}", ex2.Message);
                             Console.WriteLine(Parser.ArgumentsUsage(typeof (CommandLineArguments)));
+                        }
+                        finally
+                        {
+                            if (args.AddHost)
+                            {
+                                HostsFile.RemoveHostEntry(ip.ToString(), args.HostName);
+                            }
+
                         }
                         break;
                     case RunMode.Hostsfile:
