@@ -106,8 +106,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>rem - xcopy "$(TargetDir)CassiniDev-lib.dll" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-rem - xcopy "$(TargetDir)CassiniDev-lib.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
   </PropertyGroup>
 </Project>

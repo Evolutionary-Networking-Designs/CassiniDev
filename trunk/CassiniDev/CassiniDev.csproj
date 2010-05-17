@@ -118,6 +118,7 @@
     <Content Include="ReadMe.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="ReadMe2.htm" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FormsView.resx">
@@ -138,8 +139,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>rem - xcopy "$(TargetDir)CassiniDev.exe" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-rem - xcopy "$(TargetDir)CassiniDev.pdb" "$(SolutionDir)bin\$(ProjectName)\$(ConfigurationName)\" /S /I /F /Y &lt;nul:
-xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>
   </PropertyGroup>
 </Project>
