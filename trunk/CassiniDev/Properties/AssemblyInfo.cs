@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("CassiniDev")]
+[assembly: AssemblyTitle("CassiniDev Beta")]
 [assembly: AssemblyDescription("Cassini For Developers")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Salient Solutions")]

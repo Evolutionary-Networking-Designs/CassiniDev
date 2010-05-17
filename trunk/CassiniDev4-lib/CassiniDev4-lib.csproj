@@ -98,6 +98,16 @@
       <Link>CasssiniDev-DevKey.snk</Link>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\CassiniDev\Ms-PL.htm">
+      <Link>Ms-PL.htm</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\CassiniDev\ReadMe.htm">
+      <Link>ReadMe.htm</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetName).*" "$(ProjectDir)..\deploy\$(ConfigurationName)\" /S /I /F /Y &lt;nul:</PostBuildEvent>

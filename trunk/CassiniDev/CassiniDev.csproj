@@ -118,7 +118,6 @@
     <Content Include="ReadMe.htm">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ReadMe2.htm" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FormsView.resx">
