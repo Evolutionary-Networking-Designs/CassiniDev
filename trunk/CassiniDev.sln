@@ -13,15 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev-lib", "CassiniDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev-console", "CassiniDev-console\CassiniDev-console.csproj", "{539F0304-F14A-413F-A56A-AFB7724EA1A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.TestSite", "FixtureSamples\CassiniDev.TestSite\CassiniDev.TestSite.csproj", "{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{37738691-3F22-417D-A72E-06577419E736}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.NUnitFixtures.Tests", "FixtureSamples\CassiniDev.NUnitFixtures.Tests\CassiniDev.NUnitFixtures.Tests.csproj", "{56024885-BF49-48B1-A714-278B98ECBA2F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.TestSite", "Samples\FixtureSamples\CassiniDev.TestSite\CassiniDev.TestSite.csproj", "{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestingExamples", "TestingExamples", "{68C0E3C5-9524-400A-AECC-4D686FEF5131}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.NUnitFixtures.Tests", "Samples\FixtureSamples\CassiniDev.NUnitFixtures.Tests\CassiniDev.NUnitFixtures.Tests.csproj", "{56024885-BF49-48B1-A714-278B98ECBA2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfHostingCassiniDev", "SelfHostingCassiniDev\SelfHostingCassiniDev.csproj", "{1725D36C-91B3-451B-A740-D003A8B766E5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SelfHosting", "SelfHosting", "{37738691-3F22-417D-A72E-06577419E736}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfHostingCassiniDev", "Samples\SelfHostingCassiniDev\SelfHostingCassiniDev.csproj", "{1725D36C-91B3-451B-A740-D003A8B766E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,8 +56,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6} = {68C0E3C5-9524-400A-AECC-4D686FEF5131}
-		{56024885-BF49-48B1-A714-278B98ECBA2F} = {68C0E3C5-9524-400A-AECC-4D686FEF5131}
+		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6} = {37738691-3F22-417D-A72E-06577419E736}
+		{56024885-BF49-48B1-A714-278B98ECBA2F} = {37738691-3F22-417D-A72E-06577419E736}
 		{1725D36C-91B3-451B-A740-D003A8B766E5} = {37738691-3F22-417D-A72E-06577419E736}
 	EndGlobalSection
 EndGlobal

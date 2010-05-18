@@ -7,21 +7,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev4-console", "Cass
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev4-lib", "CassiniDev4-lib\CassiniDev4-lib.csproj", "{44E57FE1-EE99-4131-B9F8-A0A9CD5C6B8B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FixtureSamples4", "FixtureSamples4", "{0C08C355-BDB9-4110-8CB0-6D63AF72CDE9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.TestSite", "FixtureSamples4\CassiniDev.TestSite\CassiniDev.TestSite.csproj", "{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.NUnitFixtures.Tests", "FixtureSamples4\CassiniDev.NUnitFixtures.Tests\CassiniDev.NUnitFixtures.Tests.csproj", "{56024885-BF49-48B1-A714-278B98ECBA2F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{85C72A4A-AADC-46FA-864C-6113FC26A590}"
 	ProjectSection(SolutionItems) = preProject
 		CassiniDev\Ms-PL.htm = CassiniDev\Ms-PL.htm
 		CassiniDev\ReadMe.htm = CassiniDev\ReadMe.htm
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SelfHosting4", "SelfHosting4", "{AAA76EE7-B25B-4B64-84AF-C7DD350F5C2E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{AAA76EE7-B25B-4B64-84AF-C7DD350F5C2E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfHostingCassiniDev", "SelfHostingCassiniDev4\SelfHostingCassiniDev.csproj", "{1725D36C-91B3-451B-A740-D003A8B766E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.TestSite", "Samples\FixtureSamples4\CassiniDev.TestSite\CassiniDev.TestSite.csproj", "{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.NUnitFixtures.Tests", "Samples\FixtureSamples4\CassiniDev.NUnitFixtures.Tests\CassiniDev.NUnitFixtures.Tests.csproj", "{56024885-BF49-48B1-A714-278B98ECBA2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfHostingCassiniDev", "Samples\SelfHostingCassiniDev4\SelfHostingCassiniDev.csproj", "{1725D36C-91B3-451B-A740-D003A8B766E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,8 +96,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6} = {0C08C355-BDB9-4110-8CB0-6D63AF72CDE9}
-		{56024885-BF49-48B1-A714-278B98ECBA2F} = {0C08C355-BDB9-4110-8CB0-6D63AF72CDE9}
+		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6} = {AAA76EE7-B25B-4B64-84AF-C7DD350F5C2E}
+		{56024885-BF49-48B1-A714-278B98ECBA2F} = {AAA76EE7-B25B-4B64-84AF-C7DD350F5C2E}
 		{1725D36C-91B3-451B-A740-D003A8B766E5} = {AAA76EE7-B25B-4B64-84AF-C7DD350F5C2E}
 	EndGlobalSection
 EndGlobal
