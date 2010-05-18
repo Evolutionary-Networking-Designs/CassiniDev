@@ -29,8 +29,6 @@
             this.ButtonBrowsePhysicalPath = new System.Windows.Forms.Button();
             this.LabelHostName = new System.Windows.Forms.Label();
             this.GroupBoxPort = new System.Windows.Forms.GroupBox();
-            this.LabelWaitForPort = new System.Windows.Forms.Label();
-            this.TextBoxWaitForPort = new System.Windows.Forms.TextBox();
             this.TextBoxPortRangeEnd = new System.Windows.Forms.TextBox();
             this.TextBoxPortRangeStart = new System.Windows.Forms.TextBox();
             this.TextBoxPort = new System.Windows.Forms.TextBox();
@@ -57,7 +55,7 @@
             // LinkLabelRootUrl
             // 
             this.LinkLabelRootUrl.AutoSize = true;
-            this.LinkLabelRootUrl.Location = new System.Drawing.Point(9, 293);
+            this.LinkLabelRootUrl.Location = new System.Drawing.Point(5, 277);
             this.LinkLabelRootUrl.Name = "LinkLabelRootUrl";
             this.LinkLabelRootUrl.Size = new System.Drawing.Size(189, 13);
             this.LinkLabelRootUrl.TabIndex = 24;
@@ -152,8 +150,6 @@
             // 
             // GroupBoxPort
             // 
-            this.GroupBoxPort.Controls.Add(this.LabelWaitForPort);
-            this.GroupBoxPort.Controls.Add(this.TextBoxWaitForPort);
             this.GroupBoxPort.Controls.Add(this.TextBoxPortRangeEnd);
             this.GroupBoxPort.Controls.Add(this.TextBoxPortRangeStart);
             this.GroupBoxPort.Controls.Add(this.TextBoxPort);
@@ -162,29 +158,10 @@
             this.GroupBoxPort.Controls.Add(this.RadioButtonPortSpecific);
             this.GroupBoxPort.Location = new System.Drawing.Point(12, 216);
             this.GroupBoxPort.Name = "GroupBoxPort";
-            this.GroupBoxPort.Size = new System.Drawing.Size(291, 65);
+            this.GroupBoxPort.Size = new System.Drawing.Size(291, 47);
             this.GroupBoxPort.TabIndex = 9;
             this.GroupBoxPort.TabStop = false;
             this.GroupBoxPort.Text = "Port";
-            // 
-            // LabelWaitForPort
-            // 
-            this.LabelWaitForPort.AutoSize = true;
-            this.LabelWaitForPort.Location = new System.Drawing.Point(6, 42);
-            this.LabelWaitForPort.Name = "LabelWaitForPort";
-            this.LabelWaitForPort.Size = new System.Drawing.Size(68, 13);
-            this.LabelWaitForPort.TabIndex = 18;
-            this.LabelWaitForPort.Text = "Wait for port:";
-            this.toolTip1.SetToolTip(this.LabelWaitForPort, "The amount of time, in milliseconds, to wait for a port to become available befor" +
-                    "e failing.");
-            // 
-            // TextBoxWaitForPort
-            // 
-            this.TextBoxWaitForPort.Location = new System.Drawing.Point(80, 39);
-            this.TextBoxWaitForPort.Name = "TextBoxWaitForPort";
-            this.TextBoxWaitForPort.Size = new System.Drawing.Size(71, 20);
-            this.TextBoxWaitForPort.TabIndex = 17;
-            this.toolTip1.SetToolTip(this.TextBoxWaitForPort, resources.GetString("TextBoxWaitForPort.ToolTip"));
             // 
             // TextBoxPortRangeEnd
             // 
@@ -334,7 +311,7 @@
             // ButtonStart
             // 
             this.ButtonStart.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.ButtonStart.Location = new System.Drawing.Point(143, 326);
+            this.ButtonStart.Location = new System.Drawing.Point(139, 310);
             this.ButtonStart.Name = "ButtonStart";
             this.ButtonStart.Size = new System.Drawing.Size(75, 23);
             this.ButtonStart.TabIndex = 22;
@@ -348,7 +325,7 @@
             this.ButtonStop.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.ButtonStop.Enabled = false;
             this.ButtonStop.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.ButtonStop.Location = new System.Drawing.Point(229, 326);
+            this.ButtonStop.Location = new System.Drawing.Point(225, 310);
             this.ButtonStop.Name = "ButtonStop";
             this.ButtonStop.Size = new System.Drawing.Size(75, 23);
             this.ButtonStop.TabIndex = 21;
@@ -387,7 +364,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.ButtonStop;
-            this.ClientSize = new System.Drawing.Size(312, 364);
+            this.ClientSize = new System.Drawing.Size(312, 344);
             this.Controls.Add(this.LabelIdleTimeOut);
             this.Controls.Add(this.TextBoxIdleTimeOut);
             this.Controls.Add(this.TextBoxAppPath);
@@ -447,8 +424,6 @@
         private System.Windows.Forms.CheckBox CheckBoxIPV6;
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label LabelWaitForPort;
-        private System.Windows.Forms.TextBox TextBoxWaitForPort;
         private System.Windows.Forms.Label LabelIdleTimeOut;
         private System.Windows.Forms.TextBox TextBoxIdleTimeOut;
     }

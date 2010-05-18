@@ -157,6 +157,16 @@ namespace CassiniDev
                 throw new CassiniException("ApplicationPath is null.", ErrorField.ApplicationPath);
             }
 
+            try
+            {
+                ApplicationPath = Path.GetFullPath(ApplicationPath);
+            }
+            catch 
+            {
+                
+
+                
+            }
             if (!Directory.Exists(ApplicationPath))
             {
                 throw new CassiniException("ApplicationPath does not exist.", ErrorField.ApplicationPath);

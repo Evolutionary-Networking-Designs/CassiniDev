@@ -44,7 +44,7 @@ namespace CassiniDev.Views
                 PortRangeStart = PortRangeStart,
                 VirtualPath = VirtualPath,
                 TimeOut = TimeOut,
-                WaitForPort = WaitForPort
+                WaitForPort = 0
             };
 
             ClearError();
@@ -127,7 +127,6 @@ namespace CassiniDev.Views
             PortRangeEnd = args.PortRangeEnd;
             PortRangeStart = args.PortRangeStart;
             RootUrl = string.Empty;
-            WaitForPort = args.WaitForPort;
             TimeOut = args.TimeOut;
 
             try
@@ -327,16 +326,7 @@ namespace CassiniDev.Views
             set { TextBoxIdleTimeOut.Text = value.ToString(); }
         }
 
-        public int WaitForPort
-        {
-            get
-            {
-                int result;
-                int.TryParse(TextBoxWaitForPort.Text, out result);
-                return result;
-            }
-            set { TextBoxWaitForPort.Text = value.ToString(); }
-        }
+        
 
         public string ApplicationPath
         {
