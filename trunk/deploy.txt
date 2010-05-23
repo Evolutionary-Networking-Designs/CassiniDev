@@ -1,0 +1,86 @@
+C:\PROJECTS\SALIENT\CASSINIDEV\DEPLOY
+    installation.txt
+    license.txt
+    readme.txt
+    
+    Debug
+        CassiniDev
+            CassiniDev.exe
+            CassiniDev.exe.config
+            CassiniDev.pdb
+            
+        CassiniDev.Console
+            CassiniDev-console.exe
+            CassiniDev-console.exe.config
+            CassiniDev-console.pdb
+            
+        CassiniDev.Lib
+            CassiniDev-lib.dll
+            CassiniDev-lib.dll.config
+            CassiniDev-lib.pdb
+            
+        CassiniDev4
+            CassiniDev4.exe
+            CassiniDev4.exe.config
+            CassiniDev4.pdb
+            
+        CassiniDev4.Console
+            CassiniDev4-console.exe
+            CassiniDev4-console.exe.config
+            CassiniDev4-console.pdb
+            
+        CassiniDev4.Lib
+            CassiniDev4-lib.dll
+            CassiniDev4-lib.dll.config
+            CassiniDev4-lib.pdb
+            
+        DevServer
+            10.0
+                WebDev.WebServer20.exe
+                WebDev.WebServer20.exe.config
+                WebDev.WebServer20.pdb
+                WebDev.WebServer40.exe
+                WebDev.WebServer40.exe.config
+                WebDev.WebServer40.pdb
+                
+            9.0
+                WebDev.WebServer.exe
+                WebDev.WebServer.exe.config
+                WebDev.WebServer.pdb
+                
+    Release
+        CassiniDev
+            CassiniDev.exe
+            CassiniDev.exe.config
+            
+        CassiniDev.Console
+            CassiniDev-console.exe
+            CassiniDev-console.exe.config
+            
+        CassiniDev.Lib
+            CassiniDev-lib.dll
+            CassiniDev-lib.dll.config
+            
+        CassiniDev4
+            CassiniDev4.exe
+            CassiniDev4.exe.config
+            
+        CassiniDev4.Console
+            CassiniDev4-console.exe
+            CassiniDev4-console.exe.config
+            
+        CassiniDev4.Lib
+            CassiniDev4-lib.dll
+            CassiniDev4-lib.dll.config
+            
+        DevServer
+            10.0
+                WebDev.WebServer20.exe
+                WebDev.WebServer20.exe.config
+                WebDev.WebServer40.exe
+                WebDev.WebServer40.exe.config
+                
+            9.0
+                WebDev.WebServer.exe
+                WebDev.WebServer.exe.config
+                

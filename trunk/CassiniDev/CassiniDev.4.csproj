@@ -1,32 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0D9F0FEA-45F7-4CE4-9868-6FB9BBE3DD4C}</ProjectGuid>
+    <ProjectGuid>{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CassiniDev</RootNamespace>
-    <AssemblyName>CassiniDev</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <AssemblyName>CassiniDev4</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>Resources\preferences-web-browser-shortcuts.ico</ApplicationIcon>
-    <StartupObject>
-    </StartupObject>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkSubset>
-    </TargetFrameworkSubset>
+    <ApplicationIcon>Resources\preferences-web-browser-shortcuts.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -47,22 +40,25 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\CassiniDev\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <OutputPath>bin\Debug\CassiniDev4\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\CassiniDev\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Release\CassiniDev4\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -81,41 +77,33 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Misc\CommandLine.cs" />
-    <Compile Include="Views\HelpView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\HelpView.Designer.cs">
-      <DependentUpon>HelpView.cs</DependentUpon>
-    </Compile>
+    <Compile Include="CassiniServer.cs" />
+    <Compile Include="Core\Connection.cs" />
+    <Compile Include="Core\Host.cs" />
+    <Compile Include="Core\Messages.cs" />
     <Compile Include="Core\NtlmAuth.cs" />
+    <Compile Include="Core\Request.cs" />
     <Compile Include="Core\RequestEventArgs.cs" />
     <Compile Include="Core\Server.cs" />
+    <Compile Include="Logging\LogInfo.cs" />
+    <Compile Include="Logging\NullServerLogDal.cs" />
+    <Compile Include="Logging\ServerLogBase.cs" />
+    <Compile Include="Logging\SQLiteServerLog.cs" />
+    <Compile Include="Misc\CommandLine.cs" />
+    <Compile Include="Misc\CommandLineArguments.cs" />
     <Compile Include="Misc\CommandLineParser.cs" />
     <Compile Include="Misc\Common.cs" />
+    <Compile Include="Misc\HostsFile.cs" />
     <Compile Include="Misc\Interop.cs" />
+    <Compile Include="Misc\NetworkUtils.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo4.cs" />
+    <Compile Include="Resources\SR.cs" />
     <Compile Include="Views\BodyView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\BodyView.Designer.cs">
       <DependentUpon>BodyView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Logging\ServerLogBase.cs" />
-    <Compile Include="Logging\SQLiteServerLog.cs" />
-    <Compile Include="Logging\LogInfo.cs" />
-    <Compile Include="Views\LogView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\LogView.Designer.cs">
-      <DependentUpon>LogView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Logging\NullServerLogDal.cs" />
-    <Compile Include="Misc\NetworkUtils.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Misc\HostsFile.cs" />
-    <Compile Include="Core\Connection.cs">
-      <SubType>
-      </SubType>
     </Compile>
     <Compile Include="Views\FormView.cs">
       <SubType>Form</SubType>
@@ -123,28 +111,26 @@
     <Compile Include="Views\FormView.Designer.cs">
       <DependentUpon>FormView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Core\Host.cs">
-      <SubType>
-      </SubType>
+    <Compile Include="Views\HelpView.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Core\Messages.cs">
-      <SubType>
-      </SubType>
+    <Compile Include="Views\HelpView.Designer.cs">
+      <DependentUpon>HelpView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Request.cs">
-      <SubType>
-      </SubType>
+    <Compile Include="Views\LogView.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Misc\CommandLineArguments.cs" />
-    <Compile Include="Resources\SR.cs" />
+    <Compile Include="Views\LogView.Designer.cs">
+      <DependentUpon>LogView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\preferences-web-browser-shortcuts.ico" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="Resources\CassiniDev.resx" />
     <EmbeddedResource Include="Views\BodyView.resx">
       <DependentUpon>BodyView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormView.resx">
+      <DependentUpon>FormView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\HelpView.resx">
       <DependentUpon>HelpView.cs</DependentUpon>
@@ -152,32 +138,14 @@
     <EmbeddedResource Include="Views\LogView.resx">
       <DependentUpon>LogView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\FormView.resx">
-      <DependentUpon>FormView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\CassiniDev.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\preferences-web-browser-shortcuts.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -192,8 +160,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="BuildDeploy.cmd" />
+    <None Include="CassiniDev4.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{539F0304-F14A-413F-A56A-AFB7724EA1A7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CassiniDev</RootNamespace>
+    <AssemblyName>CassiniDev-console</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>&lt;Project Location In Database&gt;</SccProjectName>
+    <SccLocalPath>&lt;Local Binding Root of Project&gt;</SccLocalPath>
+    <SccAuxPath>&lt;Source Control Database&gt;</SccAuxPath>
+    <SccProvider>Mercurial Source Control Package</SccProvider>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
+    <ApplicationIcon>Resources\preferences-web-browser-shortcuts.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\CassiniDev.Console\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\CassiniDev.Console\</OutputPath>
+    <DefineConstants>TRACE;CONSOLE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CassiniDevServerOP.cs" />
+    <Compile Include="ConsoleProgram.cs" />
+    <Compile Include="Core\Connection.cs" />
+    <Compile Include="Core\Host.cs" />
+    <Compile Include="Core\Messages.cs" />
+    <Compile Include="Core\NtlmAuth.cs" />
+    <Compile Include="Core\Request.cs" />
+    <Compile Include="Core\RequestEventArgs.cs" />
+    <Compile Include="Core\Server.cs" />
+    <Compile Include="Logging\LogInfo.cs" />
+    <Compile Include="Logging\NullServerLogDal.cs" />
+    <Compile Include="Logging\ServerLogBase.cs" />
+    <Compile Include="Logging\SQLiteServerLog.cs" />
+    <Compile Include="Misc\CommandLineArguments.cs" />
+    <Compile Include="Misc\CommandLineParser.cs" />
+    <Compile Include="Misc\Common.cs" />
+    <Compile Include="Misc\HostsFile.cs" />
+    <Compile Include="Misc\Interop.cs" />
+    <Compile Include="Misc\NetworkUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\SR.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\CassiniDev.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\preferences-web-browser-shortcuts.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,87 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.4", "CassiniDev\CassiniDev.4.csproj", "{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.Console4", "CassiniDev\CassiniDev.Console4.csproj", "{539F0304-F14A-413F-A56A-AFB7724EA1A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.Lib4", "CassiniDev\CassiniDev.Lib4.csproj", "{070AE36D-4CE1-4708-BD0F-2896A6F117FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.VisualStudio44", "CassiniDev\CassiniDev.VisualStudio44.csproj", "{73C76E4C-426C-45C2-9D37-1E46FA29CE66}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{2CAE734F-8505-48A3-889F-9859E7F323BF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DOCS", "DOCS", "{3DB9A222-C0B5-415B-88A4-B625EF257FA7}"
+	ProjectSection(SolutionItems) = preProject
+		deploy.txt = deploy.txt
+		installation.txt = installation.txt
+		license.txt = license.txt
+		readme.txt = readme.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{68D6E86F-BEFB-42C4-BC21-2DE374A86D3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.Tests4", "Tests\CassiniDev.Tests\CassiniDev.Tests4.csproj", "{1A81ACBC-6BBF-4F49-9E7C-8AF029DAB2AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfHostingCassiniDev4", "Samples\SelfHostingCassiniDev\SelfHostingCassiniDev4.csproj", "{1725D36C-91B3-451B-A740-D003A8B766E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.NUnitFixtures.Tests4", "Samples\FixtureSamples\CassiniDev.NUnitFixtures.Tests\CassiniDev.NUnitFixtures.Tests4.csproj", "{56024885-BF49-48B1-A714-278B98ECBA2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.TestSite4", "Samples\FixtureSamples\CassiniDev.TestSite4\CassiniDev.TestSite4.csproj", "{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CassiniDev.TestSite2", "Samples\FixtureSamples\CassiniDev.TestSite2\CassiniDev.TestSite2.csproj", "{48DD15C8-5B57-4412-AC38-220955926289}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}.Release|Any CPU.Build.0 = Release|Any CPU
+		{539F0304-F14A-413F-A56A-AFB7724EA1A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{539F0304-F14A-413F-A56A-AFB7724EA1A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{539F0304-F14A-413F-A56A-AFB7724EA1A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{539F0304-F14A-413F-A56A-AFB7724EA1A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{070AE36D-4CE1-4708-BD0F-2896A6F117FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{070AE36D-4CE1-4708-BD0F-2896A6F117FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{070AE36D-4CE1-4708-BD0F-2896A6F117FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{070AE36D-4CE1-4708-BD0F-2896A6F117FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C76E4C-426C-45C2-9D37-1E46FA29CE66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73C76E4C-426C-45C2-9D37-1E46FA29CE66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73C76E4C-426C-45C2-9D37-1E46FA29CE66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73C76E4C-426C-45C2-9D37-1E46FA29CE66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A81ACBC-6BBF-4F49-9E7C-8AF029DAB2AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A81ACBC-6BBF-4F49-9E7C-8AF029DAB2AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A81ACBC-6BBF-4F49-9E7C-8AF029DAB2AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A81ACBC-6BBF-4F49-9E7C-8AF029DAB2AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1725D36C-91B3-451B-A740-D003A8B766E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1725D36C-91B3-451B-A740-D003A8B766E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1725D36C-91B3-451B-A740-D003A8B766E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1725D36C-91B3-451B-A740-D003A8B766E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56024885-BF49-48B1-A714-278B98ECBA2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56024885-BF49-48B1-A714-278B98ECBA2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56024885-BF49-48B1-A714-278B98ECBA2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56024885-BF49-48B1-A714-278B98ECBA2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48DD15C8-5B57-4412-AC38-220955926289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48DD15C8-5B57-4412-AC38-220955926289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48DD15C8-5B57-4412-AC38-220955926289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48DD15C8-5B57-4412-AC38-220955926289}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1725D36C-91B3-451B-A740-D003A8B766E5} = {2CAE734F-8505-48A3-889F-9859E7F323BF}
+		{56024885-BF49-48B1-A714-278B98ECBA2F} = {2CAE734F-8505-48A3-889F-9859E7F323BF}
+		{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6} = {2CAE734F-8505-48A3-889F-9859E7F323BF}
+		{48DD15C8-5B57-4412-AC38-220955926289} = {2CAE734F-8505-48A3-889F-9859E7F323BF}
+		{1A81ACBC-6BBF-4F49-9E7C-8AF029DAB2AA} = {68D6E86F-BEFB-42C4-BC21-2DE374A86D3C}
+	EndGlobalSection
+EndGlobal

@@ -144,7 +144,7 @@ namespace CassiniDev.Testing.SqlServer
             string commandLine = (new CommandLineArguments
                                       {
                                           Port = port,
-                                          ApplicationPath = string.Format("\"{0}\"", Path.GetFullPath(applicationPath).Trim('\"').TrimEnd('\\')),
+                                          Path = string.Format("\"{0}\"", Path.GetFullPath(applicationPath).Trim('\"').TrimEnd('\\')),
                                           HostName = hostname,
                                           IPAddress = ipAddress.ToString(),
                                           VirtualPath = string.Format("\"{0}\"",virtualPath),

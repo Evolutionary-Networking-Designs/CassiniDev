@@ -5,28 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{0D9F0FEA-45F7-4CE4-9868-6FB9BBE3DD4C}</ProjectGuid>
+    <ProjectGuid>{F50EB799-6DED-4906-9DB0-B8FBE5C14028}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CassiniDev</RootNamespace>
-    <AssemblyName>CassiniDev</AssemblyName>
+    <AssemblyName>WebDev.WebServer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>Resources\preferences-web-browser-shortcuts.ico</ApplicationIcon>
-    <StartupObject>
-    </StartupObject>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkSubset>
-    </TargetFrameworkSubset>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -47,19 +35,17 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\CassiniDev\</OutputPath>
+    <OutputPath>bin\Debug\DevServer\9.0\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\CassiniDev\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <OutputPath>bin\Release\DevServer\9.0\</OutputPath>
+    <DefineConstants>TRACE;GUI</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -70,52 +56,50 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Misc\CommandLine.cs" />
-    <Compile Include="Views\HelpView.cs">
-      <SubType>Form</SubType>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\preferences-web-browser-shortcuts.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs">
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\HelpView.Designer.cs">
-      <DependentUpon>HelpView.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Core\Connection.cs" />
+    <Compile Include="Core\Host.cs" />
+    <Compile Include="Core\Messages.cs" />
     <Compile Include="Core\NtlmAuth.cs" />
+    <Compile Include="Core\Request.cs" />
     <Compile Include="Core\RequestEventArgs.cs" />
     <Compile Include="Core\Server.cs" />
+    <Compile Include="Logging\LogInfo.cs" />
+    <Compile Include="Logging\NullServerLogDal.cs" />
+    <Compile Include="Logging\ServerLogBase.cs" />
+    <Compile Include="Logging\SQLiteServerLog.cs" />
+    <Compile Include="Misc\CommandLine.cs" />
+    <Compile Include="Misc\CommandLineArguments.cs" />
     <Compile Include="Misc\CommandLineParser.cs" />
     <Compile Include="Misc\Common.cs" />
+    <Compile Include="Misc\HostsFile.cs" />
     <Compile Include="Misc\Interop.cs" />
+    <Compile Include="Misc\NetworkUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\SR.cs" />
     <Compile Include="Views\BodyView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Views\BodyView.Designer.cs">
       <DependentUpon>BodyView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Logging\ServerLogBase.cs" />
-    <Compile Include="Logging\SQLiteServerLog.cs" />
-    <Compile Include="Logging\LogInfo.cs" />
-    <Compile Include="Views\LogView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\LogView.Designer.cs">
-      <DependentUpon>LogView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Logging\NullServerLogDal.cs" />
-    <Compile Include="Misc\NetworkUtils.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Misc\HostsFile.cs" />
-    <Compile Include="Core\Connection.cs">
-      <SubType>
-      </SubType>
     </Compile>
     <Compile Include="Views\FormView.cs">
       <SubType>Form</SubType>
@@ -123,40 +107,32 @@
     <Compile Include="Views\FormView.Designer.cs">
       <DependentUpon>FormView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Core\Host.cs">
-      <SubType>
-      </SubType>
+    <Compile Include="Views\HelpView.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Core\Messages.cs">
-      <SubType>
-      </SubType>
+    <Compile Include="Views\HelpView.Designer.cs">
+      <DependentUpon>HelpView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Request.cs">
-      <SubType>
-      </SubType>
+    <Compile Include="Views\LogView.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Misc\CommandLineArguments.cs" />
-    <Compile Include="Resources\SR.cs" />
+    <Compile Include="Views\LogView.Designer.cs">
+      <DependentUpon>LogView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\preferences-web-browser-shortcuts.ico" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="Resources\CassiniDev.resx" />
     <EmbeddedResource Include="Views\BodyView.resx">
       <DependentUpon>BodyView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormView.resx">
+      <DependentUpon>FormView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\HelpView.resx">
       <DependentUpon>HelpView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\LogView.resx">
       <DependentUpon>LogView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\FormView.resx">
-      <DependentUpon>FormView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\CassiniDev.resx">
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -193,7 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="BuildDeploy.cmd" />
+    <None Include="CassiniDev4-lib.dll.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
