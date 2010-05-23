@@ -38,7 +38,7 @@ namespace CassiniDev
         private RunState _runState;
 
         private Server _server;
-
+          
         #endregion
 
         #region Constructors
