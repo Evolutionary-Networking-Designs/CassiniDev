@@ -193,18 +193,13 @@ namespace CassiniDev
             else
             {
                 WindowState = FormWindowState.Minimized;
+                Hide();
+                DisplayTrayTip();
                 e.Cancel = true;
             }
         }
 
-        //protected override void OnShown(EventArgs e)
-        //{
-        //    if (_automated)
-        //    {
-        //        WindowState = FormWindowState.Minimized;
-        //        Hide();
-        //    }
-        //}
+        
 
         #endregion
 
@@ -216,13 +211,19 @@ namespace CassiniDev
             ButtonStart.Text = SR.GetString(SR.WebdevStart);
             toolStripStatusLabel1.Text = SR.GetString(SR.WebdevAspNetVersion, Common.GetAspVersion());
 
-            SQLiteServerLog.EnsureSQLite();
+            try
+            {
+                SQLiteServerLog.EnsureSQLite();
+            }
+            catch
+            {
+            }
             // if sqlite is missing then just silently enable in-memory logging,
             // hide the enable logging item and enable view log item
             EnableLoggingContextMenuItem.Visible = ServerLogBase.CanPersistLog;
             ServerLogBase.LoggingEnabled = !ServerLogBase.CanPersistLog;
             EnableLoggingMainMenuItem.Enabled = ServerLogBase.CanPersistLog;
-            ShowLogButton.Enabled = false;
+            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = GetShowLogButtonStatus();
 
             if (!ServerLogBase.CanPersistLog)
             {
@@ -267,7 +268,7 @@ namespace CassiniDev
         private void DisplayTrayTip()
         {
 
-            if (_server==null)
+            if (_server == null)
             {
                 return;
             }
@@ -277,6 +278,7 @@ namespace CassiniDev
                                          ? "\r\n\r\n" + SR.GetString(SR.WebdevInMemoryLogging)
                                          : "");
             TrayIcon.ShowBalloonTip(5000, base.Text, trayBaloonText, ToolTipIcon.Info);
+            TrayIcon.Visible = true;
         }
 
         private void UpdateUIFromServer()
@@ -292,32 +294,22 @@ namespace CassiniDev
             TimeOut = _server.TimeoutInterval;
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            if (WindowState == FormWindowState.Minimized)
-            {
-                Hide();
-                DisplayTrayTip();
-                ShowInTaskbar = false;
-            }
-            base.OnResize(e);
-        }
-
-
+ 
+ 
         private void ShowMainForm()
         {
+
+            
             Show();
             WindowState = FormWindowState.Normal;
+            StartPosition = FormStartPosition.CenterScreen;
             ShowInTaskbar = true;
+            TopMost = true;
+            Focus();
+            BringToFront();
+            TopMost = false;
 
 
-            //TrayIcon.Visible = false;
-            //ShowInTaskbar = true;
-            
-            //TopMost = true;
-            //Focus();
-            //BringToFront();
-            //TopMost = false;
         }
 
         private void InvokeSetRunState(RunState state)
@@ -361,7 +353,7 @@ namespace CassiniDev
 
         private void EnableForm()
         {
-            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = false;
+            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = GetShowLogButtonStatus();
             base.Text = SR.GetString(SR.WebdevName);
             ButtonStart.Text = "&Start";
             ButtonStart.Enabled = true;
@@ -409,7 +401,7 @@ namespace CassiniDev
 
         private void DisableForm()
         {
-            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = !ServerLogBase.CanPersistLog;
+            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = GetShowLogButtonStatus();
 
             TimeOutNumeric.Enabled = false;
             ButtonStart.Text = "&Stop";
@@ -511,7 +503,7 @@ namespace CassiniDev
                 _server.TimedOut += OnTimedOut;
                 UpdateUIFromServer();
                 InvokeSetRunState(RunState.Running);
-             
+
             }
 
             catch (Exception ex)
@@ -655,10 +647,13 @@ namespace CassiniDev
 
             EnableLoggingContextMenuItem.Checked = value;
             EnableLoggingMainMenuItem.Checked = value;
-            ShowLogMenuItem.Enabled = value;
-            ShowLogButton.Enabled = value;
+            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = GetShowLogButtonStatus();
         }
 
+        private bool GetShowLogButtonStatus()
+        {
+            return (_server != null && (LoggingEnabled || !ServerLogBase.CanPersistLog));
+        }
         private void SetPortMode(PortMode value)
         {
             switch (value)
@@ -848,8 +843,18 @@ namespace CassiniDev
         }
         #endregion
 
+        private void FormView_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                Hide();
+                DisplayTrayTip();
+                ShowInTaskbar = false;
+            }
+        }
+
         #endregion
-        
+
 
     }
 }

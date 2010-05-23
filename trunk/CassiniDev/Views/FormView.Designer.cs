@@ -634,6 +634,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Cassini Developer Edition";
             this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
+            this.Resize += new System.EventHandler(this.FormView_Resize);
             this.GroupBoxPort.ResumeLayout(false);
             this.GroupBoxPort.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PortRangeEndTextBox)).EndInit();
