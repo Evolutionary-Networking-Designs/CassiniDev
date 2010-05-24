@@ -122,7 +122,10 @@ namespace CassiniDev
             if (parentPath != null)
             {
                 if (!parentPath.EndsWith("/"))
+                {
                     parentPath += "/";
+                }
+
                 sb.Append(string.Format(_dirListingParentFormat, parentPath));
             }
 

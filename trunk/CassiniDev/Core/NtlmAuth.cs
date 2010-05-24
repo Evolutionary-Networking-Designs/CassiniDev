@@ -26,6 +26,7 @@ namespace CassiniDev
     internal sealed class NtlmAuth : IDisposable
     {
         private readonly bool _credentialsHandleAcquired;
+
         private string _blob;
 
         private bool _completed;

@@ -55,7 +55,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\CassiniDev\CassiniDev.csproj">
       <Project>{0D9F0FEA-45F7-4CE4-9868-6FB9BBE3DD4C}</Project>
-      <Name>CassiniDev</Name>
+      <Name>CassiniDev %28CassiniDev\CassiniDev%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

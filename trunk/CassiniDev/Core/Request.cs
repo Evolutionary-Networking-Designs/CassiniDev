@@ -32,13 +32,13 @@ namespace CassiniDev
 {
     internal class Request : SimpleWorkerRequest
     {
-        private const int MaxChunkLength = 64*1024;
+        private const int MaxChunkLength = 64 * 1024;
 
-        private const int MaxHeaderBytes = 32*1024;
+        private const int MaxHeaderBytes = 32 * 1024;
 
-        private static readonly char[] BadPathChars = new[] {'%', '>', '<', ':', '\\'};
+        private static readonly char[] BadPathChars = new[] { '%', '>', '<', ':', '\\' };
 
-        private static readonly string[] DefaultFileNames = new[] {"default.aspx", "default.htm", "default.html"};
+        private static readonly string[] DefaultFileNames = new[] { "default.aspx", "default.htm", "default.html" };
 
         private static readonly char[] IntToHex = new[]
             {
@@ -501,7 +501,7 @@ namespace CassiniDev
                     }
                     break;
 
-                    // FIX: #12506
+                // FIX: #12506
                 case HeaderContentType:
 
                     string contentType = null;
@@ -667,7 +667,7 @@ namespace CassiniDev
 
             // copy to array unknown headers
 
-            int n = headers.Count/2;
+            int n = headers.Count / 2;
             _unknownRequestHeaders = new string[n][];
             int j = 0;
 
@@ -703,9 +703,9 @@ namespace CassiniDev
                 {
                     _contentLength = Int32.Parse(contentLengthValue, CultureInfo.InvariantCulture);
                 }
-                    // ReSharper disable EmptyGeneralCatchClause
+                // ReSharper disable EmptyGeneralCatchClause
                 catch
-                    // ReSharper restore EmptyGeneralCatchClause
+                // ReSharper restore EmptyGeneralCatchClause
                 {
                 }
             }
@@ -836,9 +836,9 @@ namespace CassiniDev
             {
                 infos = (new DirectoryInfo(dirPathTranslated)).GetFileSystemInfos();
             }
-                // ReSharper disable EmptyGeneralCatchClause
+            // ReSharper disable EmptyGeneralCatchClause
             catch
-                // ReSharper restore EmptyGeneralCatchClause
+            // ReSharper restore EmptyGeneralCatchClause
             {
             }
 
@@ -922,8 +922,13 @@ namespace CassiniDev
                 }
             } while (_endHeadersOffset < 0); // found \r\n\r\n
 
-            _connection.LogRequestHeaders(string.Join(Environment.NewLine,
-                                                      _headerByteStrings.Select(b => b.GetString()).ToArray()));
+            // 
+            // fixed: Item # 13290
+            if (_headerByteStrings != null && _headerByteStrings.Count > 0)
+            {
+                _connection.LogRequestHeaders(string.Join(Environment.NewLine, _headerByteStrings.Select(b => b.GetString()).ToArray()));
+            }
+            
         }
 
         private void Reset()
@@ -977,14 +982,14 @@ namespace CassiniDev
 
             if (length <= MaxChunkLength)
             {
-                byte[] fileBytes = new byte[(int) length];
-                int bytesRead = f.Read(fileBytes, 0, (int) length);
+                byte[] fileBytes = new byte[(int)length];
+                int bytesRead = f.Read(fileBytes, 0, (int)length);
                 SendResponseFromMemory(fileBytes, bytesRead);
             }
             else
             {
                 byte[] chunk = new byte[MaxChunkLength];
-                int bytesRemaining = (int) length;
+                int bytesRemaining = (int)length;
 
                 while (bytesRemaining > 0)
                 {
@@ -1056,7 +1061,7 @@ namespace CassiniDev
                         _connection.WriteErrorWithExtraHeadersAndKeepAlive(0x191, extraHeaders);
                     } while (TryParseRequest());
                     return false;
-                    Label_009A:
+                Label_009A:
                     if (_host.GetProcessSid() != auth.SID)
                     {
                         _connection.WriteErrorAndClose(0x193);
@@ -1070,9 +1075,9 @@ namespace CassiniDev
                 {
                     _connection.WriteErrorAndClose(500);
                 }
-                    // ReSharper disable EmptyGeneralCatchClause
+                // ReSharper disable EmptyGeneralCatchClause
                 catch
-                    // ReSharper restore EmptyGeneralCatchClause
+                // ReSharper restore EmptyGeneralCatchClause
                 {
                 }
                 return false;
@@ -1153,7 +1158,7 @@ namespace CassiniDev
             // find the end of headers
             ByteParser parser = new ByteParser(_headerBytes);
 
-            for (;;)
+            for (; ; )
             {
                 ByteString line = parser.ReadLine();
 
@@ -1199,7 +1204,7 @@ namespace CassiniDev
             if (countNonAscii > 0)
             {
                 // expand not 'safe' characters into %XX, spaces to +s
-                byte[] expandedBytes = new byte[count + countNonAscii*2];
+                byte[] expandedBytes = new byte[count + countNonAscii * 2];
                 int pos = 0;
                 for (int i = 0; i < count; i++)
                 {
@@ -1211,9 +1216,9 @@ namespace CassiniDev
                     }
                     else
                     {
-                        expandedBytes[pos++] = (byte) '%';
-                        expandedBytes[pos++] = (byte) IntToHex[(b >> 4) & 0xf];
-                        expandedBytes[pos++] = (byte) IntToHex[b & 0xf];
+                        expandedBytes[pos++] = (byte)'%';
+                        expandedBytes[pos++] = (byte)IntToHex[(b >> 4) & 0xf];
+                        expandedBytes[pos++] = (byte)IntToHex[b & 0xf];
                     }
                 }
 
@@ -1254,10 +1259,10 @@ namespace CassiniDev
 
                 for (int i = _pos; i < _bytes.Length; i++)
                 {
-                    if (_bytes[i] == (byte) '\n')
+                    if (_bytes[i] == (byte)'\n')
                     {
                         int len = i - _pos;
-                        if (len > 0 && _bytes[i - 1] == (byte) '\r')
+                        if (len > 0 && _bytes[i - 1] == (byte)'\r')
                         {
                             len--;
                         }
@@ -1349,7 +1354,7 @@ namespace CassiniDev
             {
                 for (int i = offset; i < _length; i++)
                 {
-                    if (this[i] == (byte) ch) return i;
+                    if (this[i] == (byte)ch) return i;
                 }
                 return -1;
             }
@@ -1370,7 +1375,7 @@ namespace CassiniDev
                     list.Add(Substring(pos, i - pos));
                     pos = i + 1;
 
-                    while (this[pos] == (byte) sep && pos < _length)
+                    while (this[pos] == (byte)sep && pos < _length)
                     {
                         pos++;
                     }

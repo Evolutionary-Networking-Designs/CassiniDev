@@ -190,7 +190,10 @@ namespace CassiniDev
 
         public bool IsVirtualPathAppPath(string path)
         {
-            if (path == null) return false;
+            if (path == null)
+            {
+                return false;
+            }
             path = CultureInfo.InvariantCulture.TextInfo.ToLower(path);
             return (path == _lowerCasedVirtualPath || path == _lowerCasedVirtualPathWithTrailingSlash);
         }
@@ -207,17 +210,23 @@ namespace CassiniDev
             if (_virtualPath == "/" && path.StartsWith("/", StringComparison.Ordinal))
             {
                 if (path.StartsWith(_lowerCasedClientScriptPathWithTrailingSlash, StringComparison.Ordinal))
+                {
                     isClientScriptPath = true;
+                }
                 return true;
             }
 
             path = CultureInfo.InvariantCulture.TextInfo.ToLower(path);
 
             if (path.StartsWith(_lowerCasedVirtualPathWithTrailingSlash, StringComparison.Ordinal))
+            {
                 return true;
+            }
 
             if (path == _lowerCasedVirtualPath)
+            {
                 return true;
+            }
 
             if (path.StartsWith(_lowerCasedClientScriptPathWithTrailingSlash, StringComparison.Ordinal))
             {
@@ -276,7 +285,9 @@ namespace CassiniDev
             for (;;)
             {
                 if (_pendingCallsCount <= 0)
+                {
                     break;
+                }
 
                 Thread.Sleep(250);
             }

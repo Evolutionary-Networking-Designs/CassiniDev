@@ -115,6 +115,7 @@ namespace CassiniDev
         public void LogRequest(string pathTranslated, string url)
         {
             _requestLog.PathTranslated = pathTranslated;
+
             _requestLog.Url = url;
         }
 
@@ -145,6 +146,7 @@ namespace CassiniDev
                 }
 
                 int numReceived = 0;
+
                 byte[] buffer = new byte[numBytes];
 
                 if (numBytes > 0)
@@ -181,6 +183,7 @@ namespace CassiniDev
                 if (_socket.Available == 0)
                 {
                     _socket.Poll(100000, SelectMode.SelectRead);
+
                     if (_socket.Available == 0 && _socket.Connected)
                     {
                         _socket.Poll(30000000, SelectMode.SelectRead);
@@ -261,10 +264,14 @@ namespace CassiniDev
             finally
             {
                 if (!keepAlive || !completed)
+                {
                     Close();
+                }
 
                 if (fs != null)
+                {
                     fs.Close();
+                }
             }
         }
 
@@ -345,10 +352,12 @@ namespace CassiniDev
         private string GetErrorResponseBody(int statusCode, string message)
         {
             string body = Messages.FormatErrorMessageBody(statusCode, _server.VirtualPath);
+
             if (!string.IsNullOrEmpty(message))
             {
                 body += "\r\n<!--\r\n" + message + "\r\n-->";
             }
+
             return body;
         }
 
@@ -362,6 +371,7 @@ namespace CassiniDev
                     Identity = _server.GetProcessUser(),
                     PhysicalPath = _server.PhysicalPath
                 };
+
             _responseLog = new LogInfo
                 {
                     ConversationId = Id,
@@ -376,12 +386,22 @@ namespace CassiniDev
             sb.Append("HTTP/1.1 " + statusCode + " " + HttpWorkerRequest.GetStatusDescription(statusCode) + "\r\n");
             sb.Append("Server: Cassini/" + Messages.VersionString + "\r\n");
             sb.Append("Date: " + DateTime.Now.ToUniversalTime().ToString("R", DateTimeFormatInfo.InvariantInfo) + "\r\n");
+
             if (contentLength >= 0)
+            {
                 sb.Append("Content-Length: " + contentLength + "\r\n");
+            }
+
             if (moreHeaders != null)
+            {
                 sb.Append(moreHeaders);
+            }
+
             if (!keepAlive)
+            {
                 sb.Append("Connection: Close\r\n");
+            }
+
             sb.Append("\r\n");
 
             return sb.ToString();

@@ -38,7 +38,6 @@ namespace CassiniDev
         private const int TimeOut = 60000;
         private const int WaitForPort = 5000;
 
-        #region Implementation of IDisposable
 
         /// <summary>
         /// </summary>
@@ -51,9 +50,7 @@ namespace CassiniDev
                 }
             }
         }
-        #endregion
 
-        #region Implementation of IWebServer
 
         /// <summary>
         /// The root URL of the running web application
@@ -240,6 +237,5 @@ namespace CassiniDev
                 }
             }
         }
-        #endregion
     }
 }
