@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using CassiniDev.ServerLog;
@@ -84,11 +85,6 @@ namespace CassiniDev
             set { SetIpMode(value); }
         }
 
-        internal bool LoggingEnabled
-        {
-            get { return ServerLogBase.LoggingEnabled; }
-            set { SetLoggingEnabled(value); }
-        }
 
         internal bool NoDirList
         {
@@ -216,18 +212,15 @@ namespace CassiniDev
             ButtonStart.Text = SR.GetString(SR.WebdevStart);
             toolStripStatusLabel1.Text = SR.GetString(SR.WebdevAspNetVersion, Common.GetAspVersion());
 
-            SQLiteServerLog.EnsureSQLite();
+            
             // if sqlite is missing then just silently enable in-memory logging,
             // hide the enable logging item and enable view log item
-            EnableLoggingContextMenuItem.Visible = ServerLogBase.CanPersistLog;
-            ServerLogBase.LoggingEnabled = !ServerLogBase.CanPersistLog;
-            EnableLoggingMainMenuItem.Enabled = ServerLogBase.CanPersistLog;
+            
+            
+            
             ShowLogButton.Enabled = false;
 
-            if (!ServerLogBase.CanPersistLog)
-            {
-                EnableLoggingMainMenuItem.ToolTipText = SR.GetString(SR.WebdevInMemoryLogging);
-            }
+            
 
             toolStripStatusLabel1.Text = SR.GetString(SR.WebdevAspNetVersion, Common.GetAspVersion());
 
@@ -272,10 +265,7 @@ namespace CassiniDev
                 return;
             }
             TrayIcon.Text = _server.RootUrl;
-            string trayBaloonText = _server.RootUrl +
-                                    (!ServerLogBase.CanPersistLog
-                                         ? "\r\n\r\n" + SR.GetString(SR.WebdevInMemoryLogging)
-                                         : "");
+            string trayBaloonText = _server.RootUrl;
             TrayIcon.ShowBalloonTip(5000, base.Text, trayBaloonText, ToolTipIcon.Info);
         }
 
@@ -409,7 +399,7 @@ namespace CassiniDev
 
         private void DisableForm()
         {
-            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = !ServerLogBase.CanPersistLog;
+            ShowLogMenuItem.Enabled = ShowLogButton.Enabled = true;
 
             TimeOutNumeric.Enabled = false;
             ButtonStart.Text = "&Stop";
@@ -454,29 +444,33 @@ namespace CassiniDev
             }
         }
 
+        private CommandLineArguments GetArgs()
+        {
+            CommandLineArguments args = new CommandLineArguments
+                        {
+                            AddHost = AddHost,
+                            ApplicationPath = ApplicationPath,
+                            HostName = HostName,
+                            IPAddress = IPAddress,
+                            IPMode = IPMode,
+                            IPv6 = V6,
+                            Port = Port,
+                            PortMode = PortMode,
+                            PortRangeEnd = PortRangeEnd,
+                            PortRangeStart = PortRangeStart,
+                            VirtualPath = VirtualPath,
+                            TimeOut = TimeOut,
+                            WaitForPort = 0,
+                            Ntlm = NtmlAuthenticationRequired,
+                            Nodirlist = NoDirList
+                        };
+            return args;
+        }
         private void Start()
         {
             // use CommandLineArguments as a pre validation tool
 
-            CommandLineArguments args = new CommandLineArguments
-            {
-                AddHost = AddHost,
-                ApplicationPath = ApplicationPath,
-                HostName = HostName,
-                IPAddress = IPAddress,
-                IPMode = IPMode,
-                IPv6 = V6,
-                Port = Port,
-                PortMode = PortMode,
-                PortRangeEnd = PortRangeEnd,
-                PortRangeStart = PortRangeStart,
-                VirtualPath = VirtualPath,
-                TimeOut = TimeOut,
-                WaitForPort = 0,
-                Ntlm = NtmlAuthenticationRequired,
-                Nodirlist = NoDirList
-            };
-
+            CommandLineArguments args = GetArgs();
             ClearError();
 
             try
@@ -649,16 +643,6 @@ namespace CassiniDev
             }
         }
 
-        private void SetLoggingEnabled(bool value)
-        {
-            ServerLogBase.LoggingEnabled = value;
-
-            EnableLoggingContextMenuItem.Checked = value;
-            EnableLoggingMainMenuItem.Checked = value;
-            ShowLogMenuItem.Enabled = value;
-            ShowLogButton.Enabled = value;
-        }
-
         private void SetPortMode(PortMode value)
         {
             switch (value)
@@ -774,11 +758,6 @@ namespace CassiniDev
             StartStop();
         }
 
-        private void EnableLogging(object sender, EventArgs e)
-        {
-            ToolStripMenuItem s = (ToolStripMenuItem)sender;
-            LoggingEnabled = s.Checked;
-        }
 
         private void ExitApp(object sender, EventArgs e)
         {

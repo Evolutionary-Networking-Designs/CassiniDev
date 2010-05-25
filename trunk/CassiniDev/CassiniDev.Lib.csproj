@@ -38,15 +38,12 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
@@ -59,9 +56,6 @@
     <Compile Include="Core\RequestEventArgs.cs" />
     <Compile Include="Core\Server.cs" />
     <Compile Include="Logging\LogInfo.cs" />
-    <Compile Include="Logging\NullServerLogDal.cs" />
-    <Compile Include="Logging\ServerLogBase.cs" />
-    <Compile Include="Logging\SQLiteServerLog.cs" />
     <Compile Include="Misc\CommandLine.cs" />
     <Compile Include="Misc\CommandLineArguments.cs" />
     <Compile Include="Misc\CommandLineParser.cs" />
@@ -69,6 +63,9 @@
     <Compile Include="Misc\HostsFile.cs" />
     <Compile Include="Misc\Interop.cs" />
     <Compile Include="Misc\NetworkUtils.cs" />
+    <Compile Include="Misc\ServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\SR.cs" />
   </ItemGroup>

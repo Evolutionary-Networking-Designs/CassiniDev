@@ -14,6 +14,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -25,6 +26,8 @@ namespace CassiniDev
 {
     /// <summary>
     /// Command line arguments
+    /// 
+    /// fixed 5/24/10 - quoted embedded spaces in ToString
     /// </summary>
     public class CommandLineArguments
     {
@@ -98,92 +101,181 @@ namespace CassiniDev
 
         #endregion
 
-        public override string ToString()
+        public string[] ToArgs()
         {
-            StringBuilder sb = new StringBuilder();
+            List<string>  result = new List<string>();
             if (RunMode != RunMode.Server)
             {
-                sb.AppendFormat("{0}", RunMode);
+                result.Add(string.Format("{0}", RunMode));
             }
             if (!string.IsNullOrEmpty(ApplicationPath))
             {
-                sb.AppendFormat(" /a:{0}", ApplicationPath);
+                result.Add(string.Format("/a:{0}", ApplicationPath.Contains("") ? String.Format("\"{0}\"", ApplicationPath) : ApplicationPath));
             }
-            sb.AppendFormat(" /v:{0}", VirtualPath);
+            result.Add(string.Format("/v:{0}", VirtualPath.Contains("") ? String.Format("\"{0}\"", VirtualPath) : VirtualPath));
 
             if (!string.IsNullOrEmpty(HostName))
             {
-                sb.AppendFormat(" /h:{0}", HostName);
+                result.Add(string.Format("/h:{0}", HostName.Contains("") ? String.Format("\"{0}\"", HostName) : HostName));
             }
             if (AddHost)
             {
-                sb.Append(" /ah");
+                result.Add("/ah");
             }
 
             if (IPMode != IPMode.Loopback)
             {
-                sb.AppendFormat(" /im:{0}", IPMode);
+                result.Add(string.Format("/im:{0}", IPMode));
             }
 
             if (!string.IsNullOrEmpty(IPAddress))
             {
-                sb.AppendFormat(" /i:{0}", IPAddress);
+                result.Add(string.Format("/i:{0}", IPAddress));
             }
 
             if (IPv6)
             {
-                sb.Append(" /v6");
+                result.Add("/v6");
             }
 
             if (VisualStudio)
             {
-                sb.Append(" /vs");
+                result.Add("/vs");
             }
 
             if (PortMode != PortMode.FirstAvailable)
             {
-                sb.AppendFormat(" /pm:{0}", PortMode);
+                result.Add(string.Format("/pm:{0}", PortMode));
             }
 
             if (Port != 0)
             {
-                sb.AppendFormat(" /p:{0}", Port);
+                result.Add(string.Format("/p:{0}", Port));
             }
 
             if (PortRangeStart != 32768)
             {
-                sb.AppendFormat(" /prs:{0}", PortRangeStart);
+                result.Add(string.Format("/prs:{0}", PortRangeStart));
             }
             if (PortRangeEnd != 65535)
             {
-                sb.AppendFormat(" /pre:{0}", PortRangeEnd);
+                result.Add(string.Format("/pre:{0}", PortRangeEnd));
             }
             if (TimeOut > 0)
             {
-                sb.AppendFormat(" /t:{0}", TimeOut);
+                result.Add(string.Format("/t:{0}", TimeOut));
             }
             if (WaitForPort > 0)
             {
-                sb.AppendFormat(" /w:{0}", WaitForPort);
+                result.Add(string.Format("/w:{0}", WaitForPort));
             }
 
             if (Ntlm)
             {
-                sb.Append(" /ntlm");
+                result.Add("/ntlm");
             }
             if (Silent)
             {
-                sb.Append(" /silent");
+                result.Add("/silent");
             }
             if (Nodirlist)
             {
-                sb.Append(" /nodirlist");
+                result.Add("/nodirlist");
             }
             if (EnableLogging)
             {
-                sb.Append(" /log");
+                result.Add("/log");
             }
-            return sb.ToString().Trim();
+
+            return result.ToArray();
+        }
+        public override string ToString()
+        {
+            return string.Join(" ", ToArgs());
+            //StringBuilder sb = new StringBuilder();
+            //if (RunMode != RunMode.Server)
+            //{
+            //    sb.AppendFormat("{0}", RunMode);
+            //}
+            //if (!string.IsNullOrEmpty(ApplicationPath))
+            //{
+            //    sb.AppendFormat(" /a:{0}", ApplicationPath.Contains(" ") ? String.Format("\"{0}\"", ApplicationPath) : ApplicationPath);
+            //}
+            //sb.AppendFormat(" /v:{0}", VirtualPath.Contains(" ") ? String.Format("\"{0}\"", VirtualPath) : VirtualPath);
+
+            //if (!string.IsNullOrEmpty(HostName))
+            //{
+            //    sb.AppendFormat(" /h:{0}", HostName.Contains(" ") ? String.Format("\"{0}\"", HostName) : HostName);
+            //}
+            //if (AddHost)
+            //{
+            //    sb.Append(" /ah");
+            //}
+
+            //if (IPMode != IPMode.Loopback)
+            //{
+            //    sb.AppendFormat(" /im:{0}", IPMode);
+            //}
+
+            //if (!string.IsNullOrEmpty(IPAddress))
+            //{
+            //    sb.AppendFormat(" /i:{0}", IPAddress);
+            //}
+
+            //if (IPv6)
+            //{
+            //    sb.Append(" /v6");
+            //}
+
+            //if (VisualStudio)
+            //{
+            //    sb.Append(" /vs");
+            //}
+
+            //if (PortMode != PortMode.FirstAvailable)
+            //{
+            //    sb.AppendFormat(" /pm:{0}", PortMode);
+            //}
+
+            //if (Port != 0)
+            //{
+            //    sb.AppendFormat(" /p:{0}", Port);
+            //}
+
+            //if (PortRangeStart != 32768)
+            //{
+            //    sb.AppendFormat(" /prs:{0}", PortRangeStart);
+            //}
+            //if (PortRangeEnd != 65535)
+            //{
+            //    sb.AppendFormat(" /pre:{0}", PortRangeEnd);
+            //}
+            //if (TimeOut > 0)
+            //{
+            //    sb.AppendFormat(" /t:{0}", TimeOut);
+            //}
+            //if (WaitForPort > 0)
+            //{
+            //    sb.AppendFormat(" /w:{0}", WaitForPort);
+            //}
+
+            //if (Ntlm)
+            //{
+            //    sb.Append(" /ntlm");
+            //}
+            //if (Silent)
+            //{
+            //    sb.Append(" /silent");
+            //}
+            //if (Nodirlist)
+            //{
+            //    sb.Append(" /nodirlist");
+            //}
+            //if (EnableLogging)
+            //{
+            //    sb.Append(" /log");
+            //}
+            //return sb.ToString().Trim();
         }
 
         /// <summary>

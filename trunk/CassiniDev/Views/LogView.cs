@@ -29,7 +29,7 @@ namespace CassiniDev.ServerLog
     public partial class LogView : Form
     {
 
-        private ServerLogBase _dal;
+        
 
         private Server _server;
 
@@ -38,7 +38,7 @@ namespace CassiniDev.ServerLog
             InitializeComponent();
             _server = server;
             _server.RequestComplete += RequestComplete;
-            _dal = ServerLogBase.Create(_server.PhysicalPath);
+            
 
             InitializeList();
 
@@ -53,7 +53,7 @@ namespace CassiniDev.ServerLog
         {
             _server.RequestComplete -= RequestComplete;
             _server = null;
-            _dal = null;
+            
         }
 
         private void AddLogRows(IEnumerable<LogInfo> items)
@@ -72,7 +72,7 @@ namespace CassiniDev.ServerLog
                         item.Identity
                     })
                     {
-                        Tag = ServerLogBase.CanPersistLog ? (object)item.RowId : item
+                        Tag = item
                     };
                 listView1.Items.Add(a);
             }
@@ -87,7 +87,6 @@ namespace CassiniDev.ServerLog
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _dal.Clear();
             InitializeList();
         }
 
@@ -100,9 +99,7 @@ namespace CassiniDev.ServerLog
         {
             object tag = listView1.Items[listView1.SelectedIndices[0]].Tag;
 
-            LogInfo returnValue = ServerLogBase.CanPersistLog
-                                      ? _dal.GetLog((long)tag)
-                                      : (LogInfo)tag;
+            LogInfo returnValue = (LogInfo)tag;
 
             return returnValue;
         }
@@ -112,7 +109,6 @@ namespace CassiniDev.ServerLog
             listView1.SuspendLayout();
             listView1.Items.Clear();
             listView1.ResumeLayout();
-            AddLogRows(_dal.GetLogs());
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -134,19 +130,7 @@ namespace CassiniDev.ServerLog
 
         private void RequestComplete(object sender, RequestEventArgs e)
         {
-            Invoke(new MethodInvoker(() =>
-                {
-                    if (ServerLogBase.CanPersistLog)
-                    {
-                        using (ServerLogBase dal = ServerLogBase.Create(_server.PhysicalPath))
-                        {
-                            dal.SaveLog(e.RequestLog);
-                            dal.SaveLog(e.ResponseLog);
-                        }
-                    }
-
-                    AddLogRows(new[] { e.RequestLog, e.ResponseLog });
-                }));
+            Invoke(new MethodInvoker(() => AddLogRows(new[] { e.RequestLog, e.ResponseLog })));
         }
 
     }

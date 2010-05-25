@@ -51,7 +51,6 @@
             this.browseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.ShowLogMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.EnableLoggingContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,7 +63,6 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.EnableLoggingMainMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nTLMAuthenticationRequiredToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.directoryBrowsingEnabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -233,7 +231,7 @@
             this.PortRangeStartTextBox.Size = new System.Drawing.Size(57, 20);
             this.PortRangeStartTextBox.TabIndex = 18;
             this.PortRangeStartTextBox.Value = new decimal(new int[] {
-            8088,
+            32768,
             0,
             0,
             0});
@@ -410,64 +408,55 @@
             this.browseToolStripMenuItem,
             this.toolStripSeparator2,
             this.ShowLogMenuItem,
-            this.EnableLoggingContextMenuItem,
             this.toolStripSeparator1,
             this.closeToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(147, 148);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(117, 126);
             // 
             // showToolStripMenuItem
             // 
             this.showToolStripMenuItem.Name = "showToolStripMenuItem";
-            this.showToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.showToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.showToolStripMenuItem.Text = "&Show";
             this.showToolStripMenuItem.Click += new System.EventHandler(this.ShowMainForm);
             // 
             // browseToolStripMenuItem
             // 
             this.browseToolStripMenuItem.Name = "browseToolStripMenuItem";
-            this.browseToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.browseToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.browseToolStripMenuItem.Text = "&Browse";
             this.browseToolStripMenuItem.Click += new System.EventHandler(this.LaunchBrowser);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(113, 6);
             // 
             // ShowLogMenuItem
             // 
             this.ShowLogMenuItem.Enabled = false;
             this.ShowLogMenuItem.Name = "ShowLogMenuItem";
-            this.ShowLogMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.ShowLogMenuItem.Size = new System.Drawing.Size(116, 22);
             this.ShowLogMenuItem.Text = "&View Log";
             this.ShowLogMenuItem.Click += new System.EventHandler(this.ShowLog);
-            // 
-            // EnableLoggingContextMenuItem
-            // 
-            this.EnableLoggingContextMenuItem.CheckOnClick = true;
-            this.EnableLoggingContextMenuItem.Name = "EnableLoggingContextMenuItem";
-            this.EnableLoggingContextMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.EnableLoggingContextMenuItem.Text = "&Enable Logging";
-            this.EnableLoggingContextMenuItem.Click += new System.EventHandler(this.EnableLogging);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(113, 6);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.closeToolStripMenuItem.Text = "&Exit";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.ExitApp);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.helpToolStripMenuItem.Text = "&Help";
             this.helpToolStripMenuItem.Click += new System.EventHandler(this.ShowHelp);
             // 
@@ -543,21 +532,11 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.EnableLoggingMainMenuItem,
             this.nTLMAuthenticationRequiredToolStripMenuItem,
             this.directoryBrowsingEnabledToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
-            // 
-            // EnableLoggingMainMenuItem
-            // 
-            this.EnableLoggingMainMenuItem.CheckOnClick = true;
-            this.EnableLoggingMainMenuItem.Enabled = false;
-            this.EnableLoggingMainMenuItem.Name = "EnableLoggingMainMenuItem";
-            this.EnableLoggingMainMenuItem.Size = new System.Drawing.Size(219, 22);
-            this.EnableLoggingMainMenuItem.Text = "&Enable Logging";
-            this.EnableLoggingMainMenuItem.Click += new System.EventHandler(this.EnableLogging);
             // 
             // nTLMAuthenticationRequiredToolStripMenuItem
             // 
@@ -683,7 +662,6 @@
         private System.Windows.Forms.ToolStripMenuItem browseToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem ShowLogMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem EnableLoggingContextMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
@@ -696,7 +674,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem EnableLoggingMainMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem nTLMAuthenticationRequiredToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem directoryBrowsingEnabledToolStripMenuItem;
