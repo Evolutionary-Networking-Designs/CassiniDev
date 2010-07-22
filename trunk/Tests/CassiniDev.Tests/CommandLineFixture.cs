@@ -43,7 +43,7 @@ namespace CassiniDev.Tests
             Assert.AreEqual("/", args.VirtualPath);
             Assert.AreEqual(0, args.WaitForPort);
 
-            Assert.AreEqual("/v:/", args.ToString());
+            Assert.AreEqual("/v:\"/\"", args.ToString());
         }
 
         [Test]
@@ -53,8 +53,8 @@ namespace CassiniDev.Tests
             string[] cmdLine = new string[]
             {
                 @"/port:32768",
-                @"/path:c:\temp",
-                @"/vpath:/myapp",
+                "/path:c:\\temp",
+                "/vpath:/myapp",
                 @"/ntlm",
                 @"/silent",
                 @"/nodirlist"
@@ -67,7 +67,7 @@ namespace CassiniDev.Tests
 
             
             Assert.AreEqual(false, args.AddHost);
-            Assert.AreEqual(@"c:\temp", args.ApplicationPath);
+            Assert.AreEqual("c:\\temp", args.ApplicationPath);
             Assert.AreEqual(null, args.HostName);
             Assert.AreEqual(null, args.IPAddress);
             Assert.AreEqual(IPMode.Loopback, args.IPMode);
@@ -84,7 +84,7 @@ namespace CassiniDev.Tests
             Assert.AreEqual("/myapp", args.VirtualPath);
             Assert.AreEqual(0, args.WaitForPort);
 
-            Assert.AreEqual("/a:c:\\temp /v:/myapp /p:32768 /ntlm /silent /nodirlist", args.ToString());
+            Assert.AreEqual("/a:\"c:\\temp\" /v:\"/myapp\" /p:32768 /ntlm /silent /nodirlist", args.ToString());
         }
 
         [Test]

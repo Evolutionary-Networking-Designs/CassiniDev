@@ -19,7 +19,7 @@ namespace CassiniDev.NUnitFixtures.Tests
         public void TestFixtureSetUp()
         {
             // assuming your test project and web project or site are in the same parent directory
-            const string applicationPath = @"..\..\..\CassiniDev.TestSite";
+            const string applicationPath = @"..\..\..\..\CassiniDev.TestSite";
 
             // Will start specified application as "localhost" on loopback and first available port in the range 8000-10000 with vpath "/"
             StartServer(applicationPath);
