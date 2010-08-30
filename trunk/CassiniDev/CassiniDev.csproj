@@ -80,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\CassiniDevConfigurationSection.cs" />
     <Compile Include="Misc\CommandLine.cs" />
     <Compile Include="Misc\ServiceInstaller.cs">
       <SubType>Component</SubType>

@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CassiniServer.cs" />
+    <Compile Include="Configuration\CassiniDevConfigurationSection.cs" />
     <Compile Include="Core\Connection.cs" />
     <Compile Include="Core\Host.cs" />
     <Compile Include="Core\Messages.cs" />

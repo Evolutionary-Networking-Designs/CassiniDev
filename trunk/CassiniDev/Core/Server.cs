@@ -200,7 +200,7 @@ namespace CassiniDev
                            ?
                                String.Format("http://{0}:{1}{2}", hostname, _port, _virtualPath)
                            :
-                               //FIX: #12017 - TODO:TEST
+                    //FIX: #12017 - TODO:TEST
                        string.Format("http://{0}{1}", hostname, _virtualPath);
             }
         }
@@ -330,7 +330,7 @@ namespace CassiniDev
             Socket socket = new Socket(family, SocketType.Stream, ProtocolType.Tcp);
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             socket.Bind(new IPEndPoint(address, port));
-            socket.Listen((int) SocketOptionName.MaxConnections);
+            socket.Listen((int)SocketOptionName.MaxConnections);
             return socket;
         }
 
@@ -341,7 +341,10 @@ namespace CassiniDev
         /// <param name="physicalPath"></param>
         /// <param name="hostType"></param>
         /// <returns></returns>
-        /// <remarks>This is Dmitry's hack to enable running outside of GAC</remarks>
+        /// <remarks>
+        /// This is Dmitry's hack to enable running outside of GAC.
+        /// There are some errors being thrown when running in proc
+        /// </remarks>
         private object CreateWorkerAppDomainWithHost(string virtualPath, string physicalPath, Type hostType)
         {
             // this creates worker app domain in a way that host doesn't need to be in GAC or bin
@@ -351,7 +354,7 @@ namespace CassiniDev
 
             // create BuildManagerHost in the worker app domain
             //ApplicationManager appManager = ApplicationManager.GetApplicationManager();
-            Type buildManagerHostType = typeof (HttpRuntime).Assembly.GetType("System.Web.Compilation.BuildManagerHost");
+            Type buildManagerHostType = typeof(HttpRuntime).Assembly.GetType("System.Web.Compilation.BuildManagerHost");
             IRegisteredObject buildManagerHost = _appManager.CreateObject(appId, buildManagerHostType, virtualPath,
                                                                           physicalPath, false);
 
@@ -360,7 +363,7 @@ namespace CassiniDev
                                               BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
                                               null,
                                               buildManagerHost,
-                                              new object[] {hostType.Assembly.FullName, hostType.Assembly.Location});
+                                              new object[] { hostType.Assembly.FullName, hostType.Assembly.Location });
 
             // create Host in the worker app domain
             return _appManager.CreateObject(appId, hostType, virtualPath, physicalPath, false);
@@ -368,15 +371,18 @@ namespace CassiniDev
 
         private void DecrementRequestCount()
         {
-            _requestCount--;
-
-            if (_requestCount < 1)
+            lock (_lockObject)
             {
-                _requestCount = 0;
+                _requestCount--;
 
-                if (_timeoutInterval > 0)
+                if (_requestCount < 1)
                 {
-                    _timer = new Timer(TimeOut, null, _timeoutInterval, Timeout.Infinite);
+                    _requestCount = 0;
+                    
+                    if (_timeoutInterval > 0 && _timer == null)
+                    {
+                        _timer = new Timer(TimeOut, null, _timeoutInterval, Timeout.Infinite);
+                    }
                 }
             }
         }
@@ -416,9 +422,8 @@ namespace CassiniDev
                     host = _host;
                     if (host == null)
                     {
-                        host = (Host) CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof (Host));
-                        host.Configure(this, _port, _virtualPath, _physicalPath, _requireAuthentication,
-                                       _disableDirectoryListing);
+                        host = (Host)CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof(Host));
+                        host.Configure(this, _port, _virtualPath, _physicalPath, _requireAuthentication, _disableDirectoryListing);
                         _host = host;
                     }
                 }
@@ -431,8 +436,18 @@ namespace CassiniDev
 
         private void IncrementRequestCount()
         {
-            _requestCount++;
-            _timer = null;
+            
+            lock (_lockObject)
+            {
+                _requestCount++;
+
+                if (_timer != null)
+                {
+
+                    _timer.Dispose();
+                    _timer = null;
+                }
+            }
         }
 
 
@@ -470,9 +485,9 @@ namespace CassiniDev
                     _socket.Close();
                 }
             }
-                // ReSharper disable EmptyGeneralCatchClause
+            // ReSharper disable EmptyGeneralCatchClause
             catch
-                // ReSharper restore EmptyGeneralCatchClause
+            // ReSharper restore EmptyGeneralCatchClause
             {
             }
             finally
@@ -492,9 +507,9 @@ namespace CassiniDev
                     Thread.Sleep(100);
                 }
             }
-                // ReSharper disable EmptyGeneralCatchClause
+            // ReSharper disable EmptyGeneralCatchClause
             catch
-                // ReSharper restore EmptyGeneralCatchClause
+            // ReSharper restore EmptyGeneralCatchClause
             {
             }
             finally
