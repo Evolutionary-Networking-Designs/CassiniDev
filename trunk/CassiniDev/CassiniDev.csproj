@@ -84,12 +84,6 @@
     <Compile Include="Misc\ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Views\HelpView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\HelpView.Designer.cs">
-      <DependentUpon>HelpView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Core\NtlmAuth.cs" />
     <Compile Include="Core\RequestEventArgs.cs" />
     <Compile Include="Core\Server.cs" />
@@ -144,9 +138,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Views\BodyView.resx">
       <DependentUpon>BodyView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\HelpView.resx">
-      <DependentUpon>HelpView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\LogView.resx">
       <DependentUpon>LogView.cs</DependentUpon>

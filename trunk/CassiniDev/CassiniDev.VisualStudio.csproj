@@ -107,12 +107,6 @@
     <Compile Include="Views\FormView.Designer.cs">
       <DependentUpon>FormView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\HelpView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\HelpView.Designer.cs">
-      <DependentUpon>HelpView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\LogView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,9 +121,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormView.resx">
       <DependentUpon>FormView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\HelpView.resx">
-      <DependentUpon>HelpView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\LogView.resx">
       <DependentUpon>LogView.cs</DependentUpon>
