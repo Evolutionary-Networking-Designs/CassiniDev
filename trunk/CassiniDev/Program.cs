@@ -22,7 +22,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
-using CassiniDev.Configuration;
 using CassiniDev.UIComponents;
 
 #endregion
@@ -36,8 +35,6 @@ namespace CassiniDev
         [STAThread, LoaderOptimization(LoaderOptimization.MultiDomainHost)]
         public static int Main(string[] cmdLine)
         {
-            
-            var section = (CassiniDevConfigurationSection) System.Configuration.ConfigurationManager.GetSection("cassinidev");
             Server server = null;
 
             if (cmdLine != null && cmdLine.Length > 0)
