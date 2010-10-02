@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CassiniDev.TestSite {
+namespace CassiniDev.SelfHostedTests {
     
     
     public partial class _Default {

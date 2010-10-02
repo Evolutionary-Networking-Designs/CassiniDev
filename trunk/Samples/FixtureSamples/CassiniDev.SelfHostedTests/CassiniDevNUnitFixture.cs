@@ -18,8 +18,8 @@ namespace CassiniDev.NUnitFixtures.Tests
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            // assuming your test project and web project or site are in the same parent directory
-            const string applicationPath = @"..\..\..\..\CassiniDev.TestSite";
+            // just need to back out of the bin dir
+            const string applicationPath = @"..\";
 
             // Will start specified application as "localhost" on loopback and first available port in the range 8000-10000 with vpath "/"
             StartServer(applicationPath);
@@ -27,6 +27,8 @@ namespace CassiniDev.NUnitFixtures.Tests
             // if you would like to exercise more control simply use any of the available overloads
         }
 
+        //// this is left over from out-of-process fixture. I really don't think it is
+        //// necessary in-proc, but a zombie thread might cause trouble. salt to taste
         //[TestFixtureTearDown]
         //public void TestFixtureTearDown()
         //{

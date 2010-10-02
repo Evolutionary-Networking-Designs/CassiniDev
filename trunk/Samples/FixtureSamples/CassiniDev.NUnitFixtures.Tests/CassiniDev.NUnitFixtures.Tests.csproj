@@ -60,10 +60,6 @@
       <Project>{9AAD02EE-FE79-46BE-87EB-E3D2A376A043}</Project>
       <Name>CassiniDev.Lib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CassiniDev.TestSite\CassiniDev.TestSite.csproj">
-      <Project>{EE6B6146-79D7-4708-B7C5-A4DB6D667CB6}</Project>
-      <Name>CassiniDev.TestSite</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

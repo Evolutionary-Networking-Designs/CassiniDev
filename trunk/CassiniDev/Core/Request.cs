@@ -484,22 +484,26 @@ namespace CassiniDev
                     // ignore these
                     return;
                 case HeaderAcceptRanges:
-                    if (value == "bytes")
+                    // FIX: #14359
+                    if (!(value == "bytes"))
                     {
                         // use this header to detect when we're processing a static file
-                        _specialCaseStaticFileHeaders = true;
-                        return;
+                        break;
                     }
-                    break;
+                    _specialCaseStaticFileHeaders = true;
+                    return;
+
                 case HeaderExpires:
                 case HeaderLastModified:
-                    if (_specialCaseStaticFileHeaders)
+                    // FIX: #14359
+                    if (!this._specialCaseStaticFileHeaders)
                     {
                         // NOTE: Ignore these for static files. These are generated
                         //       by the StaticFileHandler, but they shouldn't be.
-                        return;
+                        break;
                     }
-                    break;
+                    return;
+ 
 
                 // FIX: #12506
                 case HeaderContentType:
