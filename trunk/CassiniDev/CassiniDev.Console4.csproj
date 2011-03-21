@@ -20,7 +20,7 @@
     </SccAuxPath>
     <SccProvider>
     </SccProvider>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
     <ApplicationIcon>Resources\preferences-web-browser-shortcuts.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -46,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>bin\x86\debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -79,9 +79,11 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -91,6 +93,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CassiniDevServerOP.cs" />
+    <Compile Include="Configuration\CassiniDevConfigurationSection.cs" />
+    <Compile Include="Configuration\CassiniDevProfileElement.cs" />
+    <Compile Include="Configuration\CassiniDevProfileElementCollection.cs" />
+    <Compile Include="Configuration\PluginElement.cs" />
+    <Compile Include="Configuration\PluginElementCollection.cs" />
     <Compile Include="ConsoleProgram.cs" />
     <Compile Include="Core\Connection.cs" />
     <Compile Include="Core\Host.cs" />
@@ -107,9 +114,6 @@
     <Compile Include="Misc\HostsFile.cs" />
     <Compile Include="Misc\Interop.cs" />
     <Compile Include="Misc\NetworkUtils.cs" />
-    <Compile Include="Misc\ServiceInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo4.cs" />
     <Compile Include="Resources\SR.cs" />
   </ItemGroup>
@@ -118,11 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\preferences-web-browser-shortcuts.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CassiniDev4-console.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -140,6 +139,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\DiscreteFiles\CassiniDev.Console4\app.config">
+      <Link>app.config</Link>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

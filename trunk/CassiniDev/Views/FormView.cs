@@ -210,7 +210,7 @@ namespace CassiniDev
         private void InitializeUI()
         {
             ButtonStart.Text = SR.GetString(SR.WebdevStart);
-            toolStripStatusLabel1.Text = SR.GetString(SR.WebdevAspNetVersion, Common.GetAspVersion());
+            toolStripStatusLabel1.Text = SR.GetString(SR.WebdevAspNetVersion, CommonExtensions.GetAspVersion());
 
             
             // if sqlite is missing then just silently enable in-memory logging,
@@ -222,7 +222,7 @@ namespace CassiniDev
 
             
 
-            toolStripStatusLabel1.Text = SR.GetString(SR.WebdevAspNetVersion, Common.GetAspVersion());
+            toolStripStatusLabel1.Text = SR.GetString(SR.WebdevAspNetVersion, CommonExtensions.GetAspVersion());
 
             List<IPAddress> localAddresses = new List<IPAddress>(CassiniNetworkUtils.GetLocalAddresses());
             localAddresses.Insert(0, System.Net.IPAddress.IPv6Loopback);
@@ -570,10 +570,7 @@ namespace CassiniDev
         }
 
 
-        private static void ShowHelp()
-        {
-            MessageBox.Show("help/about TODO");
-        }
+  
 
         private void ShowLog()
         {
@@ -733,11 +730,7 @@ namespace CassiniDev
             LaunchBrowser();
         }
 
-        private void ShowHelp(object sender, EventArgs e)
-        {
-            ShowHelp();
-        }
-
+        
         private void ShowLog(object sender, EventArgs e)
         {
             ShowLog();

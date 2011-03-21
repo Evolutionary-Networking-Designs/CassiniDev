@@ -398,6 +398,7 @@
             this.TrayIcon.ContextMenuStrip = this.contextMenuStrip1;
             this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
             this.TrayIcon.Text = "notifyIcon1";
+            this.TrayIcon.Visible = true;
             this.TrayIcon.BalloonTipClicked += new System.EventHandler(this.ShowMainForm);
             this.TrayIcon.DoubleClick += new System.EventHandler(this.ShowMainForm);
             // 
@@ -456,9 +457,7 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.helpToolStripMenuItem.Text = "&Help";
-            this.helpToolStripMenuItem.Click += new System.EventHandler(this.ShowHelp);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // statusStrip1
             // 
@@ -475,7 +474,7 @@
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(130, 17);
             this.toolStripStatusLabel1.Text = "ASP.Net Version XXXXX";
             // 
             // ShowLogButton
@@ -507,25 +506,25 @@
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // hideToolStripMenuItem
             // 
             this.hideToolStripMenuItem.Name = "hideToolStripMenuItem";
-            this.hideToolStripMenuItem.Size = new System.Drawing.Size(95, 22);
+            this.hideToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.hideToolStripMenuItem.Text = "&Hide";
             this.hideToolStripMenuItem.Click += new System.EventHandler(this.HideMainForm);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(92, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(96, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(95, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitApp);
             // 
@@ -535,14 +534,14 @@
             this.nTLMAuthenticationRequiredToolStripMenuItem,
             this.directoryBrowsingEnabledToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
             // 
             // nTLMAuthenticationRequiredToolStripMenuItem
             // 
             this.nTLMAuthenticationRequiredToolStripMenuItem.CheckOnClick = true;
             this.nTLMAuthenticationRequiredToolStripMenuItem.Name = "nTLMAuthenticationRequiredToolStripMenuItem";
-            this.nTLMAuthenticationRequiredToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.nTLMAuthenticationRequiredToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.nTLMAuthenticationRequiredToolStripMenuItem.Text = "NTLM Authentication Required";
             this.nTLMAuthenticationRequiredToolStripMenuItem.ToolTipText = "When checked, require windows authentication via NTLM.";
             // 
@@ -552,16 +551,14 @@
             this.directoryBrowsingEnabledToolStripMenuItem.CheckOnClick = true;
             this.directoryBrowsingEnabledToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.directoryBrowsingEnabledToolStripMenuItem.Name = "directoryBrowsingEnabledToolStripMenuItem";
-            this.directoryBrowsingEnabledToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.directoryBrowsingEnabledToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.directoryBrowsingEnabledToolStripMenuItem.Text = "Directory Browsing Enabled";
             this.directoryBrowsingEnabledToolStripMenuItem.ToolTipText = "When checked, if no default document is found display a directory listing.";
             // 
             // helpToolStripMenuItem1
             // 
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(40, 20);
-            this.helpToolStripMenuItem1.Text = "&Help";
-            this.helpToolStripMenuItem1.Click += new System.EventHandler(this.ShowHelp);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
             // 
             // TimeOutNumeric
             // 

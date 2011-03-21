@@ -25,10 +25,10 @@ namespace CassiniDev
     /// to strictly format the console app's output and just spin up an external process. 
     /// Seems robust so far.
     /// </summary>
-    public class CassiniDevServerOP 
+    public class CassiniDevServerOP
     {
         //private bool _disposed;
-        
+
         private string _hostname;
         private StreamWriter _input;
         private IPAddress _ipAddress;
@@ -68,6 +68,16 @@ namespace CassiniDev
         public string NormalizeUrl(string relativeUrl)
         {
             return CassiniNetworkUtils.NormalizeUrl(RootUrl, relativeUrl);
+        }
+
+        /// <summary>
+        /// Will start specified application as "localhost" on loopback and first available port in the range 8000-10000 with vpath "/"
+        /// </summary>
+        /// <param name="applicationPath">Physical path to application.</param>
+        /// <param name="virtualPath">Optional. defaults to "/"</param>
+        public void StartServer(string applicationPath, string virtualPath)
+        {
+            StartServer(applicationPath, CassiniNetworkUtils.GetAvailablePort(8000, 10000, IPAddress.Loopback, true), virtualPath, "localhost");
         }
 
         /// <summary>
@@ -114,7 +124,7 @@ namespace CassiniDev
         /// <param name="hostName">Optional. Used to construct RootUrl. Defaults to 'localhost'</param>
         public virtual void StartServer(string applicationPath, IPAddress ipAddress, int port, string virtualPath, string hostName)
         {
-            
+
             _hostname = hostName;
             _ipAddress = ipAddress;
 
@@ -159,9 +169,9 @@ namespace CassiniDev
 #if NET40 //TODO: find out the real flag
                                   FileName = "CassiniDev4-console.exe",
 #else
-                                  FileName = "CassiniDev-console.exe",
+                    FileName = "CassiniDev-console.exe",
 #endif
-      
+
                     Arguments = commandLine,
                     WorkingDirectory = Environment.CurrentDirectory
                 }

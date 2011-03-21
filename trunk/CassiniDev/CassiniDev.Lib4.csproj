@@ -12,7 +12,7 @@
     <AssemblyName>CassiniDev4-lib</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
     <ApplicationIcon>Resources\preferences-web-browser-shortcuts.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -38,7 +38,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
+    <OutputPath>bin\x86\debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
@@ -71,9 +71,11 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -82,7 +84,16 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrowserTestResultItem.cs" />
+    <Compile Include="BrowserTestResults.cs" />
+    <Compile Include="CassiniDevBrowserTest.cs" />
     <Compile Include="CassiniServer.cs" />
+    <Compile Include="Configuration\CassiniDevConfigurationSection.cs" />
+    <Compile Include="Configuration\CassiniDevProfileElement.cs" />
+    <Compile Include="Configuration\CassiniDevProfileElementCollection.cs" />
+    <Compile Include="Configuration\PluginElement.cs" />
+    <Compile Include="Configuration\PluginElementCollection.cs" />
+    <Compile Include="ContentLocator.cs" />
     <Compile Include="Core\Connection.cs" />
     <Compile Include="Core\Host.cs" />
     <Compile Include="Core\Messages.cs" />
@@ -90,6 +101,8 @@
     <Compile Include="Core\Request.cs" />
     <Compile Include="Core\RequestEventArgs.cs" />
     <Compile Include="Core\Server.cs" />
+    <Compile Include="IContentLocator.cs" />
+    <Compile Include="LocalContentLocator.cs" />
     <Compile Include="Logging\LogInfo.cs" />
     <Compile Include="Misc\CommandLine.cs" />
     <Compile Include="Misc\CommandLineArguments.cs">
@@ -103,7 +116,9 @@
     <Compile Include="Misc\Interop.cs" />
     <Compile Include="Misc\NetworkUtils.cs" />
     <Compile Include="Properties\AssemblyInfo4.cs" />
+    <Compile Include="QUnitExBrowserTestResultItem.cs" />
     <Compile Include="Resources\SR.cs" />
+    <Compile Include="WebBrowser.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\CassiniDev.resx" />
@@ -129,9 +144,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CassiniDev4-lib.dll.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Include="..\DiscreteFiles\CassiniDev.Lib4\app.config">
+      <Link>app.config</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using CassiniDev;
+using WebBrowser = System.Windows.Forms.WebBrowser;
 
 namespace SelfHostingCassiniDev
 {

@@ -16,9 +16,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
@@ -158,9 +160,8 @@ namespace CassiniDev
 
                 _headersSent = true;
             }
-            for (int i = 0; i < _responseBodyBytes.Count; i++)
+            foreach (byte[] bytes in _responseBodyBytes)
             {
-                byte[] bytes = _responseBodyBytes[i];
                 _connection.WriteBody(bytes, 0, bytes.Length);
             }
 
@@ -272,7 +273,7 @@ namespace CassiniDev
             {
                 return processUser;
             }
-            if (!(str2 == "ALL_RAW"))
+            if (str2 != "ALL_RAW")
             {
                 if (str2 != "SERVER_PROTOCOL")
                 {
@@ -436,6 +437,8 @@ namespace CassiniDev
                     return;
                 }
 
+
+
                 PrepareResponse();
 
                 // Hand the processing over to HttpRuntime
@@ -485,7 +488,7 @@ namespace CassiniDev
                     return;
                 case HeaderAcceptRanges:
                     // FIX: #14359
-                    if (!(value == "bytes"))
+                    if (value != "bytes")
                     {
                         // use this header to detect when we're processing a static file
                         break;
@@ -496,14 +499,14 @@ namespace CassiniDev
                 case HeaderExpires:
                 case HeaderLastModified:
                     // FIX: #14359
-                    if (!this._specialCaseStaticFileHeaders)
+                    if (!_specialCaseStaticFileHeaders)
                     {
                         // NOTE: Ignore these for static files. These are generated
                         //       by the StaticFileHandler, but they shouldn't be.
                         break;
                     }
                     return;
- 
+
 
                 // FIX: #12506
                 case HeaderContentType:
@@ -517,13 +520,21 @@ namespace CassiniDev
                         // don't do this for other content-types as you are going to
                         // end up sending text/plain for endpoints that are handled by
                         // asp.net such as .aspx, .asmx, .axd, etc etc
-                        contentType = Common.GetContentType(_pathTranslated);
+                        contentType = CommonExtensions.GetContentType(_pathTranslated);
                     }
                     value = contentType ?? value;
                     break;
             }
 
             _responseHeadersBuilder.Append(GetKnownResponseHeaderName(index));
+            _responseHeadersBuilder.Append(": ");
+            _responseHeadersBuilder.Append(value);
+            _responseHeadersBuilder.Append("\r\n");
+        }
+
+        public void SetResponseHeader(string name, string value)
+        {
+            _responseHeadersBuilder.Append(name);
             _responseHeadersBuilder.Append(": ");
             _responseHeadersBuilder.Append(value);
             _responseHeadersBuilder.Append("\r\n");
@@ -558,9 +569,9 @@ namespace CassiniDev
                 return;
             }
 
-            using (SafeFileHandle sfh = new SafeFileHandle(handle, false))
+            using (var sfh = new SafeFileHandle(handle, false))
             {
-                using (FileStream f = new FileStream(sfh, FileAccess.Read))
+                using (var f = new FileStream(sfh, FileAccess.Read))
                 {
                     SendResponseFromFileStream(f, offset, length);
                 }
@@ -571,7 +582,7 @@ namespace CassiniDev
         {
             if (length > 0)
             {
-                byte[] bytes = new byte[length];
+                var bytes = new byte[length];
 
                 Buffer.BlockCopy(data, 0, bytes, 0, length);
                 _responseBodyBytes.Add(bytes);
@@ -642,7 +653,7 @@ namespace CassiniDev
             _knownRequestHeaders = new string[RequestHeaderMaximum];
 
             // construct unknown headers as array list of name1,value1,...
-            List<string> headers = new List<string>();
+            var headers = new List<string>();
 
             for (int i = 1; i < _headerByteStrings.Count; i++)
             {
@@ -812,6 +823,8 @@ namespace CassiniDev
             _responseStatus = 200;
             _responseHeadersBuilder = new StringBuilder();
             _responseBodyBytes = new List<byte[]>();
+
+            ProcessPlugins();
         }
 
         private bool ProcessDirectoryListingRequest()
@@ -932,7 +945,7 @@ namespace CassiniDev
             {
                 _connection.LogRequestHeaders(string.Join(Environment.NewLine, _headerByteStrings.Select(b => b.GetString()).ToArray()));
             }
-            
+
         }
 
         private void Reset()
@@ -986,14 +999,14 @@ namespace CassiniDev
 
             if (length <= MaxChunkLength)
             {
-                byte[] fileBytes = new byte[(int)length];
+                var fileBytes = new byte[(int)length];
                 int bytesRead = f.Read(fileBytes, 0, (int)length);
                 SendResponseFromMemory(fileBytes, bytesRead);
             }
             else
             {
-                byte[] chunk = new byte[MaxChunkLength];
-                int bytesRemaining = (int)length;
+                var chunk = new byte[MaxChunkLength];
+                var bytesRemaining = (int)length;
 
                 while (bytesRemaining > 0)
                 {
@@ -1034,7 +1047,7 @@ namespace CassiniDev
         {
             try
             {
-                using (NtlmAuth auth = new NtlmAuth())
+                using (var auth = new NtlmAuth())
                 {
                     do
                     {
@@ -1144,7 +1157,7 @@ namespace CassiniDev
                 if (len > MaxHeaderBytes)
                     return false;
 
-                byte[] bytes = new byte[len];
+                var bytes = new byte[len];
                 Buffer.BlockCopy(_headerBytes, 0, bytes, 0, _headerBytes.Length);
                 Buffer.BlockCopy(headerBytes, 0, bytes, _headerBytes.Length, headerBytes.Length);
                 _headerBytes = bytes;
@@ -1160,7 +1173,7 @@ namespace CassiniDev
             _headerByteStrings = new List<ByteString>();
 
             // find the end of headers
-            ByteParser parser = new ByteParser(_headerBytes);
+            var parser = new ByteParser(_headerBytes);
 
             for (; ; )
             {
@@ -1208,7 +1221,7 @@ namespace CassiniDev
             if (countNonAscii > 0)
             {
                 // expand not 'safe' characters into %XX, spaces to +s
-                byte[] expandedBytes = new byte[count + countNonAscii * 2];
+                var expandedBytes = new byte[count + countNonAscii * 2];
                 int pos = 0;
                 for (int i = 0; i < count; i++)
                 {
@@ -1238,6 +1251,29 @@ namespace CassiniDev
             return path;
         }
 
+        private void ProcessPlugins()
+        {
+            if (_connection.Plugins != null)
+            {
+                foreach (string pluginTypeName in _connection.Plugins)
+                {
+                    //AssemblyName assemblyName = new AssemblyName(pluginTypeName.Substring(pluginTypeName.IndexOf(",") + 1));
+
+                    //Assembly.Load(assemblyName.Name + ".dll");
+
+                    Type pluginType = Type.GetType(pluginTypeName);
+                    object plugin = Activator.CreateInstance(pluginType);
+                    var headersToAdd = (NameValueCollection)plugin.GetType().GetMethod("AddResponseHeaders").Invoke(plugin, null);
+                    if (headersToAdd != null)
+                    {
+                        foreach (string name in headersToAdd)
+                        {
+                            SetResponseHeader(name, headersToAdd[name]);
+                        }
+                    }
+                }
+            }
+        }
         #region Nested type: ByteParser
 
         internal class ByteParser
@@ -1333,7 +1369,7 @@ namespace CassiniDev
 
             public byte[] GetBytes()
             {
-                byte[] bytes = new byte[_length];
+                var bytes = new byte[_length];
                 if (_length > 0) Buffer.BlockCopy(_bytes, _offset, bytes, 0, _length);
                 return bytes;
             }
@@ -1365,7 +1401,7 @@ namespace CassiniDev
 
             public ByteString[] Split(char sep)
             {
-                List<ByteString> list = new List<ByteString>();
+                var list = new List<ByteString>();
 
                 int pos = 0;
                 while (pos < _length)

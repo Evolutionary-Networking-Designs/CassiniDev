@@ -28,7 +28,7 @@ using System.Web.UI;
 
 namespace CassiniDev
 {
-    internal static class Common
+    internal static class CommonExtensions
     {
         public static string ConvertToHexView(this byte[] value, int numBytesPerRow)
         {

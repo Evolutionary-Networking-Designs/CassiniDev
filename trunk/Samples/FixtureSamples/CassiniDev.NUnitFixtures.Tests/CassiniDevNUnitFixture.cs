@@ -27,11 +27,11 @@ namespace CassiniDev.NUnitFixtures.Tests
             // if you would like to exercise more control simply use any of the available overloads
         }
 
-        //[TestFixtureTearDown]
-        //public void TestFixtureTearDown()
-        //{
-        //    StopServer();
-        //}
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            StopServer();
+        }
 
         [Test]
         public void Test()

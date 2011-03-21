@@ -15,6 +15,8 @@
 #region
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -23,10 +25,13 @@ using System.Reflection;
 using System.Runtime.Remoting;
 using System.Security.Permissions;
 using System.Security.Principal;
+using System.Text;
 using System.Threading;
 using System.Web;
 using System.Web.Hosting;
+using CassiniDev.Configuration;
 using CassiniDev.ServerLog;
+
 
 #endregion
 
@@ -36,6 +41,8 @@ namespace CassiniDev
      PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
     public class Server : MarshalByRefObject, IDisposable
     {
+        private bool _useLogger;
+        public List<string> Plugins = new List<string>();
         private readonly ApplicationManager _appManager;
 
         private readonly bool _disableDirectoryListing;
@@ -116,6 +123,16 @@ namespace CassiniDev
         public Server(int port, string virtualPath, string physicalPath, bool requireAuthentication,
                       bool disableDirectoryListing)
         {
+            try
+            {
+                Assembly.ReflectionOnlyLoad("Common.Logging");
+                _useLogger = true;
+            }
+            // ReSharper disable EmptyGeneralCatchClause
+            catch
+            // ReSharper restore EmptyGeneralCatchClause
+            {
+            }
             _ipAddress = IPAddress.Loopback;
             _requireAuthentication = requireAuthentication;
             _disableDirectoryListing = disableDirectoryListing;
@@ -126,8 +143,28 @@ namespace CassiniDev
             _physicalPath = _physicalPath.EndsWith("\\", StringComparison.Ordinal)
                                 ? _physicalPath
                                 : _physicalPath + "\\";
+            ProcessConfiguration();
+
             _appManager = ApplicationManager.GetApplicationManager();
             ObtainProcessToken();
+        }
+
+        private void ProcessConfiguration()
+        {
+            var config = CassiniDevConfigurationSection.Instance;
+            if (config != null)
+            {
+                foreach (CassiniDevProfileElement profile in config.Profiles)
+                {
+                    if (profile.Port == "*" || Convert.ToInt64(profile.Port) == _port)
+                    {
+                        foreach (PluginElement plugin in profile.Plugins)
+                        {
+                            Plugins.Insert(0, plugin.Type);
+                        }
+                    }
+                }
+            }
         }
 
         public Server(string physicalPath, bool requireAuthentication)
@@ -200,7 +237,7 @@ namespace CassiniDev
                            ?
                                String.Format("http://{0}:{1}{2}", hostname, _port, _virtualPath)
                            :
-                               //FIX: #12017 - TODO:TEST
+                    //FIX: #12017 - TODO:TEST
                        string.Format("http://{0}{1}", hostname, _virtualPath);
             }
         }
@@ -330,7 +367,7 @@ namespace CassiniDev
             Socket socket = new Socket(family, SocketType.Stream, ProtocolType.Tcp);
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             socket.Bind(new IPEndPoint(address, port));
-            socket.Listen((int) SocketOptionName.MaxConnections);
+            socket.Listen((int)SocketOptionName.MaxConnections);
             return socket;
         }
 
@@ -341,7 +378,10 @@ namespace CassiniDev
         /// <param name="physicalPath"></param>
         /// <param name="hostType"></param>
         /// <returns></returns>
-        /// <remarks>This is Dmitry's hack to enable running outside of GAC</remarks>
+        /// <remarks>
+        /// This is Dmitry's hack to enable running outside of GAC.
+        /// There are some errors being thrown when running in proc
+        /// </remarks>
         private object CreateWorkerAppDomainWithHost(string virtualPath, string physicalPath, Type hostType)
         {
             // this creates worker app domain in a way that host doesn't need to be in GAC or bin
@@ -351,7 +391,7 @@ namespace CassiniDev
 
             // create BuildManagerHost in the worker app domain
             //ApplicationManager appManager = ApplicationManager.GetApplicationManager();
-            Type buildManagerHostType = typeof (HttpRuntime).Assembly.GetType("System.Web.Compilation.BuildManagerHost");
+            Type buildManagerHostType = typeof(HttpRuntime).Assembly.GetType("System.Web.Compilation.BuildManagerHost");
             IRegisteredObject buildManagerHost = _appManager.CreateObject(appId, buildManagerHostType, virtualPath,
                                                                           physicalPath, false);
 
@@ -360,23 +400,28 @@ namespace CassiniDev
                                               BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic,
                                               null,
                                               buildManagerHost,
-                                              new object[] {hostType.Assembly.FullName, hostType.Assembly.Location});
+                                              new object[] { hostType.Assembly.FullName, hostType.Assembly.Location });
 
             // create Host in the worker app domain
+            // FIXME: getting FileLoadException Could not load file or assembly 'WebDev.WebServer20, Version=4.0.1.6, Culture=neutral, PublicKeyToken=f7f6e0b4240c7c27' or one of its dependencies. Failed to grant permission to execute. (Exception from HRESULT: 0x80131418)
+            // when running dnoa 3.4 samples - webdev is registering trust somewhere that we are not
             return _appManager.CreateObject(appId, hostType, virtualPath, physicalPath, false);
         }
 
         private void DecrementRequestCount()
         {
-            _requestCount--;
-
-            if (_requestCount < 1)
+            lock (_lockObject)
             {
-                _requestCount = 0;
+                _requestCount--;
 
-                if (_timeoutInterval > 0)
+                if (_requestCount < 1)
                 {
-                    _timer = new Timer(TimeOut, null, _timeoutInterval, Timeout.Infinite);
+                    _requestCount = 0;
+
+                    if (_timeoutInterval > 0 && _timer == null)
+                    {
+                        _timer = new Timer(TimeOut, null, _timeoutInterval, Timeout.Infinite);
+                    }
                 }
             }
         }
@@ -416,9 +461,8 @@ namespace CassiniDev
                     host = _host;
                     if (host == null)
                     {
-                        host = (Host) CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof (Host));
-                        host.Configure(this, _port, _virtualPath, _physicalPath, _requireAuthentication,
-                                       _disableDirectoryListing);
+                        host = (Host)CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof(Host));
+                        host.Configure(this, _port, _virtualPath, _physicalPath, _requireAuthentication, _disableDirectoryListing);
                         _host = host;
                     }
                 }
@@ -431,8 +475,18 @@ namespace CassiniDev
 
         private void IncrementRequestCount()
         {
-            _requestCount++;
-            _timer = null;
+
+            lock (_lockObject)
+            {
+                _requestCount++;
+
+                if (_timer != null)
+                {
+
+                    _timer.Dispose();
+                    _timer = null;
+                }
+            }
         }
 
 
@@ -450,7 +504,11 @@ namespace CassiniDev
 
         private void OnRequestComplete(Guid id, LogInfo requestLog, LogInfo responseLog)
         {
+            PublishLogToCommonLogging(requestLog);
+            PublishLogToCommonLogging(responseLog);
+
             EventHandler<RequestEventArgs> complete = RequestComplete;
+
 
             if (complete != null)
             {
@@ -459,8 +517,48 @@ namespace CassiniDev
         }
 
 
+
+        private void PublishLogToCommonLogging(LogInfo item)
+        {
+            if(!_useLogger )
+            {
+                return;
+            }
+
+            Common.Logging.ILog logger = Common.Logging.LogManager.GetCurrentClassLogger();
+
+            var bodyAsString = String.Empty;
+            try
+            {
+                bodyAsString = Encoding.UTF8.GetString(item.Body);
+            }
+            // ReSharper disable EmptyGeneralCatchClause
+            catch (Exception e)
+            // ReSharper restore EmptyGeneralCatchClause
+            {
+                /* empty bodies should be allowed */
+            }
+
+            var type = item.RowType == 0 ? "" : item.RowType == 1 ? "Request" : "Response";
+            logger.Debug(type + " | " +
+                          item.Created + " | " +
+                          item.StatusCode + " | " +
+                          item.Url + " | " +
+                          item.PathTranslated + " | " +
+                          item.Identity + " | " +
+                          "\n===>Headers<====\n" + item.Headers +
+                          "\n===>Body<=======\n" + bodyAsString
+                );
+        }
+
+
         public void ShutDown()
         {
+            if (_shutdownInProgress)
+            {
+                return;
+            }
+
             _shutdownInProgress = true;
 
             try
@@ -470,10 +568,11 @@ namespace CassiniDev
                     _socket.Close();
                 }
             }
-                // ReSharper disable EmptyGeneralCatchClause
+            // ReSharper disable EmptyGeneralCatchClause
             catch
-                // ReSharper restore EmptyGeneralCatchClause
+            // ReSharper restore EmptyGeneralCatchClause
             {
+                // TODO: why the swallow?
             }
             finally
             {
@@ -487,20 +586,21 @@ namespace CassiniDev
                     _host.Shutdown();
                 }
 
+                // the host is going to raise an event that this class uses to null the field.
+                // just wait until the field is nulled and continue.
+
                 while (_host != null)
                 {
-                    Thread.Sleep(100);
+                    new AutoResetEvent(false).WaitOne(100);
                 }
             }
-                // ReSharper disable EmptyGeneralCatchClause
+            // ReSharper disable EmptyGeneralCatchClause
             catch
-                // ReSharper restore EmptyGeneralCatchClause
+            // ReSharper restore EmptyGeneralCatchClause
             {
+                // TODO: what am i afraid of here?
             }
-            finally
-            {
-                _host = null;
-            }
+  
         }
 
         private void TimeOut(object ignored)

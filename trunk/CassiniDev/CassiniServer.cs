@@ -10,10 +10,8 @@
 //  *
 //  * **********************************************************************************/
 using System;
-using System.Globalization;
 using System.IO;
 using System.Net;
-
 
 namespace CassiniDev
 {
@@ -21,35 +19,36 @@ namespace CassiniDev
     {
 
         private Server _server;
-
-        #region Implementation of IDisposable
-
-        /// <summary>
-        /// </summary>
-        public void Dispose()
+        public Server Server
         {
-            if (_server != null)
+            get
             {
-                StopServer();
-                _server.Dispose();
-                _server = null;
+                return _server;
             }
         }
 
-        #endregion
-
-        
-
-
+        public string ApplicationPath
+        {
+            get { return _server.PhysicalPath; }
+        }
 
         /// <summary>
         /// The root URL of the running web application
         /// </summary>
         public string RootUrl
         {
-            get { return string.Format(CultureInfo.InvariantCulture, "http://{0}:{1}{2}", _server.HostName, _server.Port, _server.VirtualPath); }
-
+            get
+            {
+                return new UriBuilder
+                    {
+                        Scheme = "http",
+                        Host = _server.HostName,
+                        Port = _server.Port,
+                        Path = _server.VirtualPath
+                    }.ToString();
+            }
         }
+
         /// <summary>
         /// Combine the RootUrl of the running web application with the relative url
         /// specified.
@@ -59,6 +58,18 @@ namespace CassiniDev
         public string NormalizeUrl(string relativeUrl)
         {
             return CassiniNetworkUtils.NormalizeUrl(RootUrl, relativeUrl);
+        }
+
+
+        /// <summary>
+        /// Will start specified application as "localhost" on loopback and first available port in the range 8000-10000 with vpath "/"
+        
+        /// </summary>
+        /// <param name="applicationPath">Physical path to application.</param>
+        /// <param name="virtualPath">Optional. defaults to "/"</param>
+        public void StartServer(string applicationPath, string virtualPath)
+        {
+            StartServer(applicationPath, CassiniNetworkUtils.GetAvailablePort(8000, 10000, IPAddress.Loopback, true), virtualPath, "localhost");
         }
 
         /// <summary>
@@ -93,7 +104,7 @@ namespace CassiniDev
             hostName = string.IsNullOrEmpty(hostName) ? "localhost" : hostName;
 
             StartServer(applicationPath, ipAddress, port, virtualPath, hostName);
-            
+
 
         }
 
@@ -110,8 +121,7 @@ namespace CassiniDev
             {
                 throw new InvalidOperationException("Server already started");
             }
-            _server = new Server(port, virtualPath, applicationPath, ipAddress,hostname, 60000);
-
+            _server = new Server(port, virtualPath, applicationPath, ipAddress, hostname, 60000);
             try
             {
                 _server.Start();
@@ -124,6 +134,7 @@ namespace CassiniDev
 
         }
 
+
         /// <summary>
         /// <para>Stops the server.</para>
         /// </summary>
@@ -131,10 +142,32 @@ namespace CassiniDev
         {
             if (_server != null)
             {
-                _server.ShutDown();
+                try
+                {
+                    _server.ShutDown();
+                }
+                catch
+                {
+                }
             }
         }
 
-
+        /// <summary>
+        /// </summary>
+        public void Dispose()
+        {
+            if (_server != null)
+            {
+                try
+                {
+                    StopServer();
+                    _server.Dispose();
+                    _server = null;
+                }
+                catch
+                {
+                }
+            }
+        }
     }
 }

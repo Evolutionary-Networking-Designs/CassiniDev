@@ -81,7 +81,7 @@ namespace CassiniDev
             @"</PRE>
             <hr width=100% size=1 color=silver>
 
-            <b>Version Information:</b>&nbsp;Cassini Web Server " +
+            <b>Version Information:</b>&nbsp;CassiniDev Web Server " +
             VersionString + @"
 
             </font>
@@ -100,7 +100,7 @@ namespace CassiniDev
 
             <hr width=100% size=1 color=silver>
 
-            <b>Version Information:</b>&nbsp;Cassini Web Server " +
+            <b>Version Information:</b>&nbsp;CassiniDev Web Server " +
             VersionString + @"
 
             </font>

@@ -16,12 +16,13 @@
 
 using System;
 using System.Collections;
-using System.Configuration.Install;
+
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using CassiniDev.Configuration;
 using CassiniDev.UIComponents;
 
 #endregion
@@ -35,6 +36,8 @@ namespace CassiniDev
         [STAThread, LoaderOptimization(LoaderOptimization.MultiDomainHost)]
         public static int Main(string[] cmdLine)
         {
+            
+            
             Server server = null;
 
             if (cmdLine != null && cmdLine.Length > 0)
@@ -337,50 +340,50 @@ namespace CassiniDev
  
     }
 
-    internal sealed class ServiceUtil
-    {
-        /// <summary>
-        /// http://stackoverflow.com/questions/1449994/inno-setup-for-windows-service
-        /// http://groups.google.co.uk/group/microsoft.public.dotnet.languages.csharp/browse_thread/thread/4d45e9ea5471cba4/4519371a77ed4a74
-        /// </summary>
-        /// <param name="undo"></param>
-        /// <param name="args"></param>
-        public static void Install(bool undo, string[] args)
-        {
-            try
-            {
-                Console.WriteLine(undo ? "uninstalling" : "installing");
-                using (AssemblyInstaller inst = new AssemblyInstaller(typeof(Program).Assembly, args))
-                {
-                    IDictionary state = new Hashtable();
-                    inst.UseNewContext = true;
-                    try
-                    {
-                        if (undo)
-                        {
-                            inst.Uninstall(state);
-                        }
-                        else
-                        {
-                            inst.Install(state);
-                            inst.Commit(state);
-                        }
-                    }
-                    catch
-                    {
-                        try
-                        {
-                            inst.Rollback(state);
-                        }
-                        catch { }
-                        throw;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
-        }
-    }
+    //internal sealed class ServiceUtil
+    //{
+    //    /// <summary>
+    //    /// http://stackoverflow.com/questions/1449994/inno-setup-for-windows-service
+    //    /// http://groups.google.co.uk/group/microsoft.public.dotnet.languages.csharp/browse_thread/thread/4d45e9ea5471cba4/4519371a77ed4a74
+    //    /// </summary>
+    //    /// <param name="undo"></param>
+    //    /// <param name="args"></param>
+    //    public static void Install(bool undo, string[] args)
+    //    {
+    //        try
+    //        {
+    //            Console.WriteLine(undo ? "uninstalling" : "installing");
+    //            using (AssemblyInstaller inst = new AssemblyInstaller(typeof(Program).Assembly, args))
+    //            {
+    //                IDictionary state = new Hashtable();
+    //                inst.UseNewContext = true;
+    //                try
+    //                {
+    //                    if (undo)
+    //                    {
+    //                        inst.Uninstall(state);
+    //                    }
+    //                    else
+    //                    {
+    //                        inst.Install(state);
+    //                        inst.Commit(state);
+    //                    }
+    //                }
+    //                catch
+    //                {
+    //                    try
+    //                    {
+    //                        inst.Rollback(state);
+    //                    }
+    //                    catch { }
+    //                    throw;
+    //                }
+    //            }
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            Console.Error.WriteLine(ex.Message);
+    //        }
+    //    }
+    //}
 }

@@ -33,6 +33,7 @@ namespace CassiniDev
     ///               need to test thoroughly but seems to work just fine with no ill effects
     /// 01.03.10 sky: removed the HttpRuntime.Close because, even though it tests fine, I am not entirely certain it is in the right place
     ///               and since I am no longer recommending that the server be used as a library in testing (run a console instance in a new process).
+    /// 04.20.11 sky: un-second-guessed myself and un-removed the initial fix. seems to have resolved the issue.
     ///               
     /// </summary>  
     internal class Host : MarshalByRefObject, IRegisteredObject
@@ -126,6 +127,10 @@ namespace CassiniDev
             WaitForPendingCallsToFinish();
 
             HostingEnvironment.UnregisterObject(this);
+
+            Thread.Sleep(100);
+            HttpRuntime.Close();
+            Thread.Sleep(100);
         }
 
         #endregion

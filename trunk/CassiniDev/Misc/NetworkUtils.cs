@@ -157,7 +157,8 @@ namespace CassiniDev
         /// <returns></returns>
         public static string NormalizeUrl(string rootUrl, string relativeUrl)
         {
-            relativeUrl = relativeUrl.TrimStart(new[] {'/'});
+
+            relativeUrl = relativeUrl.TrimStart('/');
 
             if (!rootUrl.EndsWith("/"))
             {

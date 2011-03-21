@@ -15,6 +15,7 @@
 #region
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -34,7 +35,7 @@ namespace CassiniDev
         private const int HttpOK = 200;
 
         private readonly MemoryStream _responseContent;
-
+        public List<string> Plugins = new List<string>();
         private readonly Server _server;
         private LogInfo _requestLog;
         private LogInfo _responseLog;
@@ -43,6 +44,7 @@ namespace CassiniDev
 
         internal Connection(Server server, Socket socket)
         {
+            Plugins = server.Plugins;
             Id = Guid.NewGuid();
             _responseContent = new MemoryStream();
             _server = server;
@@ -205,7 +207,10 @@ namespace CassiniDev
         {
             WriteEntireResponseFromString(100, null, null, true);
         }
-
+        internal void Write200Continue()
+        {
+            WriteEntireResponseFromString(200, null, string.Empty, true);
+        }
         public void WriteBody(byte[] data, int offset, int length)
         {
             try
@@ -228,7 +233,7 @@ namespace CassiniDev
 
             // Deny the request if the contentType cannot be recognized.
 
-            string contentType = Common.GetContentType(fileName);
+            string contentType = CommonExtensions.GetContentType(fileName);
 
             //TODO: i am pretty sure this is unnecessary
             if (contentType == null)
