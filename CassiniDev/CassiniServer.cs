@@ -12,6 +12,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CassiniDev
 {
@@ -115,13 +116,14 @@ namespace CassiniDev
         /// <param name="port">Port to listen on.</param>
         /// <param name="virtualPath">Optional. default value '/'</param>
         /// <param name="hostname">Optional. Used to construct RootUrl. Defaults to 'localhost'</param>
-        public void StartServer(string applicationPath, IPAddress ipAddress, int port, string virtualPath, string hostname)
+        /// <param name="hostname">Optional. Ssl Certificate, providing a certificate makes cassini require ssl connection</param>
+        public void StartServer(string applicationPath, IPAddress ipAddress, int port, string virtualPath, string hostname, X509Certificate sslCertificate )
         {
             if (_server != null)
             {
                 throw new InvalidOperationException("Server already started");
             }
-            _server = new Server(port, virtualPath, applicationPath, ipAddress, hostname, 60000);
+            _server = new Server(port, virtualPath, applicationPath, ipAddress, hostname, 60000, sslCertificate, (sslCertificate !=null));
             try
             {
                 _server.Start();
@@ -134,6 +136,16 @@ namespace CassiniDev
 
         }
 
+         /// <summary>
+        /// </summary>
+        /// <param name="applicationPath">Physical path to application.</param>
+        /// <param name="ipAddress">IP to listen on.</param>
+        /// <param name="port">Port to listen on.</param>
+        /// <param name="virtualPath">Optional. default value '/'</param>
+        /// <param name="hostname">Optional. Used to construct RootUrl. Defaults to 'localhost'</param>
+       public void StartServer(string applicationPath, IPAddress ipAddress, int port, string virtualPath, string hostname) {
+            StartServer(applicationPath, ipAddress, port, virtualPath, hostname, null);
+        }
 
         /// <summary>
         /// <para>Stops the server.</para>

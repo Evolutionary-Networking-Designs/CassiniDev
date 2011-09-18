@@ -31,6 +31,8 @@ using System.Web;
 using System.Web.Hosting;
 using CassiniDev.Configuration;
 using CassiniDev.ServerLog;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 
 #endregion
@@ -75,6 +77,10 @@ namespace CassiniDev
 
         private Timer _timer;
 
+        private X509Certificate _x509Certificate;
+
+        private bool _requireSsl;
+
         public Server(int port, string virtualPath, string physicalPath)
             : this(port, virtualPath, physicalPath, false, false)
         {
@@ -92,7 +98,7 @@ namespace CassiniDev
 
         public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName,
                       int timeout, bool requireAuthentication)
-            : this(port, virtualPath, physicalPath, ipAddress, hostName, timeout, requireAuthentication, false)
+            : this(port, virtualPath, physicalPath, ipAddress, hostName, timeout, requireAuthentication, false, null, false)
         {
         }
 
@@ -102,21 +108,31 @@ namespace CassiniDev
         }
 
         public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName)
-            : this(port, virtualPath, physicalPath, ipAddress, hostName, 0, false, false)
+            : this(port, virtualPath, physicalPath, ipAddress, hostName, 0, false, false,null, false)
         {
         }
 
         public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName,
                       int timeout, bool requireAuthentication, bool disableDirectoryListing)
+            : this(port, virtualPath, physicalPath, ipAddress, hostName, timeout, requireAuthentication, disableDirectoryListing,null, false)
+        {
+
+        }
+
+        public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName,
+                      int timeout, bool requireAuthentication, bool disableDirectoryListing, X509Certificate  x509Certificate, bool requireSsl)
             : this(port, virtualPath, physicalPath, requireAuthentication, disableDirectoryListing)
         {
             _ipAddress = ipAddress;
             _hostName = hostName;
             _timeoutInterval = timeout;
+            _requireSsl = requireSsl;
+            _x509Certificate = x509Certificate;
+
         }
 
         public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress)
-            : this(port, virtualPath, physicalPath, ipAddress, null, 0, false, false)
+            : this(port, virtualPath, physicalPath, ipAddress, null, 0, false, false, null, false)
         {
         }
 
@@ -179,6 +195,12 @@ namespace CassiniDev
         {
         }
 
+        public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName,
+                      int timeout, X509Certificate x509Certificate, bool requireSsl)
+            : this(port, virtualPath, physicalPath, ipAddress, hostName, timeout, false, false, x509Certificate, requireSsl)
+        {
+        }
+
         public bool DisableDirectoryListing
         {
             get { return _disableDirectoryListing; }
@@ -187,6 +209,16 @@ namespace CassiniDev
         public bool RequireAuthentication
         {
             get { return _requireAuthentication; }
+        }
+		
+        public bool RequireSsl
+        {
+            get { return _requireSsl; }
+        }
+
+        public X509Certificate X509Certificate
+        {
+            get { return _x509Certificate; }
         }
 
         public int TimeoutInterval

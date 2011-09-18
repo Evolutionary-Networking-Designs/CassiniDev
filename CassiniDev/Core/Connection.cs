@@ -23,6 +23,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Web;
 using CassiniDev.ServerLog;
+using System.Net.Security;
 
 #endregion
 
@@ -41,6 +42,11 @@ namespace CassiniDev
         private LogInfo _responseLog;
 
         private Socket _socket;
+        private Stream _socketStream;
+
+		//not sure if i need to go about this but for the moment i'm leaving it in
+        private List<IDisposable> toDispose = new List<IDisposable>();
+
 
         internal Connection(Server server, Socket socket)
         {
@@ -49,6 +55,25 @@ namespace CassiniDev
             _responseContent = new MemoryStream();
             _server = server;
             _socket = socket;
+            _socketStream = new NetworkStream(_socket, true);
+            
+            toDispose.Add(_socketStream);
+
+            if (server.X509Certificate!= null && server.RequireSsl)
+            {
+                var ssl = new SslStream(_socketStream);
+                _socketStream = ssl;
+                try
+                {
+                    ssl.AuthenticateAsServer(server.X509Certificate);
+                }
+                catch 
+                {
+                    //throw new Exception("Error authenticating ssl connection");
+                }
+                toDispose.Add(_socketStream);
+            }
+
             InitializeLogInfo();
         }
 
@@ -95,16 +120,37 @@ namespace CassiniDev
             {
                 _socket.Shutdown(SocketShutdown.Both);
                 _socket.Close();
+
             }
-                // ReSharper disable EmptyGeneralCatchClause
+            // ReSharper disable EmptyGeneralCatchClause
             catch
-                // ReSharper restore EmptyGeneralCatchClause
+            // ReSharper restore EmptyGeneralCatchClause
             {
             }
             finally
             {
                 _socket = null;
             }
+
+
+
+            foreach (var td in toDispose)
+            {
+                try
+                {
+                    td.Dispose();
+                }
+                // ReSharper disable EmptyGeneralCatchClause
+                catch
+                // ReSharper restore EmptyGeneralCatchClause
+                {
+                }
+                finally
+                {
+
+                }
+            }
+            toDispose.Clear();
         }
 
         /// <summary>
@@ -153,7 +199,7 @@ namespace CassiniDev
 
                 if (numBytes > 0)
                 {
-                    numReceived = _socket.Receive(buffer, 0, numBytes, SocketFlags.None);
+                    numReceived = _socketStream.Read(buffer, 0, numBytes);
                 }
 
                 if (numReceived < numBytes)
@@ -216,7 +262,7 @@ namespace CassiniDev
             try
             {
                 _responseContent.Write(data, 0, data.Length);
-                _socket.Send(data, offset, length, SocketFlags.None);
+                _socketStream.Write(data, offset, length);
             }
             catch (SocketException)
             {
@@ -257,9 +303,11 @@ namespace CassiniDev
                 String headers = MakeResponseHeaders(HttpOK, contentTypeHeader, bytesRead, keepAlive);
                 _responseLog.Headers = headers;
                 _responseLog.StatusCode = HttpOK;
-                _socket.Send(Encoding.UTF8.GetBytes(headers));
 
-                _socket.Send(fileBytes, 0, bytesRead, SocketFlags.None);
+                var headerBytes = Encoding.UTF8.GetBytes(headers);
+                _socketStream.Write(headerBytes, 0, headerBytes.Length);
+
+                _socketStream.Write(fileBytes, 0, bytesRead);
 
                 completed = true;
             }
@@ -289,9 +337,11 @@ namespace CassiniDev
 
                 _responseLog.Headers = headers;
                 _responseLog.StatusCode = statusCode;
-                _socket.Send(Encoding.UTF8.GetBytes(headers + body));
+                var headerBytes = Encoding.UTF8.GetBytes(headers + body);
+                _socketStream.Write(headerBytes, 0, headerBytes.Length);
+
             }
-            catch (SocketException)
+            catch (IOException)
             {
             }
             finally
@@ -327,7 +377,8 @@ namespace CassiniDev
 
             try
             {
-                _socket.Send(Encoding.UTF8.GetBytes(headers));
+                var headerBytes = Encoding.UTF8.GetBytes(headers);
+                _socketStream.Write(headerBytes, 0, headerBytes.Length);
             }
             catch (SocketException)
             {
