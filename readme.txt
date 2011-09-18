@@ -14,6 +14,7 @@ server.
 
 Highlights
 ------------------------------------------------------------------------------------------
+* SSL/HTTPS support
 * Full support for any IP address. Not limited to localhost.
 ** NOTE: Due to an intentional limitation in SimpleWorkerRequest, WCF content is not 
    servable on other than the loopback (localhost)
