@@ -42,7 +42,7 @@ namespace CassiniDev
             {
                 return new UriBuilder
                     {
-                        Scheme = "http",
+                        Scheme =_server.RequireSsl ? "https": "http",
                         Host = _server.HostName,
                         Port = _server.Port,
                         Path = _server.VirtualPath

@@ -14,7 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>..\CasssiniDev-DevKey.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon>Resources\preferences-web-browser-shortcuts.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -84,9 +85,6 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrowserTestResultItem.cs" />
-    <Compile Include="BrowserTestResults.cs" />
-    <Compile Include="CassiniDevBrowserTest.cs" />
     <Compile Include="CassiniServer.cs" />
     <Compile Include="Configuration\CassiniDevConfigurationSection.cs" />
     <Compile Include="Configuration\CassiniDevProfileElement.cs" />
@@ -103,28 +101,12 @@
     <Compile Include="Core\Server.cs" />
     <Compile Include="IContentLocator.cs" />
     <Compile Include="LocalContentLocator.cs" />
+    <Compile Include="Logging\ErrorLogger.cs" />
     <Compile Include="Logging\LogInfo.cs" />
-    <Compile Include="Misc\CommandLine.cs" />
-    <Compile Include="Misc\CommandLineArguments.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Misc\CommandLineParser.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Misc\Common.cs" />
-    <Compile Include="Misc\HostsFile.cs" />
     <Compile Include="Misc\Interop.cs" />
     <Compile Include="Misc\NetworkUtils.cs" />
     <Compile Include="Properties\AssemblyInfo4.cs" />
-    <Compile Include="QUnitExBrowserTestResultItem.cs" />
-    <Compile Include="Resources\SR.cs" />
-    <Compile Include="WebBrowser.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\CassiniDev.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\preferences-web-browser-shortcuts.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

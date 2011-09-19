@@ -55,25 +55,26 @@ namespace CassiniDev
             _responseContent = new MemoryStream();
             _server = server;
             _socket = socket;
-            _socketStream = new NetworkStream(_socket, true);
-            
-            toDispose.Add(_socketStream);
-
-            if (server.X509Certificate!= null && server.RequireSsl)
+            if (_socket.Connected)
             {
-                var ssl = new SslStream(_socketStream);
-                _socketStream = ssl;
-                try
-                {
-                    ssl.AuthenticateAsServer(server.X509Certificate);
-                }
-                catch 
-                {
-                    //throw new Exception("Error authenticating ssl connection");
-                }
-                toDispose.Add(_socketStream);
-            }
+                _socketStream = new NetworkStream(_socket, true);
 
+
+                if (server.X509Certificate != null && server.RequireSsl)
+                {
+                    var ssl = new SslStream(_socketStream);
+                    _socketStream = ssl;
+                    try
+                    {
+                        ssl.AuthenticateAsServer(server.X509Certificate);
+                    }
+                    catch //(Exception e)
+                    {
+                        //ErrorLogger.Log(e);
+                        //throw new Exception("Error authenticating ssl connection");
+                    }
+                }
+            }
             InitializeLogInfo();
         }
 
@@ -115,11 +116,11 @@ namespace CassiniDev
         public void Close()
         {
             FinalizeLogInfo();
-
             try
             {
                 _socket.Shutdown(SocketShutdown.Both);
-                _socket.Close();
+
+                _socketStream.Close();
 
             }
             // ReSharper disable EmptyGeneralCatchClause
@@ -130,27 +131,9 @@ namespace CassiniDev
             finally
             {
                 _socket = null;
+                _socketStream = null;
             }
 
-
-
-            foreach (var td in toDispose)
-            {
-                try
-                {
-                    td.Dispose();
-                }
-                // ReSharper disable EmptyGeneralCatchClause
-                catch
-                // ReSharper restore EmptyGeneralCatchClause
-                {
-                }
-                finally
-                {
-
-                }
-            }
-            toDispose.Clear();
         }
 
         /// <summary>
@@ -214,6 +197,12 @@ namespace CassiniDev
                     buffer = tempBuffer;
                 }
 
+                //Console.WriteLine();
+                //Console.WriteLine();
+                //Console.WriteLine("---------------------");
+                //Console.WriteLine(UTF8Encoding.UTF8.GetString(buffer));
+                
+
                 return buffer;
             }
             catch
@@ -264,7 +253,7 @@ namespace CassiniDev
                 _responseContent.Write(data, 0, data.Length);
                 _socketStream.Write(data, offset, length);
             }
-            catch (SocketException)
+            catch
             {
             }
         }
@@ -311,7 +300,7 @@ namespace CassiniDev
 
                 completed = true;
             }
-            catch (SocketException)
+            catch (IOException e)
             {
             }
             finally
@@ -338,11 +327,13 @@ namespace CassiniDev
                 _responseLog.Headers = headers;
                 _responseLog.StatusCode = statusCode;
                 var headerBytes = Encoding.UTF8.GetBytes(headers + body);
+
                 _socketStream.Write(headerBytes, 0, headerBytes.Length);
 
             }
-            catch (IOException)
+            catch// (IOException e)
             {
+           //     ErrorLogger.Log(e);
             }
             finally
             {
@@ -372,6 +363,7 @@ namespace CassiniDev
         {
             string headers = MakeResponseHeaders(statusCode, extraHeaders, -1, false);
 
+
             _responseLog.Headers = headers;
             _responseLog.StatusCode = statusCode;
 
@@ -379,8 +371,16 @@ namespace CassiniDev
             {
                 var headerBytes = Encoding.UTF8.GetBytes(headers);
                 _socketStream.Write(headerBytes, 0, headerBytes.Length);
+
+
+                //Console.WriteLine("--");
+                //Console.WriteLine();
+                //Console.WriteLine(headers);
+                //Console.WriteLine("---------------------");
+                //Console.WriteLine();
+                //Console.WriteLine();
             }
-            catch (SocketException)
+            catch (IOException e)
             {
             }
         }

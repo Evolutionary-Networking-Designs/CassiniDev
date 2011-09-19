@@ -505,8 +505,8 @@ namespace CassiniDev
                         //       by the StaticFileHandler, but they shouldn't be.
                         break;
                     }
-                    return;
-
+                   // return;
+                    break;
 
                 // FIX: #12506
                 case HeaderContentType:

@@ -76,13 +76,14 @@ namespace CassiniDev
         public static extern int GetStdHandle(int nStdHandle);
 
         [DllImport("ADVAPI32.DLL", SetLastError = true)]
-        static extern bool ImpersonateSelfInternal(int level);
+        private static extern bool ImpersonateSelf(int level);
 
-	    public static bool ImpersonateSelf (int level)
+	    public static bool CanImpersonateSelf (int level)
 	    {
 		    if (!IsWindows)
 			    return false;
-		    return ImpersonateSelfInternal (level);
+
+            return ImpersonateSelf(level);
 	    }
 	    
         [DllImport("ADVAPI32.DLL", SetLastError = true)]

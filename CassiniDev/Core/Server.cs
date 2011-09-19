@@ -264,12 +264,14 @@ namespace CassiniDev
                     }
                 }
 
+
+                var scheme = this._requireSsl ? "https" : "http";
                 return _port != 80
                            ?
-                               String.Format("http://{0}:{1}{2}", hostname, _port, _virtualPath)
+                               String.Format("{3}://{0}:{1}{2}", hostname, _port, _virtualPath, scheme)
                            :
                     //FIX: #12017 - TODO:TEST
-                       string.Format("http://{0}{1}", hostname, _virtualPath);
+                       string.Format("{2}://{0}{1}", hostname, _virtualPath, scheme);
             }
         }
 
@@ -378,8 +380,9 @@ namespace CassiniDev
                                     }
                                 });
                         }
-                        catch
+                        catch//(Exception e)
                         {
+                            //CassiniDev.Logging.ErrorLogger.Log(e);
                             Thread.Sleep(100);
                         }
                     }
@@ -523,7 +526,7 @@ namespace CassiniDev
 
         private void ObtainProcessToken()
         {
-            if (Interop.ImpersonateSelf(2))
+            if (Interop.CanImpersonateSelf(2))
             {
                 Interop.OpenThreadToken(Interop.GetCurrentThread(), 0xf01ff, true, ref _processToken);
                 Interop.RevertToSelf();
@@ -631,7 +634,7 @@ namespace CassiniDev
             {
                 // TODO: what am i afraid of here?
             }
-  
+            _shutdownInProgress = false;
         }
 
         private void TimeOut(object ignored)

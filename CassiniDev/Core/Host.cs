@@ -258,6 +258,8 @@ namespace CassiniDev
             {
                 new Request(_server, this, conn).Process();
             }
+            catch {
+            }
             finally
             {
                 RemovePendingCall();
