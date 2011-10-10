@@ -85,13 +85,11 @@
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CassiniServer.cs" />
     <Compile Include="Configuration\CassiniDevConfigurationSection.cs" />
     <Compile Include="Configuration\CassiniDevProfileElement.cs" />
     <Compile Include="Configuration\CassiniDevProfileElementCollection.cs" />
     <Compile Include="Configuration\PluginElement.cs" />
     <Compile Include="Configuration\PluginElementCollection.cs" />
-    <Compile Include="ContentLocator.cs" />
     <Compile Include="Core\Connection.cs" />
     <Compile Include="Core\Host.cs" />
     <Compile Include="Core\Messages.cs" />
@@ -99,8 +97,6 @@
     <Compile Include="Core\Request.cs" />
     <Compile Include="Core\RequestEventArgs.cs" />
     <Compile Include="Core\Server.cs" />
-    <Compile Include="IContentLocator.cs" />
-    <Compile Include="LocalContentLocator.cs" />
     <Compile Include="Logging\ErrorLogger.cs" />
     <Compile Include="Logging\LogInfo.cs" />
     <Compile Include="Misc\Common.cs" />
