@@ -56,6 +56,24 @@ namespace CassiniDev
                                     ip, args.HostName, args.TimeOut))
                             {
                                 server.Start();
+                                if(!string.IsNullOrEmpty(args.Browse))
+                                {
+                                    try
+                                    {
+                                        string openTo = server.RootUrl + args.Browse;
+                                        Console.WriteLine("Opening default browser to " + openTo);
+                                        System.Diagnostics.Process.Start(openTo);
+                                    }
+                                    catch(System.ComponentModel.Win32Exception noBrowser)
+                                    {
+                                        if (noBrowser.ErrorCode == -2147467259)
+                                            Console.WriteLine(noBrowser.Message);
+                                    }
+                                    catch (System.Exception other)
+                                    {
+                                        Console.WriteLine(other.Message);
+                                    }
+                                }
                                 Console.WriteLine("started: {0}\r\nPress Enter key to exit....", server.RootUrl);
                                 Console.ReadLine();
                                 server.ShutDown();

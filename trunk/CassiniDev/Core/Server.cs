@@ -43,7 +43,7 @@ namespace CassiniDev
     {
         private bool _useLogger;
         public List<string> Plugins = new List<string>();
-        private readonly ApplicationManager _appManager;
+        public readonly ApplicationManager ApplicationManager;
 
         private readonly bool _disableDirectoryListing;
 
@@ -74,6 +74,28 @@ namespace CassiniDev
         private Socket _socket;
 
         private Timer _timer;
+
+        private string _appId;
+        public string AppId
+		{
+			get { return _appId; }
+		}
+        public AppDomain HostAppDomain
+        {
+            get
+            {
+                if (_host == null)
+                {
+                    GetHost();
+                }
+                if (_host != null)
+                {
+                    return _host.AppDomain;
+                }
+                return null;
+            }
+        }
+
 
         public Server(int port, string virtualPath, string physicalPath)
             : this(port, virtualPath, physicalPath, false, false)
@@ -145,7 +167,9 @@ namespace CassiniDev
                                 : _physicalPath + "\\";
             ProcessConfiguration();
 
-            _appManager = ApplicationManager.GetApplicationManager();
+            ApplicationManager = ApplicationManager.GetApplicationManager();
+            string uniqueAppString = string.Concat(virtualPath, physicalPath,":",_port.ToString()).ToLowerInvariant();
+            _appId = (uniqueAppString.GetHashCode()).ToString("x", CultureInfo.InvariantCulture);
             ObtainProcessToken();
         }
 
@@ -377,22 +401,20 @@ namespace CassiniDev
         /// <param name="virtualPath"></param>
         /// <param name="physicalPath"></param>
         /// <param name="hostType"></param>
+        /// <param name="port"></param>
         /// <returns></returns>
         /// <remarks>
         /// This is Dmitry's hack to enable running outside of GAC.
         /// There are some errors being thrown when running in proc
         /// </remarks>
-        private object CreateWorkerAppDomainWithHost(string virtualPath, string physicalPath, Type hostType)
+        private object CreateWorkerAppDomainWithHost(string virtualPath, string physicalPath, Type hostType,int port)
         {
-            // this creates worker app domain in a way that host doesn't need to be in GAC or bin
-            // using BuildManagerHost via private reflection
-            string uniqueAppString = string.Concat(virtualPath, physicalPath).ToLowerInvariant();
-            string appId = (uniqueAppString.GetHashCode()).ToString("x", CultureInfo.InvariantCulture);
+
 
             // create BuildManagerHost in the worker app domain
             //ApplicationManager appManager = ApplicationManager.GetApplicationManager();
             Type buildManagerHostType = typeof(HttpRuntime).Assembly.GetType("System.Web.Compilation.BuildManagerHost");
-            IRegisteredObject buildManagerHost = _appManager.CreateObject(appId, buildManagerHostType, virtualPath,
+            IRegisteredObject buildManagerHost = ApplicationManager.CreateObject(_appId, buildManagerHostType, virtualPath,
                                                                           physicalPath, false);
 
             // call BuildManagerHost.RegisterAssembly to make Host type loadable in the worker app domain
@@ -405,7 +427,7 @@ namespace CassiniDev
             // create Host in the worker app domain
             // FIXME: getting FileLoadException Could not load file or assembly 'WebDev.WebServer20, Version=4.0.1.6, Culture=neutral, PublicKeyToken=f7f6e0b4240c7c27' or one of its dependencies. Failed to grant permission to execute. (Exception from HRESULT: 0x80131418)
             // when running dnoa 3.4 samples - webdev is registering trust somewhere that we are not
-            return _appManager.CreateObject(appId, hostType, virtualPath, physicalPath, false);
+            return ApplicationManager.CreateObject(_appId, hostType, virtualPath, physicalPath, false);
         }
 
         private void DecrementRequestCount()
@@ -442,7 +464,7 @@ namespace CassiniDev
                     host = _host;
                     if (host == null)
                     {
-                        host = (Host)CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof(Host));
+                        host = (Host)CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof(Host),Port);
                         host.Configure(this, _port, _virtualPath, _physicalPath, _requireAuthentication, _disableDirectoryListing);
                         _host = host;
                     }
@@ -461,7 +483,7 @@ namespace CassiniDev
                     host = _host;
                     if (host == null)
                     {
-                        host = (Host)CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof(Host));
+                        host = (Host)CreateWorkerAppDomainWithHost(_virtualPath, _physicalPath, typeof(Host),Port);
                         host.Configure(this, _port, _virtualPath, _physicalPath, _requireAuthentication, _disableDirectoryListing);
                         _host = host;
                     }

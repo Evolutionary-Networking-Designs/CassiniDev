@@ -257,7 +257,9 @@ namespace CassiniDev
                 case ".csproj":
                     contentType = "text/plain";
                     break;
-
+                case ".jar":
+                    contentType = "application/java-archive";
+                    break;
                 case ".csv":
                     contentType = "application/vnd.ms-excel";
                     break;

@@ -62,6 +62,11 @@ namespace CassiniDev
 
         private string _virtualPath;
 
+        public AppDomain AppDomain
+        {
+            get { return AppDomain.CurrentDomain; }
+        }
+
         public Host()
         {
             HostingEnvironment.RegisterObject(this);
@@ -287,7 +292,7 @@ namespace CassiniDev
 
         private void WaitForPendingCallsToFinish()
         {
-            for (;;)
+            for (; ; )
             {
                 if (_pendingCallsCount <= 0)
                 {

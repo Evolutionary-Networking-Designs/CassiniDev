@@ -33,6 +33,10 @@ namespace CassiniDev
     {
         #region Properties
 
+        [Argument(ArgumentType.AtMostOnce, ShortName = "br", LongName = "browse",
+            HelpText = "Relative virtual path to open default browser.")]
+        public string Browse;
+
         [Argument(ArgumentType.AtMostOnce, ShortName = "ah", DefaultValue = false,
             HelpText = "If true add entry to Windows hosts file. Requires write permissions to hosts file.")] public
             bool AddHost;
@@ -187,6 +191,10 @@ namespace CassiniDev
                 result.Add("/log");
             }
 
+            if (!string.IsNullOrEmpty(Browse))
+            {
+                result.Add(string.Format("/br:{0}", Browse));
+            }
             return result.ToArray();
         }
         public override string ToString()

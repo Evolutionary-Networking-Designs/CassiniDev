@@ -192,6 +192,7 @@
   <ItemGroup>
     <None Include="..\DiscreteFiles\CassiniDev\app.config">
       <Link>app.config</Link>
+      <SubType>Designer</SubType>
     </None>
     <None Include="BuildDeploy.cmd" />
     <None Include="packages.config" />
