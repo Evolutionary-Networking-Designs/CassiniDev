@@ -27,6 +27,7 @@ using System.Text;
 using System.Web;
 using System.Web.Hosting;
 using Microsoft.Win32.SafeHandles;
+using System.Security.Principal;
 
 #endregion
 
@@ -116,6 +117,9 @@ namespace CassiniDev
 
         private string _verb;
 
+        private NtlmAuth _auth;
+
+
         public Request(Server server, Host host, Connection connection)
             : base(String.Empty, String.Empty, null)
         {
@@ -137,8 +141,15 @@ namespace CassiniDev
             if (conn != null)
             {
                 _connection = null;
-                _server.OnRequestEnd(conn);
+                _server.OnRequestEnd(conn, GetProcessUser());
             }
+
+            if (_auth != null)
+            {
+                _auth.Dispose(); //
+                _auth = null;
+            }
+
         }
 
         public override void FlushResponse(bool finalFlush)
@@ -327,10 +338,31 @@ namespace CassiniDev
             return _path;
         }
 
+        public Connection GetConnection()
+        {
+            return _connection;
+        }
+
+
         public override IntPtr GetUserToken()
         {
-            return _host.GetProcessToken();
+            if (_auth == null)
+                return _host.GetProcessToken();
+            else
+                return _auth.Token;
         }
+
+        public string GetProcessUser()
+        {
+            if (_auth == null)
+                return _host.GetProcessUser();
+            else
+            {
+                using (WindowsIdentity identity = new WindowsIdentity(_auth.Token))
+                    return identity.Name;
+            }
+        }
+
 
         public override bool HeadersSent()
         {
@@ -1045,46 +1077,50 @@ namespace CassiniDev
          SecurityPermission(SecurityAction.Assert, ControlPrincipal = true)]
         private bool TryNtlmAuthenticate()
         {
+            NtlmAuth auth = null;
             try
             {
-                using (var auth = new NtlmAuth())
+                auth = new NtlmAuth();
+
+                do
                 {
-                    do
+                    string blobString = null;
+                    string extraHeaders = _knownRequestHeaders[0x18];
+                    if ((extraHeaders != null) && extraHeaders.StartsWith("NTLM ", StringComparison.Ordinal))
                     {
-                        string blobString = null;
-                        string extraHeaders = _knownRequestHeaders[0x18];
-                        if ((extraHeaders != null) && extraHeaders.StartsWith("NTLM ", StringComparison.Ordinal))
-                        {
-                            blobString = extraHeaders.Substring(5);
-                        }
-                        if (blobString != null)
-                        {
-                            if (!auth.Authenticate(blobString))
-                            {
-                                _connection.WriteErrorAndClose(0x193);
-                                return false;
-                            }
-                            if (auth.Completed)
-                            {
-                                goto Label_009A;
-                            }
-                            extraHeaders = "WWW-Authenticate: NTLM " + auth.Blob + "\r\n";
-                        }
-                        else
-                        {
-                            extraHeaders = "WWW-Authenticate: NTLM\r\n";
-                        }
-                        SkipAllPostedContent();
-                        _connection.WriteErrorWithExtraHeadersAndKeepAlive(0x191, extraHeaders);
-                    } while (TryParseRequest());
-                    return false;
-                Label_009A:
-                    if (_host.GetProcessSid() != auth.SID)
-                    {
-                        _connection.WriteErrorAndClose(0x193);
-                        return false;
+                        blobString = extraHeaders.Substring(5);
                     }
+                    if (blobString != null)
+                    {
+                        if (!auth.Authenticate(blobString))
+                        {
+                            _connection.WriteErrorAndClose(0x193);
+                            return false;
+                        }
+                        if (auth.Completed)
+                        {
+                            goto Label_009A;
+                        }
+                        extraHeaders = "WWW-Authenticate: NTLM " + auth.Blob + "\r\n";
+                    }
+                    else
+                    {
+                        extraHeaders = "WWW-Authenticate: NTLM\r\n";
+                    }
+                    SkipAllPostedContent();
+                    _connection.WriteErrorWithExtraHeadersAndKeepAlive(0x191, extraHeaders);
+                } while (TryParseRequest());
+                return false;
+            Label_009A:
+                if (_host.GetProcessSid() != auth.SID)
+                {
+                    _auth = auth;
+                    auth = null;
+
+                    //_connection.WriteErrorAndClose(0x193);
+                    //return false;
                 }
+
             }
             catch
             {
@@ -1099,8 +1135,14 @@ namespace CassiniDev
                 }
                 return false;
             }
+            finally
+            {
+                if (auth != null)
+                    auth.Dispose();
+            }
             return true;
         }
+
 
         /// <summary>
         /// TODO: defer response until request is written

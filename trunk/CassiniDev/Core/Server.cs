@@ -317,11 +317,16 @@ namespace CassiniDev
         /// <summary>
         /// </summary>
         /// <param name="conn"></param>
-        public void OnRequestEnd(Connection conn)
+        /// <param name="userName"></param>
+        public void OnRequestEnd(Connection conn, string userName)
         {
             try
             {
-                OnRequestComplete(conn.Id, conn.RequestLog.Clone(), conn.ResponseLog.Clone());
+                LogInfo connRequestLogClone = conn.RequestLog.Clone();
+                connRequestLogClone.Identity = userName;
+                LogInfo connResponseLogClone = conn.ResponseLog.Clone();
+                connResponseLogClone.Identity = userName;
+                OnRequestComplete(conn.Id, connRequestLogClone, connResponseLogClone);
             }
             catch
             {
