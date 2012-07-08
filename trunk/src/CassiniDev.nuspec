@@ -17,14 +17,13 @@
   <files>
 
     <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev-lib.dll" target="lib\net35" />
-    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev.exe" target="lib\net35" />
-
-    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer.exe" target="lib\net35" />
-    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer20.exe" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev-lib.pdb" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev-lib.xml" target="lib\net35" />
 
     <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4-lib.dll" target="lib\net40" />
-    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4.exe" target="lib\net40" />
-    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer40.exe" target="lib\net40" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4-lib.pdb" target="lib\net40" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4-lib.xml" target="lib\net40" />
+    
 
     <file src="lib\src\**\*.cs" target="src" />
   </files>
