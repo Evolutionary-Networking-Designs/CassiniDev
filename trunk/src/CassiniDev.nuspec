@@ -1,0 +1,47 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <version>5.0.0</version>
+    <authors>Sky Sanders</authors>
+    <owners>Sky Sanders</owners>
+    <licenseUrl>http://cassinidev.codeplex.com/license</licenseUrl>
+    <dependencies>
+      <dependency id="Common.Logging" />
+    </dependencies>
+    <id>CassiniDev</id>
+    <title>CassiniDev</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Self-contained hostable ASP.NET web server</description>
+    <language>en-US</language>
+  </metadata>
+  <files>
+
+    <file src="..\dist\lib\ciapi\bin\**\DotNetClient_N2.dll" target="lib\net35" />
+    <file src="..\dist\lib\ciapi\bin\**\Salient.ReliableHttpClient.dll" target="lib\net35" />
+    <file src="..\dist\lib\ciapi\bin\**\CIAPI.Serializer.dll" target="lib\net35" />
+    
+    <file src="..\dist\lib\ciapi\bin\**\CIAPI.dll" target="lib\net35" />
+    <file src="..\dist\lib\ciapi\bin\**\CIAPI.pdb" target="lib\net35" />
+    <file src="..\dist\lib\ciapi\bin\**\CIAPI.XML" target="lib\net35" />
+
+    <file src="..\dist\lib\ciapi.phone7\bin\**\WindowsPhoneClient.dll" target="lib\sl3-wp" />
+    <file src="..\dist\lib\ciapi.phone7\bin\**\Salient.ReliableHttpClient.Phone7.dll" target="lib\sl3-wp" />
+    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Serializer.Phone7.dll" target="lib\sl3-wp" />
+    
+    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Phone7.dll" target="lib\sl3-wp" />
+    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Phone7.pdb" target="lib\sl3-wp" />
+    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Phone7.XML" target="lib\sl3-wp" />
+
+
+ 
+    <file src="..\dist\lib\ciapi.silverlight\bin\**\SilverlightClient.dll" target="lib\sl4" />
+    <file src="..\dist\lib\ciapi.silverlight\bin\**\Salient.ReliableHttpClient.silverlight.dll" target="lib\sl4" />
+    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.Serializer.silverlight.dll" target="lib\sl4" />
+
+    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.silverlight.dll" target="lib\sl4" />
+    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.silverlight.pdb" target="lib\sl4" />
+    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.silverlight.XML" target="lib\sl4" />
+
+    <file src="lib\src\**\*.cs" target="src" />
+  </files>
+</package>
