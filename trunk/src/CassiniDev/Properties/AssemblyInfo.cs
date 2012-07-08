@@ -9,7 +9,7 @@ using System.Security.Permissions;
 [assembly: AssemblyDescription("Cassini For Developers")]
 [assembly: AssemblyCompany("Salient Solutions")]
 [assembly: AssemblyProduct("CassiniDev")]
-[assembly: AssemblyCopyright("\x00a9 Sky Sanders/\x00a9 Microsoft Corporation. All rights reserved.")]
+[assembly: AssemblyCopyright("Sky Sanders, Microsoft Corporation. All rights reserved.")]
 [assembly: NeutralResourcesLanguage("en-US")]
 [assembly: AssemblyVersion("5.0.0.0")]
 [assembly: AssemblyFileVersion("5.0.0.0")]
