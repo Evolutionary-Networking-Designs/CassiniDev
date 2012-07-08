@@ -17,24 +17,14 @@
   <files>
 
     <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev-lib.dll" target="lib\net35" />
-    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev-lib.dll.config" target="lib\net35" />
     <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev.exe" target="lib\net35" />
-    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev.exe.config" target="lib\net35" />
 
     <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer.exe" target="lib\net35" />
-    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer.exe.config" target="lib\net35" />
     <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer20.exe" target="lib\net35" />
-    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer20.exe.config" target="lib\net35" />
 
     <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4-lib.dll" target="lib\net40" />
-    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4-lib.dll.config" target="lib\net40" />
     <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4.exe" target="lib\net40" />
-    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4.exe.config" target="lib\net40" />
     <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer40.exe" target="lib\net40" />
-    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer40.exe.config" target="lib\net40" />
-    
-    
-
 
     <file src="lib\src\**\*.cs" target="src" />
   </files>
