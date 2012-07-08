@@ -8,8 +8,8 @@
     <dependencies>
       <dependency id="Common.Logging" />
     </dependencies>
-    <id>CassiniDev</id>
-    <title>CassiniDev</title>
+    <id>Salient.CassiniDev</id>
+    <title>Salient.CassiniDev</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Self-contained hostable ASP.NET web server</description>
     <language>en-US</language>
