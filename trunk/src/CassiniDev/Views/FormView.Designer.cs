@@ -44,7 +44,6 @@
             this.ButtonStart = new System.Windows.Forms.Button();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.LabelIdleTimeOut = new System.Windows.Forms.Label();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,7 +65,6 @@
             this.nTLMAuthenticationRequiredToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.directoryBrowsingEnabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.TimeOutNumeric = new System.Windows.Forms.NumericUpDown();
             this.GroupBoxPort.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PortRangeEndTextBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PortRangeStartTextBox)).BeginInit();
@@ -76,7 +74,6 @@
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TimeOutNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // RootUrlLinkLabel
@@ -284,7 +281,7 @@
             this.PortModeSpecificRadioButton.TabStop = true;
             this.PortModeSpecificRadioButton.Text = "Specific";
             this.toolTip1.SetToolTip(this.PortModeSpecificRadioButton, "Host on specific port. \r\nIf port is already in use a warning will be issued and s" +
-                    "erver will not start.");
+        "erver will not start.");
             this.PortModeSpecificRadioButton.UseVisualStyleBackColor = true;
             this.PortModeSpecificRadioButton.CheckedChanged += new System.EventHandler(this.RadioButtonPortSpecific_CheckedChanged);
             // 
@@ -333,7 +330,7 @@
             this.RadioButtonIPSpecific.TabIndex = 5;
             this.RadioButtonIPSpecific.Text = "Specific";
             this.toolTip1.SetToolTip(this.RadioButtonIPSpecific, "Host on specified IP address.\r\nWCF Services may not be served using this setting." +
-                    " Use Loopback.");
+        " Use Loopback.");
             this.RadioButtonIPSpecific.UseVisualStyleBackColor = true;
             this.RadioButtonIPSpecific.CheckedChanged += new System.EventHandler(this.RadioButtonIPSpecific_CheckedChanged);
             // 
@@ -347,7 +344,7 @@
             this.IPModeAnyRadioButton.TabIndex = 5;
             this.IPModeAnyRadioButton.Text = "Any";
             this.toolTip1.SetToolTip(this.IPModeAnyRadioButton, "Host on all IP addresses at the specified port.\r\nWCF Services may not be served u" +
-                    "sing this setting. Use Loopback.");
+        "sing this setting. Use Loopback.");
             this.IPModeAnyRadioButton.UseVisualStyleBackColor = true;
             this.IPModeAnyRadioButton.CheckedChanged += new System.EventHandler(this.RadioButtonIPAny_CheckedChanged);
             // 
@@ -363,7 +360,7 @@
             this.IPModeLoopBackRadioButton.TabStop = true;
             this.IPModeLoopBackRadioButton.Text = "Loopback";
             this.toolTip1.SetToolTip(this.IPModeLoopBackRadioButton, "Use the default loopback adapter. \r\nIf any sort of WCF service is to be served, t" +
-                    "his is the only viable option.");
+        "his is the only viable option.");
             this.IPModeLoopBackRadioButton.UseVisualStyleBackColor = true;
             this.IPModeLoopBackRadioButton.CheckedChanged += new System.EventHandler(this.RadioButtonIPLoopBack_CheckedChanged);
             // 
@@ -381,17 +378,6 @@
             // errorProvider1
             // 
             this.errorProvider1.ContainerControl = this;
-            // 
-            // LabelIdleTimeOut
-            // 
-            this.LabelIdleTimeOut.AutoSize = true;
-            this.LabelIdleTimeOut.Location = new System.Drawing.Point(15, 270);
-            this.LabelIdleTimeOut.Name = "LabelIdleTimeOut";
-            this.LabelIdleTimeOut.Size = new System.Drawing.Size(73, 13);
-            this.LabelIdleTimeOut.TabIndex = 26;
-            this.LabelIdleTimeOut.Text = "Idle Time Out:";
-            this.toolTip1.SetToolTip(this.LabelIdleTimeOut, "The amount of time, in milliseconds, to remain idle, i.e. no requests, before sto" +
-                    "pping the server.");
             // 
             // TrayIcon
             // 
@@ -560,23 +546,6 @@
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
             this.helpToolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
             // 
-            // TimeOutNumeric
-            // 
-            this.TimeOutNumeric.Increment = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.TimeOutNumeric.Location = new System.Drawing.Point(95, 266);
-            this.TimeOutNumeric.Maximum = new decimal(new int[] {
-            2000000000,
-            0,
-            0,
-            0});
-            this.TimeOutNumeric.Name = "TimeOutNumeric";
-            this.TimeOutNumeric.Size = new System.Drawing.Size(66, 20);
-            this.TimeOutNumeric.TabIndex = 30;
-            // 
             // FormView
             // 
             this.AcceptButton = this.ButtonStart;
@@ -585,9 +554,7 @@
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(343, 392);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.TimeOutNumeric);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.LabelIdleTimeOut);
             this.Controls.Add(this.ApplicationPathTextBox);
             this.Controls.Add(this.ShowLogButton);
             this.Controls.Add(this.VirtualPathTextBox);
@@ -623,7 +590,6 @@
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TimeOutNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -652,7 +618,6 @@
         private System.Windows.Forms.CheckBox IPV6CheckBox;
         private System.Windows.Forms.ErrorProvider errorProvider1;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label LabelIdleTimeOut;
         internal System.Windows.Forms.NotifyIcon TrayIcon;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
@@ -674,7 +639,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem nTLMAuthenticationRequiredToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem directoryBrowsingEnabledToolStripMenuItem;
-        private System.Windows.Forms.NumericUpDown TimeOutNumeric;
         private System.Windows.Forms.NumericUpDown PortTextBox;
         private System.Windows.Forms.NumericUpDown PortRangeStartTextBox;
         private System.Windows.Forms.NumericUpDown PortRangeEndTextBox;

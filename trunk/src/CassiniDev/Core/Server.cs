@@ -141,7 +141,6 @@ namespace CassiniDev
         ///<param name="physicalPath"></param>
         ///<param name="ipAddress"></param>
         ///<param name="hostName"></param>
-        ///<param name="timeout"></param>
         ///<param name="requireAuthentication"></param>
         public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName,
                       bool requireAuthentication)
@@ -179,7 +178,6 @@ namespace CassiniDev
         ///<param name="physicalPath"></param>
         ///<param name="ipAddress"></param>
         ///<param name="hostName"></param>
-        ///<param name="timeout"></param>
         ///<param name="requireAuthentication"></param>
         ///<param name="disableDirectoryListing"></param>
         public Server(int port, string virtualPath, string physicalPath, IPAddress ipAddress, string hostName,

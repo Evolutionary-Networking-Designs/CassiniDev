@@ -362,7 +362,7 @@ namespace CassiniDev
             LabelHostName.Enabled = true;
             LabelPhysicalPath.Enabled = true;
             LabelVPath.Enabled = true;
-            TimeOutNumeric.Enabled = true;
+            
             RootUrl = null;
 
             AddHostEntryCheckBox.Enabled = !String.IsNullOrEmpty(HostName);
@@ -397,7 +397,7 @@ namespace CassiniDev
         {
             ShowLogMenuItem.Enabled = ShowLogButton.Enabled = true;
 
-            TimeOutNumeric.Enabled = false;
+            
             ButtonStart.Text = "&Stop";
             directoryBrowsingEnabledToolStripMenuItem.Enabled = false;
             nTLMAuthenticationRequiredToolStripMenuItem.Enabled = false;

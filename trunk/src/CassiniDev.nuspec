@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
-    <version>5.0.0</version>
+    <version>5.0.0-bleeding-0</version>
     <authors>Sky Sanders</authors>
     <owners>Sky Sanders</owners>
     <licenseUrl>http://cassinidev.codeplex.com/license</licenseUrl>
@@ -16,31 +16,25 @@
   </metadata>
   <files>
 
-    <file src="..\dist\lib\ciapi\bin\**\DotNetClient_N2.dll" target="lib\net35" />
-    <file src="..\dist\lib\ciapi\bin\**\Salient.ReliableHttpClient.dll" target="lib\net35" />
-    <file src="..\dist\lib\ciapi\bin\**\CIAPI.Serializer.dll" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev-lib.dll" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev-lib.dll.config" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev.exe" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev.exe.config" target="lib\net35" />
+
+    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer.exe" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer.exe.config" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer20.exe" target="lib\net35" />
+    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer20.exe.config" target="lib\net35" />
+
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4-lib.dll" target="lib\net40" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4-lib.dll.config" target="lib\net40" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4.exe" target="lib\net40" />
+    <file src="..\dist\lib\CassiniDev\bin\**\CassiniDev4.exe.config" target="lib\net40" />
+    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer40.exe" target="lib\net40" />
+    <file src="..\dist\lib\CassiniDev\bin\**\WebDev.WebServer40.exe.config" target="lib\net40" />
     
-    <file src="..\dist\lib\ciapi\bin\**\CIAPI.dll" target="lib\net35" />
-    <file src="..\dist\lib\ciapi\bin\**\CIAPI.pdb" target="lib\net35" />
-    <file src="..\dist\lib\ciapi\bin\**\CIAPI.XML" target="lib\net35" />
-
-    <file src="..\dist\lib\ciapi.phone7\bin\**\WindowsPhoneClient.dll" target="lib\sl3-wp" />
-    <file src="..\dist\lib\ciapi.phone7\bin\**\Salient.ReliableHttpClient.Phone7.dll" target="lib\sl3-wp" />
-    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Serializer.Phone7.dll" target="lib\sl3-wp" />
     
-    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Phone7.dll" target="lib\sl3-wp" />
-    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Phone7.pdb" target="lib\sl3-wp" />
-    <file src="..\dist\lib\ciapi.phone7\bin\**\CIAPI.Phone7.XML" target="lib\sl3-wp" />
 
-
- 
-    <file src="..\dist\lib\ciapi.silverlight\bin\**\SilverlightClient.dll" target="lib\sl4" />
-    <file src="..\dist\lib\ciapi.silverlight\bin\**\Salient.ReliableHttpClient.silverlight.dll" target="lib\sl4" />
-    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.Serializer.silverlight.dll" target="lib\sl4" />
-
-    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.silverlight.dll" target="lib\sl4" />
-    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.silverlight.pdb" target="lib\sl4" />
-    <file src="..\dist\lib\ciapi.silverlight\bin\**\CIAPI.silverlight.XML" target="lib\sl4" />
 
     <file src="lib\src\**\*.cs" target="src" />
   </files>
