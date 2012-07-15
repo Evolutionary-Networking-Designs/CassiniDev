@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using CassiniDev;
 
 
 namespace CORSHeaderPlugin
 {
     public class Plugin
     {
-        public NameValueCollection AddResponseHeaders()
+        public void ProcessRequest(Request request)
         {
-            return new NameValueCollection()
-                       {
-                           {"Access-Control-Allow-Origin","*"},
-                           {"Access-Control-Allow-Methods","POST, GET, OPTIONS"},
-                           {"Access-Control-Allow-Headers","X-Requested-With, Content-Type"},
-                           {"Access-Control-Max-Age","1728000"},
-                       };
+            request.SetResponseHeader("Access-Control-Allow-Origin", "*");
+            request.SetResponseHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            request.SetResponseHeader("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+            request.SetResponseHeader("Access-Control-Max-Age", "1728000");
+
+
+
         }
     }
 }
