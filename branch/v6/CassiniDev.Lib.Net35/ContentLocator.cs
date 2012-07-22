@@ -10,6 +10,7 @@ namespace CassiniDev
     /// </summary>
     public class ContentLocator : IContentLocator
     {
+        
         private readonly string _directoryName;
 
         ///<summary>

@@ -11,8 +11,10 @@
 //  * **********************************************************************************/
 using System;
 using System.Diagnostics;
+using System.Security.Permissions;
 using System.Threading;
 using CassiniDev.ServerLog;
+
 
 namespace CassiniDev
 {
@@ -23,8 +25,12 @@ namespace CassiniDev
     /// TODO: finer grained control over browser instances.
     /// TODO: create parser/abstraction for RequestEventArgs
     /// </summary>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "Everything"),
+     PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
     public class CassiniDevBrowserTest : CassiniDevServer
     {
+        
+
         private readonly string _postKey = "testresults.axd";
         ///<summary>
         ///</summary>

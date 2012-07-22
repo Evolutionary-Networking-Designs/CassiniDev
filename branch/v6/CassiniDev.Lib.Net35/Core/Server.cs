@@ -45,6 +45,7 @@ namespace CassiniDev
     public class Server : MarshalByRefObject, IDisposable
     {
 
+        
         public event EventHandler<RequestInfoArgs> ProcessRequest;
 
         public void OnProcessRequest(ref RequestInfoArgs e)
@@ -56,13 +57,13 @@ namespace CassiniDev
             }
         }
 
-  
 
-        private readonly bool _useLogger;
+
+        
 
         ///<summary>
         ///</summary>
-        public readonly ApplicationManager ApplicationManager;
+        private readonly ApplicationManager _applicationManager;
 
         private readonly bool _disableDirectoryListing;
 
@@ -100,6 +101,15 @@ namespace CassiniDev
         public string AppId
         {
             get { return _appId; }
+        }
+        /// <summary>
+        /// </summary>
+        public ApplicationManager ApplicationManager
+        {
+            get
+            {
+                return _applicationManager;
+            }
         }
         ///<summary>
         ///</summary>
@@ -231,16 +241,7 @@ namespace CassiniDev
         public Server(int port, string virtualPath, string physicalPath, bool requireAuthentication,
                       bool disableDirectoryListing)
         {
-            try
-            {
-                Assembly.ReflectionOnlyLoad("Common.Logging");
-                _useLogger = true;
-            }
-            // ReSharper disable EmptyGeneralCatchClause
-            catch
-            // ReSharper restore EmptyGeneralCatchClause
-            {
-            }
+            
             _ipAddress = IPAddress.Loopback;
             _requireAuthentication = requireAuthentication;
             _disableDirectoryListing = disableDirectoryListing;
@@ -252,7 +253,7 @@ namespace CassiniDev
 
             ProcessConfiguration();
 
-            ApplicationManager = ApplicationManager.GetApplicationManager();
+            _applicationManager = ApplicationManager.GetApplicationManager();
 
             string uniqueAppString = string.Concat(_virtualPath, _physicalPath, ":", _port.ToString()).ToLowerInvariant();
 
@@ -1899,7 +1900,8 @@ namespace CassiniDev
             byte[] buf = new byte[maxContent];
             fs.Read(buf, 0, maxContent);
             fs.Close();
-            int result = Interop.FindMimeFromData(IntPtr.Zero, file, buf, maxContent, null, 0, out mimeout, 0);
+
+            int result = NativeMethods.FindMimeFromData(IntPtr.Zero, file, buf, maxContent, null, 0, out mimeout, 0);
 
             if (result != 0)
                 throw Marshal.GetExceptionForHR(result);
@@ -2018,8 +2020,9 @@ namespace CassiniDev
             if (!_disposed)
             {
                 ShutDown();
+                _disposed = true;
             }
-            _disposed = true;
+            
             GC.SuppressFinalize(this);
         }
 
@@ -2062,8 +2065,10 @@ namespace CassiniDev
         /// <returns>
         /// An object of type <see cref="T:System.Runtime.Remoting.Lifetime.ILease"/> used to control the lifetime policy for this instance. This is the current lifetime service object for this instance if one exists; otherwise, a new lifetime service object initialized to the value of the <see cref="P:System.Runtime.Remoting.Lifetime.LifetimeServices.LeaseManagerPollTime"/> property.
         /// </returns>
-        /// <exception cref="T:System.Security.SecurityException">The immediate caller does not have infrastructure permission. 
-        ///                 </exception><filterpriority>2</filterpriority><PermissionSet><IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure"/></PermissionSet>
+        /// <exception cref="T:System.Security.SecurityException">The immediate caller does not have infrastructure permission.</exception>
+        /// <PermissionSet>
+        /// <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="RemotingConfiguration, Infrastructure"/>
+        /// </PermissionSet>
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.Infrastructure)]
         public override object InitializeLifetimeService()
         {
@@ -2071,30 +2076,6 @@ namespace CassiniDev
             return null;
         }
 
-        // called at the end of request processing
-        // to disconnect the remoting proxy for Connection object
-        // and allow GC to pick it up
-        /// <summary>
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="userName"></param>
-        internal void OnRequestEnd(Connection conn, string userName)
-        {
-            try
-            {
-                LogInfo connRequestLogClone = conn.RequestLog.Clone();
-                connRequestLogClone.Identity = userName;
-                LogInfo connResponseLogClone = conn.ResponseLog.Clone();
-                connResponseLogClone.Identity = userName;
-                OnRequestComplete(conn.Id, connRequestLogClone, connResponseLogClone);
-            }
-            catch
-            {
-                // swallow - we don't want consumer killing the server
-            }
-            RemotingServices.Disconnect(conn);
-            //DecrementRequestCount();
-        }
 
         ///<summary>
         ///</summary>
@@ -2184,7 +2165,7 @@ namespace CassiniDev
             // create BuildManagerHost in the worker app domain
             //ApplicationManager appManager = ApplicationManager.GetApplicationManager();
             Type buildManagerHostType = typeof(HttpRuntime).Assembly.GetType("System.Web.Compilation.BuildManagerHost");
-            IRegisteredObject buildManagerHost = ApplicationManager.CreateObject(_appId, buildManagerHostType, virtualPath,
+            IRegisteredObject buildManagerHost = _applicationManager.CreateObject(_appId, buildManagerHostType, virtualPath,
                                                                           physicalPath, false);
 
             // call BuildManagerHost.RegisterAssembly to make Host type loadable in the worker app domain
@@ -2197,7 +2178,7 @@ namespace CassiniDev
             // create Host in the worker app domain
             // FIXME: getting FileLoadException Could not load file or assembly 'WebDev.WebServer20, Version=4.0.1.6, Culture=neutral, PublicKeyToken=f7f6e0b4240c7c27' or one of its dependencies. Failed to grant permission to execute. (Exception from HRESULT: 0x80131418)
             // when running dnoa 3.4 samples - webdev is registering trust somewhere that we are not
-            return ApplicationManager.CreateObject(_appId, hostType, virtualPath, physicalPath, false);
+            return _applicationManager.CreateObject(_appId, hostType, virtualPath, physicalPath, false);
         }
 
         //private void DecrementRequestCount()
@@ -2284,20 +2265,47 @@ namespace CassiniDev
 
         private void ObtainProcessToken()
         {
-            if (Interop.ImpersonateSelf(2))
+            if (NativeMethods.ImpersonateSelf(2))
             {
-                Interop.OpenThreadToken(Interop.GetCurrentThread(), 0xf01ff, true, ref _processToken);
-                Interop.RevertToSelf();
+                NativeMethods.OpenThreadToken(NativeMethods.GetCurrentThread(), 0xf01ff, true, ref _processToken);
+                NativeMethods.RevertToSelf();
                 // ReSharper disable PossibleNullReferenceException
                 _processUser = WindowsIdentity.GetCurrent().Name;
                 // ReSharper restore PossibleNullReferenceException
             }
         }
 
+        // called at the end of request processing
+        // to disconnect the remoting proxy for Connection object
+        // and allow GC to pick it up
+        /// <summary>
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="userName"></param>
+        internal void OnRequestEnd(Connection conn, string userName)
+        {
+            try
+            {
+                LogInfo connRequestLogClone = conn.RequestLog.Clone();
+                connRequestLogClone.Identity = userName;
+                LogInfo connResponseLogClone = conn.ResponseLog.Clone();
+                connResponseLogClone.Identity = userName;
+                OnRequestComplete(conn.Id, connRequestLogClone, connResponseLogClone);
+            }
+            catch
+            {
+                // swallow - we don't want consumer killing the server
+            }
+            RemotingServices.Disconnect(conn);
+            //DecrementRequestCount();
+        }
+
+
         private void OnRequestComplete(Guid id, LogInfo requestLog, LogInfo responseLog)
         {
-            PublishLogToCommonLogging(requestLog);
-            PublishLogToCommonLogging(responseLog);
+            Trace.WriteLine(requestLog);
+            Trace.WriteLine(responseLog);
+            
 
             EventHandler<RequestEventArgs> complete = RequestComplete;
 
@@ -2309,39 +2317,6 @@ namespace CassiniDev
         }
 
 
-
-        private void PublishLogToCommonLogging(LogInfo item)
-        {
-            if (!_useLogger)
-            {
-                return;
-            }
-
-            Common.Logging.ILog logger = Common.Logging.LogManager.GetCurrentClassLogger();
-
-            var bodyAsString = String.Empty;
-            try
-            {
-                bodyAsString = Encoding.UTF8.GetString(item.Body);
-            }
-            // ReSharper disable EmptyGeneralCatchClause
-            catch
-            // ReSharper restore EmptyGeneralCatchClause
-            {
-                /* empty bodies should be allowed */
-            }
-
-            var type = item.RowType == 0 ? "" : item.RowType == 1 ? "Request" : "Response";
-            logger.Debug(type + " | " +
-                          item.Created + " | " +
-                          item.StatusCode + " | " +
-                          item.Url + " | " +
-                          item.PathTranslated + " | " +
-                          item.Identity + " | " +
-                          "\n===>Headers<====\n" + item.Headers +
-                          "\n===>Body<=======\n" + bodyAsString
-                );
-        }
 
 
         ///<summary>

@@ -12,15 +12,18 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Security.Permissions;
 
 namespace CassiniDev
 {
     ///<summary>
     ///</summary>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "Everything"),
+     PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
     public class CassiniDevServer
     {
 
-
+        
 
         private Server _server;
         ///<summary>

@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 
 namespace CassiniDev
 {
-    internal static class Interop
+    internal static class NativeMethods
     {
         #region Structs
 

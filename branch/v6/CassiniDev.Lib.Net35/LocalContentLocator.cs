@@ -14,6 +14,8 @@ namespace CassiniDev
     /// </summary>
     public class LocalContentLocator : IContentLocator
     {
+        
+
         #region IContentLocator Members
 
         /// <summary>

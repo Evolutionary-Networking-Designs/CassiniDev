@@ -22,3 +22,11 @@ Simply allowing consumer of CassiniDev to intercept requests and supply response
 
 
 Verify whether CassiniDev actually does fire up a new AppDomain for every request as purported in user issue.
+
+
+
+Logging:
+The main components of CassiniDev are MarshalByRefObjects that live in the appdomain of the request so adding classes such as loggers can be
+problematic. I propose that we simply use Trace throughout CassiniDev and with whatever logging framework one wants to use just subscribe 
+to Trace stream.
+

@@ -24,12 +24,16 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Web.UI;
 
+
 #endregion
 
 namespace CassiniDev
 {
     public static class CommonExtensions
     {
+
+        
+
         public static string ConvertToHexView(this byte[] value, int numBytesPerRow)
         {
             if (value == null) return null;
@@ -255,6 +259,7 @@ namespace CassiniDev
     /// <summary>
     /// 
     /// </summary>
+    [Serializable]
     internal class CassiniException : Exception
     {
         public CassiniException(string message, ErrorField field, Exception innerException)

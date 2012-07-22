@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -25,8 +26,12 @@ namespace CassiniDev
 {
     ///<summary>
     ///</summary>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "Everything"),
+     PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
     public static class HostsFile
     {
+        
+
         /// <summary>
         /// 
         /// </summary>

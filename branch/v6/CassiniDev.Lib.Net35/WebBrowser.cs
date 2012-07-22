@@ -25,6 +25,7 @@ namespace CassiniDev
     /// </summary>
     public sealed class WebBrowser
     {
+        
         private readonly string _executablePath;
         private readonly string _name;
         ///<summary>

@@ -14,6 +14,7 @@
 #region
 
 using System;
+using System.Text;
 
 #endregion
 
@@ -87,7 +88,7 @@ namespace CassiniDev.ServerLog
         ///<returns></returns>
         public LogInfo Clone()
         {
-            LogInfo result = (LogInfo) ((ICloneable) this).Clone();
+            LogInfo result = (LogInfo)((ICloneable)this).Clone();
             if (Body != null)
             {
                 result.Body = new byte[Body.Length];
@@ -95,6 +96,36 @@ namespace CassiniDev.ServerLog
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return ToString(false);
+        }
+        public string ToString(bool includeBody)
+        {
+            var bodyAsString = String.Empty;
+            if (includeBody)
+            {
+                try
+                {
+                    bodyAsString = "===>Body<=======\n" + Encoding.UTF8.GetString(Body);
+                }
+                // ReSharper disable EmptyGeneralCatchClause
+                catch
+                // ReSharper restore EmptyGeneralCatchClause
+                {
+                    /* empty bodies should be allowed */
+                }
+            }
+
+
+            var type = RowType == 0 ? "" : RowType == 1 ? "Request" : "Response";
+
+            var logOutput = String.Format("{0} | {1} | {2} | {3} | {4} | {5} | \n===>Headers<====\n{6}\n{7}", type, Created, StatusCode, Url, PathTranslated, Identity, Headers, bodyAsString);
+
+            return logOutput;
+
         }
     }
 }

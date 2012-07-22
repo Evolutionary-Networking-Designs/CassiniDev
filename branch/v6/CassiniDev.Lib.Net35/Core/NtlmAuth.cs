@@ -25,22 +25,23 @@ namespace CassiniDev
     [SuppressUnmanagedCodeSecurity]
     internal sealed class NtlmAuth : IDisposable
     {
+        
         private readonly bool _credentialsHandleAcquired;
 
         private string _blob;
 
         private bool _completed;
 
-        private Interop.SecHandle _credentialsHandle;
+        private NativeMethods.SecHandle _credentialsHandle;
 
-        private Interop.SecBuffer _inputBuffer;
-        private Interop.SecBufferDesc _inputBufferDesc;
+        private NativeMethods.SecBuffer _inputBuffer;
+        private NativeMethods.SecBufferDesc _inputBufferDesc;
 
-        private Interop.SecBuffer _outputBuffer;
+        private NativeMethods.SecBuffer _outputBuffer;
 
-        private Interop.SecBufferDesc _outputBufferDesc;
+        private NativeMethods.SecBufferDesc _outputBufferDesc;
 
-        private Interop.SecHandle _securityContext;
+        private NativeMethods.SecHandle _securityContext;
 
         private bool _securityContextAcquired;
 
@@ -55,7 +56,7 @@ namespace CassiniDev
         public NtlmAuth()
         {
             if (
-                Interop.AcquireCredentialsHandle(null, "NTLM", 1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero,
+                NativeMethods.AcquireCredentialsHandle(null, "NTLM", 1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero,
                                                  ref _credentialsHandle, ref _timestamp) != 0)
             {
                 throw new InvalidOperationException();
@@ -125,7 +126,7 @@ namespace CassiniDev
                                 _outputBuffer.cbBuffer = (uint)inArray.Length;
                                 _outputBuffer.BufferType = 2;
                                 _outputBuffer.pvBuffer = (IntPtr)ptrRef5;
-                                int num = Interop.AcceptSecurityContext(ref _credentialsHandle, zero,
+                                int num = NativeMethods.AcceptSecurityContext(ref _credentialsHandle, zero,
                                                                         ref _inputBufferDesc, 20,
                                                                         0, ref _securityContext, ref _outputBufferDesc,
                                                                         ref _securityContextAttributes, ref _timestamp);
@@ -141,7 +142,7 @@ namespace CassiniDev
                                         return false;
                                     }
                                     _phToken = IntPtr.Zero;
-                                    if (Interop.QuerySecurityContextToken(ref _securityContext, ref _phToken) != 0)
+                                    if (NativeMethods.QuerySecurityContextToken(ref _securityContext, ref _phToken) != 0)
                                     {
                                         return false;
                                     }
@@ -170,18 +171,18 @@ namespace CassiniDev
         {
             if (_phToken != IntPtr.Zero)
             {
-                Interop.CloseHandle(_phToken);
+                NativeMethods.CloseHandle(_phToken);
                 _phToken = IntPtr.Zero;
 
             }
 
             if (_securityContextAcquired)
             {
-                Interop.DeleteSecurityContext(ref _securityContext);
+                NativeMethods.DeleteSecurityContext(ref _securityContext);
             }
             if (_credentialsHandleAcquired)
             {
-                Interop.FreeCredentialsHandle(ref _credentialsHandle);
+                NativeMethods.FreeCredentialsHandle(ref _credentialsHandle);
             }
         }
     }

@@ -33,6 +33,7 @@ namespace CassiniDev
     /// </summary>
     internal class Connection : MarshalByRefObject
     {
+        
         private const int HttpForbidden = 403;
 
         // ReSharper disable InconsistentNaming
@@ -45,14 +46,7 @@ namespace CassiniDev
         private LogInfo _requestLog;
         private LogInfo _responseLog;
 
-        /// <summary>
-        /// #TODO: verify that exposing this is not going to cause problems in the workerprocess
-        /// </summary>
-        /// <returns></returns>
-        public Server GetServer()
-        {
-            return _server;
-        }
+
         private Socket _socket;
 
         internal Connection(Server server, Socket socket)

@@ -11,6 +11,7 @@
 //  * **********************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using System.Text.RegularExpressions;
 
 namespace CassiniDev
@@ -20,9 +21,11 @@ namespace CassiniDev
     ///<summary>
     ///</summary>
     ///<typeparam name="T"></typeparam>
+       [PermissionSet(SecurityAction.LinkDemand, Name = "Everything"),
+     PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
     public abstract class CassiniDevBrowserTestFixture<T> where T : BrowserTestResultItem, new()
     {
-
+        
         private string _url;
         private TimeSpan _timeOut = TimeSpan.FromMinutes(1);
         private Dictionary<string, BrowserTestResultItem> _results;

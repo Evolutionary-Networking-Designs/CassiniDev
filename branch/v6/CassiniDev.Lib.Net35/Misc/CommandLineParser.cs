@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
+
 #endregion
 
 namespace CassiniDev
@@ -209,6 +210,7 @@ namespace CassiniDev
     /// </summary>
     public sealed class CommandLineParser
     {
+        
         /// <summary>
         /// The System Defined new line string.
         /// </summary>
@@ -341,10 +343,10 @@ namespace CassiniDev
         /// <returns>Returns the number of columns in the current console window</returns>
         public static int GetConsoleWindowWidth()
         {
-            Interop.CONSOLE_SCREEN_BUFFER_INFO csbi = new Interop.CONSOLE_SCREEN_BUFFER_INFO();
+            NativeMethods.CONSOLE_SCREEN_BUFFER_INFO csbi = new NativeMethods.CONSOLE_SCREEN_BUFFER_INFO();
 
 #pragma warning disable 168
-            int rc = Interop.GetConsoleScreenBufferInfo(Interop.GetStdHandle(StdOutputHandle), ref csbi);
+            int rc = NativeMethods.GetConsoleScreenBufferInfo(NativeMethods.GetStdHandle(StdOutputHandle), ref csbi);
 #pragma warning restore 168
             int screenWidth = csbi.dwSize.x;
             return screenWidth;

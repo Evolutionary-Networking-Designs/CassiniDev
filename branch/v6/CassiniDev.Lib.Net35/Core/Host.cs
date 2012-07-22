@@ -21,7 +21,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Web;
 using System.Web.Hosting;
-
+//
 #endregion
 
 namespace CassiniDev
@@ -38,6 +38,7 @@ namespace CassiniDev
     /// </summary>  
     internal class Host : MarshalByRefObject, IRegisteredObject
     {
+        
         private bool _disableDirectoryListing;
 
         private string _installPath;
