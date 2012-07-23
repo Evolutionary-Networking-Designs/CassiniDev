@@ -118,5 +118,38 @@ namespace CassiniDev.Lib.Net35.Tests
 
             rpcClient.Dispose();
         }
+
+        private const int MarketId = 400616150;
+
+        [Test, Ignore("Should only be run manually")]
+        public void RecordNewDataForCIAPI()
+        {
+            var rpcClient = new Client(new Uri("https://ciapi.cityindex.com/tradingapi"), new Uri("https://push.cityindex.com"), "foobardotnet");
+
+            // start recording requests
+            var stream = new MemoryStream();
+            var streamRecorder = new StreamRecorder(rpcClient, stream);
+            streamRecorder.Start();
+
+            rpcClient.LogIn("secret", "secret");
+
+            var accountInfo = rpcClient.AccountInformation.GetClientAndTradingAccount();
+            rpcClient.SpreadMarkets.ListSpreadMarkets("", "", accountInfo.ClientAccountId, 100, false);
+            rpcClient.News.ListNewsHeadlinesWithSource("dj", "UK", 10);
+            rpcClient.Market.GetMarketInformation(MarketId.ToString());
+            rpcClient.PriceHistory.GetPriceBars(MarketId.ToString(), "MINUTE", 1, "20");
+            rpcClient.TradesAndOrders.ListOpenPositions(accountInfo.SpreadBettingAccount.TradingAccountId);
+
+            rpcClient.LogOut();
+
+            streamRecorder.Stop();
+            stream.Position = 0;
+
+            using (var fileStream = File.Create("recorded_requests.txt"))
+            {
+                stream.WriteTo(fileStream);
+            }
+
+        }
     }
 }
