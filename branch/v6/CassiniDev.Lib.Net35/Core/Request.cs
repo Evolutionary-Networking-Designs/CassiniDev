@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace CassiniDev
     internal class Request : SimpleWorkerRequest
     {
 
-        
+
 
         #region Constants
         private const int MaxChunkLength = 64 * 1024;
@@ -685,16 +686,19 @@ namespace CassiniDev
         {
             if (_path.IndexOfAny(BadPathChars) >= 0)
             {
+                Trace.TraceError("Path contains bad characters {1} : {0}", _path, BadPathChars);
                 return true;
             }
 
             if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(_path, "..", CompareOptions.Ordinal) >= 0)
             {
+                Trace.TraceError("Path contains relative modifier '..' : {0}", _path);
                 return true;
             }
 
             if (CultureInfo.InvariantCulture.CompareInfo.IndexOf(_path, "//", CompareOptions.Ordinal) >= 0)
             {
+                Trace.TraceError("Path contains empty segment '//' : {0}", _path);
                 return true;
             }
 

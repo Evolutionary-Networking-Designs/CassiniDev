@@ -96,6 +96,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AspNetAppFixture.cs" />
     <Compile Include="BrowserFixtureChrome.cs" />
     <Compile Include="CIAPIFixture.cs" />
     <Compile Include="ProcessingHooksFixture.cs" />

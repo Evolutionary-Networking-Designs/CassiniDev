@@ -1,5 +1,0 @@
-C:\deb\CassiniDev - interim2\branch\v6\References\bin\x86\Debug\References.dll
-C:\deb\CassiniDev - interim2\branch\v6\References\bin\x86\Debug\References.pdb
-C:\deb\CassiniDev - interim2\branch\v6\References\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\deb\CassiniDev - interim2\branch\v6\References\obj\x86\Debug\References.dll
-C:\deb\CassiniDev - interim2\branch\v6\References\obj\x86\Debug\References.pdb
