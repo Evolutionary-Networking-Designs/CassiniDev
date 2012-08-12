@@ -23,5 +23,15 @@ namespace CassiniDev.Tests
             server.ShutDown();
             
         }
+
+        [Test]
+    public void ScratchPad()
+        {
+            string projectPath = Environment.CurrentDirectory;
+            string webContentPath = System.IO.Path.Combine(Environment.CurrentDirectory, "WebContent");
+
+            string[] args = { "\"/a:" + webContentPath + "\"", "/ip:192.168.10.4", "/ipMode:Specific", "/pm:Specific", "/p:8080" };
+            //System.Diagnostics.Process.Start(System.IO.Path.Combine(projectPath, "CassiniDev.exe"), String.Join(" ", args));
+        }
     }
 }

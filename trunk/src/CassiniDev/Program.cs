@@ -19,6 +19,7 @@ using System.Collections;
 
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -36,8 +37,8 @@ namespace CassiniDev
         [STAThread, LoaderOptimization(LoaderOptimization.MultiDomainHost)]
         public static int Main(string[] cmdLine)
         {
-            
-            
+
+
             Server server = null;
 
             if (cmdLine != null && cmdLine.Length > 0)
@@ -132,8 +133,7 @@ namespace CassiniDev
                 }
 
 
-
-                server = new Server(args.Port, args.VirtualPath, args.ApplicationPath, args.Ntlm, args.Nodirlist);
+                server = new Server(args.Port, args.VirtualPath, args.ApplicationPath, IPAddress.Parse(args.IPAddress), args.HostName , args.Ntlm, args.Nodirlist);
 
 
                 if (args.AddHost)
@@ -336,8 +336,8 @@ namespace CassiniDev
             }
         }
 
-      
- 
+
+
     }
 
     //internal sealed class ServiceUtil

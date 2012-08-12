@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Salient.CassiniDev")]
+[assembly: AssemblyTitle("CassiniDev")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Salient.CassiniDev")]
+[assembly: AssemblyProduct("CassiniDev")]
 [assembly: AssemblyCopyright("Copyright Microsoft, Sky Sanders ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
